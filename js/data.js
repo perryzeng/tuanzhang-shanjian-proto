@@ -1007,16 +1007,9 @@ window.DERIVE = (function () {
     return all.slice(0, n - 1).concat([all[all.length - 1]]);
   }
 
-  /* 一天几趴 → 这一天的段落骨架。3 趴最省事，5 趴最完整。
-     "趴"就是脚本框里的 part：一段台词 + 一个画面槽。 */
-  const SKELETON = {
-    3: ["开场立信任", "今天讲什么", "CTA · 开团"],
-    4: ["开场立信任", "今天讲什么", "例子或反馈", "CTA · 开团"],
-    5: ["开场立信任", "报天数", "今天讲什么", "例子或反馈", "CTA · 开团"]
-  };
-  function partSkeleton(n) {
-    return SKELETON[+n] || SKELETON[5];
-  }
+  /* 一条视频里分几段（"趴"）这件事，建系列时不再让用户选——
+     它其实属于"这条片子怎么写"，生成后进脚本框自然会分（见 B2 的结构骨架）。
+     建系列只需要知道"这个系列一共几条视频"。 */
 
   /* 三种来源 → 三份草稿，共用同一套段落结构与派生逻辑。
      这就是"三个发布器合成一个"的数据基础：换的是来源，不是编辑器。 */
@@ -1362,7 +1355,7 @@ window.DERIVE = (function () {
            draft, recommend, resolveFix, mmss, pool,
            scripts, script, scriptTabs, extract,
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
-           planTopics, partSkeleton,
+           planTopics,
            templates, template, voices, voice, covers, cover, coverBases, coverBase, coverFromTopic, myPhotos,
            viewers, leads, logs, shareStat, heatLevels, heat, comments, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };

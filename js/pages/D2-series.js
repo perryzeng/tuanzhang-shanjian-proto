@@ -38,7 +38,6 @@ window.PAGES["D2"].render = function (ctx) {
     const isFocus = s.id === focus.id;
     const okShot = s.shots.filter((x) => !x.miss)[0];
     const badShot = s.shots.filter((x) => x.miss)[0];
-    const hasPip = s.shots.some((x) => x.pip);
     const typed = ctx["vo_" + s.id];
     const voText = (typed != null && typed !== "") ? typed : s.vo;
     const slot = badShot
@@ -47,9 +46,9 @@ window.PAGES["D2"].render = function (ctx) {
         ? { label: okShot.label, bg: okShot.bg, pvAct: "D2.pv=" + s.id + "&D2.pause=", swGo: pickGo(s.id) }
         : { empty: true, label: "添加素材", go: pickGo(s.id) };
 
+    /* 与 B2 保持一致：「▣ 带小窗」不再做成段上的标签（小窗在预览里看得见） */
     const tags = [].concat(
-      s.fixed ? [["", "每天固定"]] : [["o", "今天要换"]],
-      hasPip ? [["p", "▣ 带小窗", "B2.3"]] : []
+      s.fixed ? [["", "每天固定"]] : [["o", "今天要换"]]
     );
 
     const editing = editId === s.id;

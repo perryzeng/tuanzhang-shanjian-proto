@@ -52,7 +52,7 @@ window.PAGES["B1"].render = function (ctx) {
           <div class="pi" style="background:${G("#7C5CFF", "#B08CFF")}">≡</div>
           <div class="pt">
             <b>SOP 主题系列</b>
-            <span>新建一个主题：定几天几趴，AI 排好每天讲什么</span>
+            <span>写一个主题，分几条视频，AI 排好每条讲什么</span>
           </div>
           <span class="pg">›</span>
         </div>

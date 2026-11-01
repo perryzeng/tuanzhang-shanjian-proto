@@ -69,7 +69,6 @@ window.PAGES["B2"].render = function (ctx) {
     const editable = s.lock !== "brand";
     const okShot = s.shots.filter((x) => !x.miss)[0];
     const badShot = s.shots.filter((x) => x.miss)[0];
-    const hasPip = s.shots.some((x) => x.pip) || ctx.pip === s.id;
     /* 用户改了哪一段就存在哪一段上；没改过就用草稿里的原文。
        空串当"没改过"——「↺ 用原来的」就是靠清空这个键实现的。 */
     const typed = ctx["vo_" + s.id];
@@ -81,12 +80,13 @@ window.PAGES["B2"].render = function (ctx) {
         ? { label: okShot.label, bg: okShot.bg, pvAct: "B2.pv=" + s.id + "&B2.pause=", swGo: pickGo(s.id) }
         : { empty: true, label: "添加素材", go: pickGo(s.id) };
 
+    /* 段上只挂"这段有什么特殊"的三类标记：固定 / 品牌锁定 / 建议改。
+       「▣ 带小窗」去掉了——它把一个画面属性做成了入口，让每段看起来都不一样；
+       小窗在预览里照样看得见，不需要在标签上先声明一次。 */
     const tags = [].concat(
       s.fixed ? [["", "固定"]] : [],
       s.lock === "brand" ? [["", "品牌锁定"]] : [],
-      s.suggest ? [[s.suggest === "务必改" ? "r" : "o", s.suggest]] : [],
-      /* 「画中画」是剪辑软件的叫法，团长听不懂。说人话：这段画面上还压着一个小窗。 */
-      hasPip ? [["p", "▣ 带小窗", "B2.3"]] : []
+      s.suggest ? [[s.suggest === "务必改" ? "r" : "o", s.suggest]] : []
     );
 
     const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && editId === s.id };
@@ -141,10 +141,11 @@ window.PAGES["B2"].render = function (ctx) {
       </div>`
     : "";
 
+  /* 二创和脚本在这里汇成同一条路：都得先定模板/声音/封面，再生成。
+     上一版二创多一个"查安全度"（C3），用户的原话是"到这一步跟用脚本去驱动生成的
+     逻辑流程是一样的"——它本来就是同一条流程，只是素材来源不同，不该多一道关。 */
   const head = `<div class="listhead"><b>脚本</b>${d.segCount} 个 part · 约 ${d.durTotal} 秒 ·
-      ${kind === "remix"
-        ? `<span style="color:var(--warn);font-weight:700">安全度 ${d.safety}</span>`
-        : `<span style="color:var(--success);font-weight:700">合规 ✓</span>`}
+      <span style="color:var(--success);font-weight:700">合规 ✓</span>
       <span style="flex:1"></span>${d.missCount
         ? `<span class="tag r">缺 ${d.missCount} 段</span>`
         : d.emptyCount ? `<span class="tag o">${d.emptyCount} 段没配</span>`
@@ -152,7 +153,6 @@ window.PAGES["B2"].render = function (ctx) {
 
   const primary = (function () {
     if (mode === "fix" && miss) return { t: "✦ 补上第 " + (miss.idx + 1) + " 段", go: pickGo(miss.id) };
-    if (kind === "remix") return { t: "下一步 · 查安全度", go: "C3" };
     return { t: "下一步 · 选模板与声音", go: "B2.4" + cfgQ, cls: "ai" };
   })();
 

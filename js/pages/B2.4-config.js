@@ -20,7 +20,7 @@ window.PAGES["B2.4"].states = [
    卡下面再给一句实例（eg），用他见过的场景说话，不用术语。 */
 window.PAGES["B2.4"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
-  const from = ctx.from === "D2" ? "D2" : (ctx.from === "C3" ? "C3" : "B2");
+  const from = ctx.from === "D2" ? "D2" : "B2";
   const kind = ctx.kind === "remix" ? "remix" : "script";
   const tplId = ctx.tpl || "tp_fast";
   const vid = ctx.voice || "v_f1";
@@ -42,8 +42,7 @@ window.PAGES["B2.4"].render = function (ctx) {
     : "&kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : ""));
 
   const backGo = from === "D2" ? "D2?c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5)
-    : from === "C3" ? "C3"
-      : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
+    : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
   const genGo = "B3?from=" + from + carry + "&tpl=" + tplId + "&voice=" + vid;
 
   /* 分段小标题：序号 + 一句人话。三段的问法是"为什么"，不是"叫什么" */
