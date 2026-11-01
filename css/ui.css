@@ -1595,3 +1595,82 @@
   display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(20,40,110,.16)}
 .frl b{font-size:10px;font-weight:600;color:var(--text-2)}
 .frl i{font-style:normal;font-size:8.5px;color:var(--text-4);white-space:nowrap}
+
+/* ========== 素材库 v6：社区化 + 紧凑 ==========
+   外层全压扁（信息条一行、文件夹一行胶囊），省下来的空间全给流。
+   流出三个版本，共用同一批数据。 */
+.tline{display:flex;align-items:center;gap:8px;margin-top:12px;padding:0 2px}
+.tline .av{width:26px;height:26px;border-radius:8px;color:#fff;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.tline b{font-size:12.5px;font-weight:700}
+.tline span{font-size:10px;color:var(--text-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tline .chg{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--brand);cursor:pointer;flex:0 0 auto}
+
+/* 搜索框压到 36px：它是常驻控件，但不需要 44px 那么高 */
+.gsearch.compact{height:36px;padding:0 13px;font-size:12px}
+.gsearch.compact .mag{font-size:13px}
+
+/* 三个文件夹压成一行胶囊 */
+.kpill{display:flex;gap:7px;margin-top:10px}
+.kpill b{flex:1;display:flex;align-items:center;gap:5px;background:#fff;border-radius:10px;
+  box-shadow:var(--sh-1);padding:7px 9px;font-size:11px;font-weight:600;color:var(--text-2);cursor:pointer}
+.kpill b i{width:18px;height:18px;border-radius:6px;color:#fff;font-size:9px;font-weight:700;
+  font-style:normal;display:flex;align-items:center;justify-content:center;flex:0 0 18px}
+.kpill b em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:800;color:var(--text)}
+
+/* 任务 / 通知压成一条：要看得见，但不该占掉第一屏 */
+.prompt{display:flex;align-items:center;gap:9px;background:#fff;border-radius:12px;
+  box-shadow:var(--sh-1);padding:9px 11px;margin-top:8px}
+.prompt .pi{width:24px;height:24px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;flex:0 0 24px}
+.prompt .tx{flex:1;min-width:0}
+.prompt .tx b{display:block;font-size:11.5px;font-weight:700}
+.prompt .tx span{display:block;font-size:9.5px;color:var(--text-4);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prompt .go{font-size:10.5px;font-weight:700;color:var(--brand);flex:0 0 auto;cursor:pointer}
+
+/* ---- A：卡片流 ---- */
+.flist{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.fcard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);overflow:hidden;cursor:pointer}
+.fcard .fh{display:flex;align-items:center;gap:8px;padding:10px 12px 8px}
+.fcard .fh .av{width:26px;height:26px;border-radius:50%;color:#fff;font-size:10.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.fcard .fh .hn{flex:1;min-width:0;display:flex;align-items:baseline;gap:5px}
+.fcard .fh .hn b{font-size:11.5px;font-weight:700}
+.fcard .fh .hn i{font-style:normal;font-size:10px;color:var(--text-4);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fcard .fh .tm{font-size:9.5px;color:var(--text-4);flex:0 0 auto}
+.fcard .fim{height:96px;margin:0 12px;border-radius:11px;color:rgba(255,255,255,.92);
+  display:flex;align-items:center;justify-content:center;gap:7px;font-size:26px}
+.fcard .fim em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:1px;opacity:.85}
+.fcard .fb{padding:9px 12px 0}
+.fcard .fb b{display:block;font-size:12.5px;font-weight:700;line-height:1.35}
+.fcard .fb span{display:block;font-size:10px;color:var(--text-4);margin-top:3px}
+.fcard .fi{display:flex;gap:14px;padding:8px 12px 11px;font-size:10px;color:var(--text-3)}
+
+/* ---- B：双列瀑布 ---- */
+.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.bcard{background:#fff;border-radius:14px;box-shadow:var(--sh-1);overflow:hidden;cursor:pointer}
+.bcard .th{height:88px;color:rgba(255,255,255,.92);font-size:22px;
+  display:flex;align-items:center;justify-content:center}
+.bcard b{display:block;padding:8px 9px 0;font-size:11px;font-weight:600;line-height:1.35;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.bcard .by{display:flex;align-items:center;gap:5px;padding:6px 9px 9px;font-size:9.5px;color:var(--text-4)}
+.bcard .by .av{width:15px;height:15px;border-radius:50%;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 15px}
+
+/* ---- C：紧凑时间线 ---- */
+.clist{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:2px 12px;margin-top:12px}
+.crow{display:flex;align-items:center;gap:9px;padding:8px 0;cursor:pointer}
+.crow+.crow{box-shadow:inset 0 1px 0 var(--line-2)}
+.crow .th{width:34px;height:40px;border-radius:8px;color:rgba(255,255,255,.92);font-size:15px;
+  display:flex;align-items:center;justify-content:center;flex:0 0 38px}
+.crow .tx{flex:1;min-width:0}
+.crow .tx b{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;line-height:1.35}
+.crow .tx b .av{width:15px;height:15px;border-radius:50%;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 15px}
+.crow .tx b .pin{font-style:normal;font-size:8px;font-weight:700;color:var(--brand-ink);
+  background:var(--brand-weak);border-radius:4px;padding:1px 4px}
+.crow .tx span{display:block;font-size:10px;color:var(--text-4);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .tm{font-size:9px;color:var(--text-4);flex:0 0 auto}
