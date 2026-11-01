@@ -40,6 +40,8 @@ window.PAGES["G1"].render = function () {
 
       ${C.sec("我的资产")}
       <div class="card" style="padding:0 16px">
+        ${row("◈", "var(--warm-weak)", "var(--warm)", "积分钱包", "1260 积分 · 约 ¥12.60", "G2")}
+        ${row("☺", "var(--brand-weak)", "var(--brand)", "我的团队", "暴富者的团 · 20 席 · 团长", "E3")}
         ${row("▤", "var(--brand-weak)", "var(--brand)", "我的出镜", "12 张照片 · 3 段小视频", "E2.1")}
         ${row("⏱", "var(--brand-weak)", "var(--brand)", "AI 定时任务", "每天 06:00 自动生成 3 条", "T1")}
         ${row("☆", "var(--violet-weak)", "var(--violet)", "我的收藏", "18 个模板 · 6 个脚本", "F1")}
@@ -47,6 +49,8 @@ window.PAGES["G1"].render = function () {
 
       ${C.sec("设置")}
       <div class="card" style="padding:0 16px">
+        ${row("◫", "#F1F3F9", "var(--text-2)", "席位与团队", "20 席 · 已用 12 · ¥10/席", "E3.2")}
+        ${row("＋", "#F1F3F9", "var(--text-2)", "新建团队", "先买席位，10 席起", "E3.0")}
         ${row("≡", "#F1F3F9", "var(--text-2)", "声音与形象", "温柔女声 · 克隆音已就绪", "B2.3")}
         ${row("◔", "#F1F3F9", "var(--text-2)", "通知设置", "任务 / 团队 / 数据 三类", "E5")}
         ${row("?", "#F1F3F9", "var(--text-2)", "帮助与反馈", "怎么过审 · 怎么算安全度", "A1")}

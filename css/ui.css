@@ -1765,6 +1765,47 @@
 .pstats span{font-size:9.5px;color:var(--text-4);font-weight:600}
 .pstats>div.rc b{color:var(--brand)}
 
+/* 团队视角切换 */
+.vsw{display:flex;align-items:center;gap:6px;margin-top:10px;background:#fff;border-radius:12px;box-shadow:var(--sh-1);padding:5px}
+.vsw b{flex:1;text-align:center;font-size:12px;font-weight:600;color:var(--text-3);border-radius:9px;padding:8px 0;cursor:pointer}
+.vsw b.on{background:var(--g-brand);color:#fff;box-shadow:0 3px 10px rgba(44,91,255,.26)}
+.vsw .vlab{margin:0 8px 0 4px;font-size:9.5px;color:var(--text-4);font-weight:600;white-space:nowrap}
+
+/* 管理台 */
+.mgbar{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:11px 12px;margin-top:10px}
+.mgbar .mgh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);margin-bottom:9px}
+.mgbar .mgh em{font-style:normal;margin-left:auto;font-size:9.5px;font-weight:600;color:var(--brand)}
+.mgbar .mgg{display:flex;gap:8px}
+.mgbar .mgc{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg-2);border-radius:11px;padding:11px 4px;cursor:pointer}
+.mgbar .mgc .mgi{width:28px;height:28px;border-radius:9px;background:#fff;color:var(--brand);font-size:14px;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-1)}
+.mgbar .mgc b{font-size:10.5px;font-weight:600;color:var(--text-2)}
+
+/* 席位条 */
+.seatbar{display:flex;align-items:center;gap:8px;background:#FFF7EC;border:1px solid #FFE2B8;border-radius:14px;padding:11px 13px;margin-top:10px;cursor:pointer}
+.seatbar .sbt b{font-size:12px;font-weight:800;color:#7A3B06}
+.seatbar .sbt span{font-size:10.5px;color:#A9703A;margin-left:6px}
+.seatbar .sbgo{margin-left:auto;font-size:11px;font-weight:800;color:#C2410C;white-space:nowrap}
+
+/* 套餐卡（席位 / 积分） */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+.plans.two{grid-template-columns:repeat(2,1fr)}
+.plan{position:relative;background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:15px 8px;text-align:center;cursor:pointer;border:1.5px solid transparent}
+.plan.on{border-color:var(--brand);background:var(--brand-weak)}
+.plan b{display:block;font-size:20px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.3px}
+.plan b i{font-style:normal;font-size:11px;font-weight:600;color:var(--text-4);margin-left:1px}
+.plan span{display:block;font-size:11px;color:var(--text-3);margin-top:6px}
+.plan em{position:absolute;right:6px;top:6px;font-style:normal;font-size:8.5px;font-weight:800;color:#fff;background:var(--warm);border-radius:999px;padding:2px 7px}
+
+/* 成员行操作 */
+.tmr .tmact{flex:0 0 auto;display:flex;gap:6px}
+.tmr .mact{font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-weak);border-radius:999px;padding:4px 9px;cursor:pointer;white-space:nowrap}
+.tmr .mact.warn{color:#C2410C;background:#FFE9D9}
+.tmr .mact.mute{color:var(--text-4);background:var(--bg-2)}
+
+.okbar{background:#EAF9F3;border:1px solid #BFE9DA;color:#0B7D5E;border-radius:12px;padding:10px 12px;
+  font-size:11.5px;font-weight:700;margin-top:10px;line-height:1.5}
+
 /* 公告：紧凑两行，点进通知中心 */
 .ncard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:8px 13px 4px;margin-top:10px}
 .ncard .nh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);padding:5px 0 3px}

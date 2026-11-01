@@ -18,6 +18,7 @@ window.PAGES["E2"].render = function (ctx) {
   const pid = ctx.__pid || "E2";          // 状态写到哪个页面（E2 / E3 / E2.4）
   const forcedSide = ctx.__side || "";    // E3 传 team、E2.4 传 friend
   const side = forcedSide || "mine";
+  const tview = side === "team" ? (["owner", "admin", "member"].indexOf(ctx.view) >= 0 ? ctx.view : "owner") : "";
   const friendName = ctx.__friend || "";
   const friend = (LIB.friends || []).filter((f) => f.name === friendName)[0] || {};
 
@@ -323,6 +324,29 @@ window.PAGES["E2"].render = function (ctx) {
     ${curTab === "log" ? "" : searchBar}
     ${tabBody}`;
 
+  /* 团队三种视角：团队长(超管) / 管理员 / 成员 */
+  const TVIEWS = [["owner", "团队长"], ["admin", "管理员"], ["member", "成员"]];
+  const tviewBar = side === "team" ? `<div class="vsw">
+      ${TVIEWS.map(([k, tx]) => `<b class="${tview === k ? "on" : ""}" data-set="${pid}.view=${k}">${tx}</b>`).join("")}
+      <span class="vlab">${tview === "owner" ? "超管" : tview === "admin" ? "管理员" : "只读"}</span>
+    </div>` : "";
+
+  const MANAGE = tview === "owner"
+    ? [["☺", "成员管理", "E3.3"], ["◫", "席位管理", "E3.2"], ["▦", "素材管理", pid + "?open=asset&tab=dir"], ["⚙", "团队设置", "E3.1"]]
+    : tview === "admin"
+      ? [["☺", "成员管理", "E3.3"], ["▦", "素材管理", pid + "?open=asset&tab=dir"]]
+      : [];
+  const manageBar = MANAGE.length ? `<div class="mgbar">
+      <div class="mgh">管理台<em>${tview === "owner" ? "团队长 · 超管" : "管理员"}</em></div>
+      <div class="mgg">${MANAGE.map(([ic, tx, go]) => `<div class="mgc" data-go="${go}" data-label="${tx}">
+        <span class="mgi">${ic}</span><b>${tx}</b></div>`).join("")}</div>
+    </div>` : "";
+
+  const seatInfo = window.DATA.seatInfo || { total: 0, used: 0, price: 10, min: 10 };
+  const seatStrip = tview === "owner" ? `<div class="seatbar" data-go="E3.2" data-label="席位管理">
+      <div class="sbt"><b>席位</b><span>已用 ${seatInfo.used}/${seatInfo.total} · 剩余 ${seatInfo.total - seatInfo.used} · ¥${seatInfo.price}/席</span></div>
+      <span class="sbgo">加购 ›</span></div>` : "";
+
   return `<div class="app">
     ${C.sb()}
     ${side === "friend"
@@ -337,7 +361,7 @@ window.PAGES["E2"].render = function (ctx) {
 
     <div class="body" style="padding-bottom:110px">
       ${open ? openBody : (side === "team"
-        ? `${teamSw}${bannerCard}${noticeCard}${taskList}${mods}
+        ? `${tviewBar}${teamSw}${manageBar}${seatStrip}${bannerCard}${noticeCard}${taskList}${mods}
            <div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
         : side === "friend"
           ? `${searchEntry}${mods}<div class="feedhd">${friendName}的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`

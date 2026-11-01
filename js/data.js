@@ -1098,6 +1098,21 @@ window.DATA = {
     }
   },
 
+  /* 座位与积分：团队按席位收费（10 元/席，10 席起）；所有用户按积分消耗（1 积分 = 1 分钱） */
+  seatInfo: { total: 20, used: 12, price: 10, min: 10 },
+  seatPlans: [
+    { seats: 10, pay: 100 },
+    { seats: 20, pay: 200, tag: "常用" },
+    { seats: 50, pay: 500, tag: "更省" }
+  ],
+  points: { balance: 1260, monthUse: 320 },
+  pointPlans: [
+    { id: "pp20", pay: 20, points: 2000, bonus: 0 },
+    { id: "pp50", pay: 50, points: 5200, bonus: 200, tag: "送 200" },
+    { id: "pp100", pay: 100, points: 11000, bonus: 1000, tag: "最受欢迎" },
+    { id: "pp200", pay: 200, points: 23000, bonus: 3000, tag: "最划算" }
+  ],
+
   /* 平台精选：运营后台专题位，按人群包下发 */  platformPicks: [
     { id: "tp_31", img: "assets/bn-2.jpg", pos: "center 34%", title: "秋季滋补专题", sub: "12 条现成素材 · 平台已过审", go: "F1", audience: "全体团长" },
     { id: "tp_28", img: "assets/bn-1.jpg", pos: "center 44%", title: "高转化开箱合集", sub: "照着结构改就能发", go: "F1", audience: "近 7 天有发布的团长" }
