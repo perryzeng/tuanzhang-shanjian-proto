@@ -80,6 +80,11 @@ window.PAGES["B4.1"].render = function (ctx) {
         <div class="tx">
           <b>磷虾油今晚开团，3 步选对不踩坑</b>
           <span>点一下进播放页 · 看互动和评论</span>
+          <!-- 导出放在卡片里、标题下面：他看完"这条是什么"，下一句想问的就是
+               "我怎么把它存下来"。这两件事在一张卡里说完，比卡外再挂一个大按钮干净。 -->
+          <div class="expbtn${saved ? " ok" : ""}" ${saved ? "" : `data-set="B4.1.saved=1"`}>
+            ${saved ? "✓ 已导出到相册 · 1080×1920" : "⬇ 导出下载视频"}
+          </div>
         </div>
         <!-- 三个平台 icon 直接挂在卡片右侧：点哪个进哪个样式的播放页。
              上一版下面是三张带标题和说明的大卡，占了半屏却只干一件事——
@@ -90,12 +95,7 @@ window.PAGES["B4.1"].render = function (ctx) {
         </div>
       </div>
 
-      <!-- 导出紧跟着卡片：先看这条是什么，再决定要不要存下来 -->
-      <div class="btn ai" style="margin-top:12px" ${saved ? "" : `data-set="B4.1.saved=1"`}>
-        ${saved ? "✓ 已导出到相册 · 1080×1920" : "⬇ 导出下载视频"}
-      </div>
-
-      <div class="sharedata" style="margin-top:16px">
+      <div class="sharedata" style="margin-top:14px">
         <div class="hd"><b>分享带来的</b><span>已分享 ${st.times} 次</span></div>
         <div class="grid4">
           <div><b>${heat.plays.toLocaleString()}</b><span>播放</span></div>

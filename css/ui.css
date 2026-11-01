@@ -1248,3 +1248,54 @@
   padding:0;line-height:1.25;-moz-appearance:textfield}
 .pkops input::-webkit-outer-spin-button,.pkops input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .pkops span{font-size:9px;color:rgba(255,255,255,.5)}
+
+/* ========== 成品卡里的导出按钮 ==========
+   放进卡片、跟在标题下面：他看完"这条是什么"，下一句想问的就是"我怎么存下来"。
+   拆到卡外再挂一个大按钮，等于把一件事说成两件。 */
+.donecard .expbtn{margin-top:8px;height:30px;border-radius:9px;background:var(--brand-weak);
+  color:var(--brand-ink);font-size:11.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;cursor:pointer}
+.donecard .expbtn.ok{background:var(--success-weak);color:#0B8C68}
+
+/* ========== 播放页：少 / 中 / 多（一步填满三个数） ========== */
+.heat3{display:flex;gap:7px}
+.heat3 b{flex:1;height:38px;border-radius:11px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;
+  color:var(--text-2);cursor:pointer}
+.heat3 b.on{background:var(--brand-weak);color:var(--brand-ink);box-shadow:inset 0 0 0 1.5px var(--brand)}
+
+/* ========== 分享链接 ========== */
+.linkbox{background:var(--surface);border-radius:14px;box-shadow:var(--sh-1);padding:12px 13px;margin-top:12px}
+.linkbox .hd{display:flex;align-items:baseline;gap:7px}
+.linkbox .hd b{font-size:12.5px;font-weight:700;color:#0B8C68}
+.linkbox .hd span{margin-left:auto;font-size:10px;color:var(--text-3)}
+.linkbox .url{display:flex;align-items:center;gap:8px;margin-top:8px;background:var(--bg-2);
+  border-radius:9px;padding:8px 10px}
+.linkbox .url span{flex:1;min-width:0;font-size:11.5px;color:var(--text-2);
+  font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.linkbox .url b{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--brand);cursor:pointer}
+.linkbox .xs{margin-top:7px;line-height:1.5;color:var(--text-4);font-size:10px}
+
+/* ========== 三套平台样式的细节复刻 ========== */
+/* 小红书：顶部作者行 + 关注按钮（它就是这么排的，缺了就不像） */
+.plbox .plhead{position:absolute;left:11px;right:11px;top:11px;display:flex;align-items:center;gap:7px;color:#fff;z-index:2}
+.plbox .plhead .ava{width:26px;height:26px;border-radius:50%;flex:0 0 26px;
+  background:linear-gradient(135deg,#7C5CFF,#2C5BFF);display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:700;box-shadow:0 0 0 1.5px rgba(255,255,255,.7)}
+.plbox .plhead b{font-size:11.5px;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.45)}
+.plbox .plhead em{font-style:normal;margin-left:2px;font-size:10px;padding:3px 10px;border-radius:999px;
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.55)}
+/* 抖音：右侧第一项是作者头像，右下角是转盘 */
+.plbox .plside .ava2{width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#7C5CFF,#2C5BFF);display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;color:#fff;box-shadow:0 0 0 2px #fff}
+.plbox .pldisc{position:absolute;right:11px;bottom:58px;width:34px;height:34px;border-radius:50%;
+  background:conic-gradient(from 0deg,#2C5BFF,#7C5CFF,#00C2FF,#2C5BFF);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.4);
+  animation:spin 8s linear infinite}
+.plbox .pldisc i{width:11px;height:11px;border-radius:50%;background:#0A1226}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 小红书底部白卡里的"展开" */
+.plbox .plfoot .morelink{display:inline-block;margin-top:5px;font-size:10px;font-weight:600;color:#3A5BD9}
+/* 小红书右侧有四项（赞 / 收藏 / 评论 / 转发），位置要跟着抬高 */
+.plbox.xhs .plside{bottom:112px;gap:13px}
