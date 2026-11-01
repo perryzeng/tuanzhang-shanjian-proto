@@ -2,7 +2,29 @@
 
 一页一个文件的可点原型。双击 `index.html` 就能用，不需要装任何东西、不需要起服务。
 
+> **线上地址（发给外部共创用）**：https://perryzeng.github.io/tuanzhang-shanjian-proto/
+> 手机打开会自动变成全屏 App 形态（去手机壳、左侧树收进「☰ 页面」），电脑打开是工作台三栏。
+> 直达某页：在链接后加 `#/B2`、`#/A1?mode=new`、`#/B2?mode=edit`。
+
 > 找入口看这里：项目根目录 `团长闪剪/index.html` 是入口壳，双击会自动跳到 `proto/index.html`（可带 `#/B2` 这类页面锚点）。原型本体在 `proto/` 子目录里。
+
+---
+
+## 已发布 / 怎么更新线上
+
+托管在 GitHub Pages，仓库：`github.com/perryzeng/tuanzhang-shanjian-proto`（公开）。
+`proto/` 本身就是这个仓库的工作副本，改完这样更新：
+
+```bash
+cd proto
+git add -A && git commit -m "改了什么"
+git push
+```
+
+Pages 会在 1 分钟内自动重建，**分享链接不变**（别人手上的旧链接刷新就是新内容）。
+
+- 仓库公开 = 任何人能看到源码；要收回到「只有拿到链接的人能看」，告诉我，我可以关掉 Pages 或转私有仓库。
+- 单文件离线版在上级目录：`团长闪剪-交互原型-单文件版.html`（图片已内嵌，可以直接微信发人）。
 
 ---
 
