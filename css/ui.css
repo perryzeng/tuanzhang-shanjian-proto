@@ -565,6 +565,57 @@
                font-size:13px;color:var(--text)}
 .gsearch input::placeholder{color:var(--text-4)}
 
+/* ========== 视频文案抽取（C1）：一个加号、一个链接框、下面走进度 ========== */
+/* 加号上传位：整块就是一个巨大的＋，不做"卡片里再套一个选择按钮"——
+   那会让人先读一遍文字才敢点。 */
+.drop.big{padding:30px 16px;border-width:2px}
+.drop.big .di{width:56px;height:56px;border-radius:50%;background:var(--brand-weak);color:var(--brand);
+              font-size:28px;font-weight:400;display:flex;align-items:center;justify-content:center;
+              margin-bottom:4px;line-height:1}
+.drop.big b{font-size:14.5px}
+
+.filecard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;
+          padding:12px;box-shadow:var(--sh-1)}
+.filecard .th{width:52px;height:92px;border-radius:10px;flex:0 0 52px;color:#fff;font-size:8.5px;
+              font-weight:700;display:flex;align-items:flex-end;padding:5px}
+.filecard .tx{flex:1;min-width:0}
+.filecard .tx b{display:block;font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.filecard .tx span{display:block;font-size:10.5px;color:var(--text-3);margin-top:5px}
+
+.urlbox{display:flex;align-items:center;gap:9px;background:var(--surface);border-radius:14px;
+        padding:0 12px;height:46px;box-shadow:var(--sh-1)}
+.urlbox .ic{color:var(--text-4);font-size:14px;flex:0 0 auto}
+.urlbox input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:inherit;
+              font-size:13px;color:var(--text)}
+.urlbox input::placeholder{color:var(--text-4)}
+.urlbox .clr{flex:0 0 auto;font-size:11px;font-weight:600;color:var(--brand);cursor:pointer}
+
+/* 抽取进度：进度条 + 四步。四步写出来是为了让"等"有内容，
+   只给一条光溜溜的进度条，用户不知道它在干什么。 */
+.prog{margin-top:14px;background:var(--surface);border-radius:18px;padding:14px 15px;box-shadow:var(--sh-1)}
+.prog .ph{display:flex;align-items:center;font-size:13.5px;font-weight:700}
+.prog .ph span{margin-left:auto;font-size:12px;color:var(--brand);font-variant-numeric:tabular-nums}
+.prog .pbar{height:5px;border-radius:3px;background:#EDF1F9;margin-top:10px;overflow:hidden}
+.prog .pbar i{display:block;height:100%;border-radius:3px;background:var(--g-brand);
+              transition:width .5s ease}
+.prog .xs{color:var(--text-4);line-height:1.6}
+
+.psteps{display:flex;gap:6px;margin-top:12px}
+.pstep{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.pstep .dot{width:20px;height:20px;border-radius:50%;background:#EDF1F9;color:var(--text-4);
+            font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.pstep span:last-child{font-size:9.5px;color:var(--text-4);line-height:1.25}
+.pstep.ok .dot{background:var(--success);color:#fff}
+.pstep.ok span:last-child{color:var(--text-2);font-weight:600}
+.pstep.now .dot{background:var(--g-brand);color:#fff;box-shadow:0 0 0 3px rgba(44,91,255,.16)}
+.pstep.now span:last-child{color:var(--brand);font-weight:700}
+
+.prog .preview{margin-top:12px;background:#F7F9FD;border-radius:12px;padding:10px 12px}
+.prog .preview .pline{display:flex;gap:8px;font-size:11.5px;line-height:1.6;color:var(--text-2)}
+.prog .preview .pline+.pline{margin-top:7px}
+.prog .preview .no{flex:0 0 auto;color:var(--text-4);font-size:10px;font-weight:700;
+                   font-variant-numeric:tabular-nums;padding-top:1px}
+
 /* ========== 封面：底图 + 版式 ==========
    字号全部用 em、容器只改 font-size，所以大预览和缩略卡共用同一套版式，
    不会出现"小图看着挺好、大图就不对"。 */

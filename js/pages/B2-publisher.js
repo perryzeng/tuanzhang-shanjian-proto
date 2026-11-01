@@ -154,7 +154,8 @@ window.PAGES["B2"].render = function (ctx) {
 
   const backGo = kind === "remix" ? (ctx.local ? "C1?for=remix" : "C1.2")
     : src === "import" || src === "struct" ? "B1.2"
-    : src === "extract" ? "C1.2"
+    /* 抽取是在 C1 页内完成的，不是从 C1.2 来的——返回就回 C1 */
+    : src === "extract" ? "C1"
     : "B1";
 
   const pvShot = pvSeg ? (pvSeg.shots.filter((x) => !x.miss)[0] || {}) : {};

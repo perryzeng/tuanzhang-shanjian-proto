@@ -4,89 +4,116 @@ window.PAGES["C1"].prd = "PRD §6.2 · 视频文案抽取 / 视频二创（两�
 
    for=remix（视频二创）：上传本地视频 → 选抽取方式（AI 自动分段 / 按固定秒数）→ 抽完直接进发布器。
      它不需要"本地还是链接"的选择——二创只处理本地视频。
-   默认（视频文案抽取）：从哪来二选一（本地 / 链接）→ 只抽文案，抽完还要问"要文案还是连画面"。
+   默认（视频文案抽取）：传视频 或 贴链接，二选一 → **就在这一页抽**，进度和结果都在下方。
      走链接时拿不到原片，没法二创，所以只有文案抽取这条路需要链接。 */
 window.PAGES["C1"].render = function (ctx) {
-  const C = window.C, G = window.G;
+  const C = window.C, G = window.G, D = window.DERIVE;
   if (ctx.for === "remix") return renderRemix(C, G, ctx);
 
-  const src = ctx.src === "link" ? "link" : "local";
-  const imports = window.DATA.imports;
+  const hasFile = ctx.file === "1";
+  const url = ctx.url || "";
+  const stage = ctx.stage || "";            // "" | doing | done
+  const tick = +(ctx.tick || 0);            // 0~3，抽取四步走到第几步
+  const useLink = !!url.trim();             // 贴了链接就用链接，没贴才用文件
 
-  const st = (x) => x.state === "fail"
-    ? ["识别失败", "r"]
-    : x.state === "doing" ? ["抽取中", "o"] : ["已抽取", "g"];
+  const ready = useLink || hasFile;
 
-  const opt = (k, ic, name, sub) =>
-    `<div class="opt ${src === k ? "on" : ""}" data-set="C1.src=${k}">
-      <div class="oi">${ic}</div>
-      <b>${name}</b><span>${sub}</span>
-      ${src === k ? `<i class="ck">✓</i>` : ""}
-    </div>`;
+  /* 四步的完成情况由 tick 决定；done 时全部完成 */
+  const STEPS = ["拿到视频", "分离音轨", "识别口播", "断句分段"];
+  const doneN = stage === "done" ? 4 : tick;
+  /* 别从 0% 起步：点了按钮还是 0%，用户会以为没反应。四档给固定的观感进度 */
+  const pct = stage === "done" ? 100 : [14, 38, 62, 86][Math.min(tick, 3)];
 
-  const hot = (bg, tx, n) =>
-    `<div style="flex:0 0 104px;cursor:pointer" data-go="F3" data-label="同款 ${tx}">
-      <div style="height:138px;border-radius:16px;background:${bg};position:relative;overflow:hidden">
-        <span style="position:absolute;right:6px;top:6px;background:rgba(0,0,0,.35);color:#fff;font-size:9px;border-radius:999px;padding:2px 6px">${n}</span>
-      </div>
-      <div style="font-size:12px;font-weight:600;margin-top:7px">${tx}</div>
-    </div>`;
+  const stepsHTML = `<div class="psteps">${STEPS.map((t, i) => {
+    const st = i < doneN ? "ok" : (i === doneN && stage === "doing" ? "now" : "");
+    return `<div class="pstep ${st}"><span class="dot">${i < doneN ? "✓" : i + 1}</span><span>${t}</span></div>`;
+  }).join("")}</div>`;
+
+  const x = D.extract();
 
   return `<div class="app">
     ${C.sb()}
     ${C.ab({ title: "视频文案抽取", sub: "只要文字，抽完进脚本框配新画面", back: "B1" })}
 
     <div class="body">
-      <div class="pick2">
-        ${opt("local", "↑", "本地视频", "从相册选一条")}
-        ${opt("link", "↗", "粘贴链接", "抖音 · 视频号")}
+      <div class="sec-h" style="margin:2px 2px 9px"><span class="h2">上传本地视频</span></div>
+      ${hasFile ? `
+        <div class="filecard">
+          <div class="th" style="background:${G("#0E1B3D", "#2C5BFF")}">▶ 52s</div>
+          <div class="tx">
+            <b>IMG_2043.MOV</b>
+            <span>竖屏 1080×1920 · 52 秒 · 已就绪</span>
+          </div>
+          <span class="btn-pill line" data-set="C1.file=0&C1.stage=&C1.tick=0">换一条</span>
+        </div>` : `
+        <div class="drop big" data-set="C1.file=1&C1.stage=&C1.tick=0">
+          <div class="di">＋</div>
+          <b>点加号选一条视频</b>
+          <span>mp4 / mov · 竖屏优先 · 最长 3 分钟</span>
+        </div>`}
+
+      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">或者贴个链接</span>
+        <span class="more">抖音 · 视频号 · 小红书</span></div>
+      <div class="urlbox">
+        <span class="ic">↗</span>
+        <!-- data-live：边打边判断能不能抽，底部按钮跟着变。
+             不这么做的话，贴完链接按钮还写着"先传视频或贴链接"。 -->
+        <input data-bind="C1.url" data-live value="${url.replace(/"/g, "&quot;")}"
+               placeholder="把视频链接粘进来…" />
+        ${url ? `<span class="clr" data-set="C1.url=&C1.stage=&C1.tick=0">清空</span>` : ""}
       </div>
+      ${url ? `<div class="xs" style="margin:7px 2px 0;color:var(--brand);font-weight:600">已识别为抖音视频 · 只取文字，不下载原片</div>` : ""}
 
-      ${src === "local" ? `
-      <div class="drop" data-go="C1.1?src=local" data-label="选择本地视频">
-        <div class="di">↑</div>
-        <b>点这里选视频</b>
-        <span>mp4 / mov · 竖屏优先 · 最长 3 分钟</span>
-        <div class="btn-pill" style="margin-top:11px">选择视频</div>
-      </div>` : `
-      <div class="card">
-        <div style="background:#F5F7FC;border-radius:14px;padding:12px 13px;font-size:12.5px;color:var(--text-2);line-height:1.5">
-          https://v.douyin.com/iRk8xQ2t/ <span style="color:var(--text-4)">· 已识别为抖音视频</span>
-        </div>
-        <div class="row" style="gap:6px;margin-top:11px">
-          <span class="pill on">抖音</span><span class="pill">视频号</span><span class="pill">小红书</span>
-          <span class="xs" style="margin-left:auto">小红书仅公开笔记</span>
-        </div>
-        <div class="btn" style="margin-top:14px" data-go="C1.1?src=link" data-label="开始抽取文案">开始抽取文案</div>
-      </div>`}
+      ${stage === "doing" ? `
+        <div class="prog">
+          <div class="ph"><b>正在抽取</b><span>${pct}%</span></div>
+          <div class="pbar"><i style="width:${pct}%"></i></div>
+          ${stepsHTML}
+          <div class="xs" style="margin-top:10px">这一步不能离开页面，大约 20 秒</div>
+        </div>` : ""}
 
-      <div class="card plain" style="margin-top:12px">
-        <div class="xs" style="line-height:1.7">
-          只抽文案：本地视频只在本机识别，不上传原片；抽出来的文字会进脚本库，下次直接引。
-          想连画面一起还原，用下面的「其他发布器 · 视频二创」。
-        </div>
-      </div>
+      ${stage === "done" ? `
+        <div class="prog done">
+          <div class="ph"><b>抽到了 ${x.lines.length} 段</b><span>${x.dur || 47} 秒</span></div>
+          <div class="pbar"><i style="width:100%"></i></div>
+          ${stepsHTML}
+          <div class="preview">
+            ${x.lines.slice(0, 3).map((l, i) =>
+              `<div class="pline"><span class="no">${String(i + 1).padStart(2, "0")}</span><span>${l.clean || l.vo}</span></div>`).join("")}
+          </div>
+          <div class="xs" style="margin-top:9px">已清掉 ${x.cleanedN} 处原作者痕迹，上面是清理后的文案 · 可以逐段改</div>
+          <div class="xs" style="margin-top:7px;display:flex;align-items:center;gap:5px">
+            <span>不知道改了哪儿？</span>
+            <span style="color:var(--brand);font-weight:700;cursor:pointer"
+              data-go="C1.2" data-label="看清理明细">看清理明细 ›</span>
+          </div>
+        </div>` : ""}
 
-      ${C.sec("最近导入", "全部")}
-      ${imports.map((x) => C.li({
-        bg: x.state === "fail" ? G("#9AA5BD", "#C9CEDA") : G("#00A8E8", "#00C2FF"),
-        im: x.state === "fail" ? "!" : "▶",
-        title: x.title,
-        m1: x.from + " · " + x.at + (x.segs ? " · " + x.segs + " 段" : ""),
-        m2: x.state === "fail" ? "没识别到人声，建议换一条或手动输入" : "",
-        tag: st(x)[0],
-        tagCls: st(x)[1],
-        go: x.go
-      })).join("")}
+      ${stage === "" ? `
+        <div class="note" style="margin:14px 2px 0;line-height:1.7">
+          本地视频只在本机识别，<b style="color:var(--text)">不上传原片</b>；抽出来的文字会进脚本库，下次直接引。
+        </div>` : ""}
+    </div>
 
-      ${C.sec("本周热门同款", "全部", "F1")}
-      <div class="chips" style="gap:10px;padding-bottom:6px">
-        ${hot(G("#2C5BFF", "#00C2FF"), "磷虾油 3 段式", "8.6 万")}
-        ${hot(G("#7C5CFF", "#B08CFF"), "开箱即口播", "5.2 万")}
-        ${hot(G("#00A8E8", "#7C5CFF"), "对比测评", "3.1 万")}
-      </div>
+    <div class="actionbar">
+      ${stage === "doing"
+        ? `<div class="btn gray">正在抽取… ${pct}%</div>`
+        : stage === "done"
+          ? `<div class="btn ai" data-go="B2?kind=script&src=extract" data-label="用这份文案配画面">✦ 用这份文案配画面</div>`
+          : ready
+            ? `<div class="btn ai" data-set="C1.stage=doing&C1.tick=0">${useLink ? "开启抽取文案" : "开启抽取"}</div>`
+            : `<div class="btn gray">先传视频或贴链接</div>`}
     </div>
   </div>`;
+};
+
+/* 抽取过程一步一步走：doing 状态下每 900ms 推一格，四格走完变 done。
+   用页面级 after 钩子推进，不写死在渲染里——渲染只负责画当前这一帧。 */
+window.PAGES["C1"].after = function (ctx) {
+  if (ctx.for === "remix") return null;
+  if (ctx.stage !== "doing") return null;
+  const tick = +(ctx.tick || 0);
+  return tick < 3 ? "C1.tick=" + (tick + 1) : "C1.stage=done";
 };
 
 /* 视频二创：上传 → 选抽取方式 → 抽完直接进发布器（一段文案 + 一段素材） */
@@ -122,10 +149,9 @@ function renderRemix(C, G, ctx) {
         <span class="btn-pill line" data-set="C1.file=0">换一条</span>
       </div>` : `
       <div class="drop" data-set="C1.file=1">
-        <div class="di">↑</div>
+        <div class="di">＋</div>
         <b>上传本地视频</b>
         <span>mp4 / mov · 竖屏优先 · 最长 3 分钟</span>
-        <div class="btn-pill" style="margin-top:11px">选择视频</div>
       </div>`}
 
       ${C.sec("怎么抽")}

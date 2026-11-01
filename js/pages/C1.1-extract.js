@@ -3,9 +3,10 @@ window.PAGES["C1.1"].prd = "PRD §6.2 · 抽取中（四步，可后台）；二
 /* 抽取是个几十秒的过程，得让人知道「现在在干什么」而不是干等。
    真实耗时主要集中在识别口播；断句分段是本地算法，很快。
 
-   两条路的第四步不一样，出口也不一样：
-   · 视频文案抽取 → 第四步"断句分段"，出去是 C1.2（要文案还是连画面）
-   · 视频二创     → 第四步按所选方式切段，出去直接是发布器（一段文案 + 一段素材） */
+   **这一页现在只服务视频二创**：普通文案抽取已经改在 C1 页内联走进度
+   （贴完链接/传完视频就在下面显示四步，不用跳页）。二创还要选切段方式、
+   抽完直接进发布器，步骤多一层，保留独立页更清楚。
+   两条路的第四步不一样，出口也不一样。 */
 window.PAGES["C1.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const x = D.extract();
@@ -14,7 +15,7 @@ window.PAGES["C1.1"].render = function (ctx) {
   const sec = +(ctx.sec || 5);
   const from = remix ? "本地相册" : (ctx.src === "local" ? "本地相册" : "链接 · 抖音");
   /* 拼 hash 要整段拼完整（id?k=v），不能拿 "&k=v" 往 id 后面接 */
-  const backGo = remix ? "C1?for=remix&mode=" + mode + "&sec=" + sec : "C1?src=" + (ctx.src || "local");
+  const backGo = remix ? "C1?for=remix&mode=" + mode + "&sec=" + sec : "C1";
   const nextGo = remix
     ? "B2?kind=remix&local=1&sec=" + (mode === "sec" ? sec : 0)
     : "C1.2";

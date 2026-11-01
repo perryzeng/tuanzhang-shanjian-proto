@@ -130,8 +130,24 @@
     deadEl.textContent = deadCount ? "有入口指向未迁页面" : "";
   }
 
+  /* 页面级"过一会自己走一步"的钩子。
+     有些状态本来就是过程（抽取、生成），渲染只负责画当前这一帧，
+     下一帧由页面的 after() 返回一条 data-set 表达式来推进。
+     每次重渲染都先清掉上一个定时器，避免叠加出多条推进链。 */
+  let afterTimer = null;
+  function runAfter() {
+    clearTimeout(afterTimer);
+    const id = cur(), p = P[id];
+    if (!p || !p.render || typeof p.after !== "function") return;
+    afterTimer = setTimeout(() => {
+      if (cur() !== id) return;
+      const next = p.after(STATE[id] || {});
+      if (next) applySet(next);
+    }, 900);
+  }
+
   function renderAll() {
-    renderPhone(); renderTree(); renderPanel(); renderTop();
+    renderPhone(); renderTree(); renderPanel(); renderTop(); runAfter();
     const i = ORDER.indexOf(cur());
     document.getElementById("pgnum").textContent = i >= 0 ? `${i + 1} / ${ORDER.length} · ${cur()}` : `${cur()} · 未迁`;
     if (btnUser) btnUser.textContent = cur() === "A1.1" ? "看老用户版" : "看新用户版";
