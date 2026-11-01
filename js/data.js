@@ -895,9 +895,9 @@ window.DATA = {
     /* 好友：和团队同一套结构（三个文件夹 + 一条更新流），只是没有任务和公告——
        朋友之间没有"派活"这回事，只有"他又发了什么"。 */
     friends: [
-      { id: "fr_1", name: "阿玲", av: "玲", bg: "#2C5BFF", note: "3 天前更新" },
-      { id: "fr_2", name: "阿强", av: "强", bg: "#00A8E8", note: "昨天更新" },
-      { id: "fr_3", name: "小雨", av: "雨", bg: "#00B389", note: "今天更新" }
+      { id: "fr_1", name: "阿玲", av: "玲", bg: "#2C5BFF", note: "3 天前更新", n: 24 },
+      { id: "fr_2", name: "阿强", av: "强", bg: "#00A8E8", note: "昨天更新", n: 16 },
+      { id: "fr_3", name: "小雨", av: "雨", bg: "#00B389", note: "今天更新", n: 9 }
     ],
     friendFeed: [
       { d: "今天", t: "10:12", who: "小雨", type: "work", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3", item: "li_fw1" },

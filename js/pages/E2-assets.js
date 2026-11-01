@@ -184,19 +184,23 @@ window.PAGES["E2"].render = function (ctx) {
   };
   const mods = `<div class="mods">${modCard("work", true)}${modCard("asset", false)}${modCard("script", false)}</div>`;
 
-  /* ---------- 「我的」底部：我的好友（每个好友默认列最近几条变动） ---------- */
+  /* ---------- 「我的」底部：好友动态（每个好友一张卡；名右边是库总量，条目右边是时间） ---------- */
+  const friendTotal = KINDS.reduce((s, [k]) => s + D.lib("friend", k, {}).counts[k], 0);
   const friendSection = (function () {
     const friends = LIB.friends || [];
     if (!friends.length) return "";
     const cards = friends.map((fr) => {
       const changes = (LIB.friendFeed || []).filter((x) => x.who === fr.name).slice(0, 3).map((x) => decorate(x, x.who));
-      const rows = changes.map((c) => `<div class="fcr${c.go ? " tap" : ""}" ${c.go ? `data-go="${c.go}"` : ""} data-label="${c.title || c.act}">
+      const rows = changes.map((c) => {
+        const time = ((c.d || "") + (c.d && c.when ? " " : "") + (c.when || "")).trim();
+        return `<div class="fcr${c.go ? " tap" : ""}" ${c.go ? `data-go="${c.go}"` : ""} data-label="${c.title || c.act}">
           <span class="ftag" style="background:${c.t.bg};color:${c.t.fg}">${c.t.word}</span>
-          <b>${c.title || c.act}</b><span class="go">›</span></div>`).join("");
+          <b>${c.title || c.act}</b>${time ? `<span class="frtime">${time}</span>` : ""}</div>`;
+      }).join("");
       return `<div class="frc">
           <div class="frh tap" data-go="E2.4?f=${encodeURIComponent(fr.name)}" data-label="看 ${fr.name} 的素材库">
             <span class="fav" style="background:${fr.bg}">${fr.av}</span>
-            <b>${fr.name}</b><span class="frt">${fr.note || ""} ›</span></div>
+            <b>${fr.name}</b><span class="frt">${fr.n || friendTotal} 份资料 ›</span></div>
           ${rows || `<div class="frempty">最近没有更新</div>`}
         </div>`;
     }).join("");
@@ -317,7 +321,7 @@ window.PAGES["E2"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     ${side === "friend"
-      ? C.ab({ title: friendName, sub: `好友 · ${CNT.script + CNT.asset + CNT.work} 份资料`, back: "E2" })
+      ? C.ab({ title: friendName, sub: `好友 · ${friend.n || (CNT.script + CNT.asset + CNT.work)} 份资料`, back: "E2" })
       : `<div class="ab">
       <div class="ttl" style="margin-left:2px"${side === "team" ? ` data-go="E3.1" data-label="团队信息"` : ""}>${side === "team" ? team.name : "素材库"}
         <small>${side === "team" ? `${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"} · 通讯录 ›` : "我的"}</small></div>

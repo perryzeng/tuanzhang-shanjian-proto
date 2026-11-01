@@ -1838,6 +1838,7 @@
 .frc .fcr .ftag{font-size:8.5px;font-weight:800;border-radius:5px;padding:1px 5px;flex:0 0 auto;letter-spacing:.5px}
 .frc .fcr b{flex:1;min-width:0;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .frc .fcr .go{color:var(--text-4);font-size:14px;font-weight:700;flex:0 0 auto}
+.frc .fcr .frtime{flex:0 0 auto;font-size:9px;color:var(--text-4);white-space:nowrap;margin-left:2px}
 .frc .frempty{font-size:10.5px;color:var(--text-4);padding:8px 0}
 
 /* 目录：新建文件夹 + 按文件夹分组 */
