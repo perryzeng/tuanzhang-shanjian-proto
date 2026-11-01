@@ -15,9 +15,11 @@ window.PAGES["E2"].render = function (ctx) {
   const D = window.DERIVE;
   const LIB = window.DATA.library;
 
-  const pid = ctx.__pid || "E2";          // 状态写到哪个页面（E2 或 E3）
-  const forcedSide = ctx.__side || "";    // E3 传 "team"
+  const pid = ctx.__pid || "E2";          // 状态写到哪个页面（E2 / E3 / E2.4）
+  const forcedSide = ctx.__side || "";    // E3 传 team、E2.4 传 friend
   const side = forcedSide || "mine";
+  const friendName = ctx.__friend || "";
+  const friend = (LIB.friends || []).filter((f) => f.name === friendName)[0] || {};
 
   const teams = LIB.teams || [];
   const tid = teams.some((t) => t.id === ctx.tid) ? ctx.tid : (teams[0] || {}).id;
@@ -54,9 +56,9 @@ window.PAGES["E2"].render = function (ctx) {
     work: "linear-gradient(150deg,#7C5CFF,#B08CFF)"
   };
   const TITLE = {
-    work: side === "team" ? "作品专题" : "我的作品",
-    asset: side === "team" ? "团队素材" : "我的素材",
-    script: side === "team" ? "共享脚本" : "我的脚本"
+    work: side === "team" ? "作品专题" : side === "friend" ? `${friendName}的作品` : "我的作品",
+    asset: side === "team" ? "团队素材" : side === "friend" ? `${friendName}的素材` : "我的素材",
+    script: side === "team" ? "共享脚本" : side === "friend" ? `${friendName}的脚本` : "我的脚本"
   };
 
   const TYPE = {
@@ -102,9 +104,11 @@ window.PAGES["E2"].render = function (ctx) {
       ${f.meta ? `<div class="tn">${f.meta}</div>` : ""}
     </div>`;
 
-  const flow = side === "mine"
-    ? LIB.mineFeed.map((f) => decorate(f, "我"))
-    : ((LIB.teamFeed && LIB.teamFeed[tid]) || []).filter((x) => x.type !== "notice" && x.type !== "task").map((f) => decorate(f, f.who));
+  const flow = side === "friend"
+    ? (LIB.friendFeed || []).filter((x) => x.who === friendName).map((f) => decorate(f, f.who))
+    : side === "mine"
+      ? LIB.mineFeed.map((f) => decorate(f, "我"))
+      : ((LIB.teamFeed && LIB.teamFeed[tid]) || []).filter((x) => x.type !== "notice" && x.type !== "task").map((f) => decorate(f, f.who));
 
   /* ---------- 顶部：只留数字（团队那侧保留团队名，点名字进团队信息/通讯录） ---------- */
   const cntOf = (k) => D.lib(side, k, {}).items.filter((x) => !delSet[x.id]).length;
@@ -190,12 +194,13 @@ window.PAGES["E2"].render = function (ctx) {
           <span class="ftag" style="background:${c.t.bg};color:${c.t.fg}">${c.t.word}</span>
           <b>${c.title || c.act}</b><span class="go">›</span></div>`).join("");
       return `<div class="frc">
-          <div class="frh"><span class="fav" style="background:${fr.bg}">${fr.av}</span>
-            <b>${fr.name}</b><span class="frt">${fr.note || ""}</span></div>
+          <div class="frh tap" data-go="E2.4?f=${encodeURIComponent(fr.name)}" data-label="看 ${fr.name} 的素材库">
+            <span class="fav" style="background:${fr.bg}">${fr.av}</span>
+            <b>${fr.name}</b><span class="frt">${fr.note || ""} ›</span></div>
           ${rows || `<div class="frempty">最近没有更新</div>`}
         </div>`;
     }).join("");
-    return `<div class="feedhd">我的好友<span>${friends.length}</span></div>${cards}`;
+    return `<div class="feedhd">好友动态<span>${friends.length}</span></div>${cards}`;
   })();
 
   /* ---------- 钻取：动态 / 最新 / 精选 / 目录 ---------- */
@@ -311,19 +316,23 @@ window.PAGES["E2"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    <div class="ab">
+    ${side === "friend"
+      ? C.ab({ title: friendName, sub: `好友 · ${CNT.script + CNT.asset + CNT.work} 份资料`, back: "E2" })
+      : `<div class="ab">
       <div class="ttl" style="margin-left:2px"${side === "team" ? ` data-go="E3.1" data-label="团队信息"` : ""}>${side === "team" ? team.name : "素材库"}
         <small>${side === "team" ? `${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"} · 通讯录 ›` : "我的"}</small></div>
       ${canOrganize
         ? `<span class="act" data-set="${sel ? pid + ".sel=&" + pid + ".pick=&" + pid + ".mv=" : pid + ".sel=1"}">${sel ? "完成" : "整理"}</span>`
         : (side === "team" && teams.length > 1 ? `<span class="act" data-set="${qs()}&${pid}.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : "")}
-    </div>
+    </div>`}
 
     <div class="body" style="padding-bottom:110px">
       ${open ? openBody : (side === "team"
         ? `${teamSw}${bannerCard}${noticeCard}${taskList}${mods}
            <div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
-        : `<div class="pcard">${pstats}</div>${mods}${friendSection}`)}
+        : side === "friend"
+          ? `${mods}<div class="feedhd">${friendName}的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
+          : `${mods}${friendSection}`)}
     </div>
 
     ${sel && canOrganize ? `<div class="selbar">
@@ -341,6 +350,13 @@ window.PAGES["E2"].render = function (ctx) {
       </div>
     </div>` : ""}` : ""}
 
-    ${C.tab(pid)}
+    ${C.tab(side === "friend" ? "E2" : pid)}
   </div>`;
+};
+
+/* 好友视图：结构与「我的」一致（作品/素材/脚本模块卡 + 本人动态），
+   只是数据换成这个好友的库（side=friend），状态写到 E2.4。 */
+window.PAGES["E2.4"].prd = "PRD §6.21.3 · 好友视图（某个好友的素材库 + 本人动态）";
+window.PAGES["E2.4"].render = function (ctx) {
+  return window.PAGES["E2"].render(Object.assign({}, ctx, { __pid: "E2.4", __side: "friend", __friend: ctx.f || "" }));
 };

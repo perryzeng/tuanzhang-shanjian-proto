@@ -1646,7 +1646,7 @@ window.DERIVE = (function () {
   function lib(side, kind, opt) {
     opt = opt || {};
     const L = window.DATA.library;
-    const sd = side === "team" ? "team" : "mine";
+    const sd = side === "friend" ? "friend" : side === "team" ? "team" : "mine";
     const key = sd + "." + kind;
     /* moved：这一页里刚做过的"移动到文件夹"，覆盖数据里的原始归属。
        原型改不了后端，但"整理"这件事必须当场看得见——移完还留在原处，等于没移。 */

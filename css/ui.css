@@ -1829,7 +1829,7 @@
 
 /* 我的好友：每个好友一张小卡，列最近几条库变动 */
 .frc{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:11px 13px 6px;margin-top:9px}
-.frc .frh{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.frc .frh{display:flex;align-items:center;gap:8px;margin-bottom:2px;cursor:pointer}
 .frc .frh .fav{width:30px;height:30px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;
   display:flex;align-items:center;justify-content:center;flex:0 0 30px}
 .frc .frh b{font-size:13px;font-weight:700;color:var(--text)}
