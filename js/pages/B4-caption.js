@@ -17,7 +17,7 @@ window.PAGES["B4"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "做一张封面", sub: "只做封面，不剪视频", back: "back" })}
+    ${C.ab({ title: "做一张封面", sub: "只做封面，不剪视频", back: "A1" })}
 
     <div class="body">
       ${C.coverKit({ pid: "B4", ctx })}

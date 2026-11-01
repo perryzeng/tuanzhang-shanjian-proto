@@ -1122,8 +1122,8 @@ window.DATA = {
   ],
 
   /* 平台精选：运营后台专题位，按人群包下发 */  platformPicks: [
-    { id: "tp_31", img: "assets/bn-2.jpg", pos: "center 34%", title: "秋季滋补专题", sub: "12 条现成素材 · 平台已过审", go: "F1", audience: "全体团长" },
-    { id: "tp_28", img: "assets/bn-1.jpg", pos: "center 44%", title: "高转化开箱合集", sub: "照着结构改就能发", go: "F1", audience: "近 7 天有发布的团长" }
+    { id: "tp_31", img: "assets/bn-2.jpg", pos: "center 34%", title: "秋季滋补专题", sub: "12 条现成素材 · 平台已过审", go: "F1.1?id=tp_31", audience: "全体团长" },
+    { id: "tp_28", img: "assets/bn-1.jpg", pos: "center 44%", title: "高转化开箱合集", sub: "照着结构改就能发", go: "F1.1?id=tp_28", audience: "近 7 天有发布的团长" }
   ]
 };
 

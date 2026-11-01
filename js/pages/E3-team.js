@@ -332,9 +332,12 @@ window.PAGES["E3.7"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "Banner 运营", sub: "团队首页轮播", back: "E3.4", act: "新增" })}
+    ${C.ab({ title: "Banner 运营", sub: "团队首页轮播", back: "E3.4" })}
     <div class="body">
       <div class="note" style="margin:2px 2px 8px;line-height:1.7">团队长与管理员都可设置；轮播按顺序展示，最多 5 张。点右侧可临时下线。</div>
+      ${!formOpen ? `<div class="row" style="justify-content:flex-end;margin:0 2px 10px">
+        <span class="btn-pill" data-set="E3.7.new=1" data-label="新增 Banner">＋ 新增 Banner</span>
+      </div>` : ""}
       ${formOpen ? `<div class="card" style="padding:14px">
         <div class="s" style="margin-bottom:7px">Banner 标题</div>
         <input data-bind="E3.7.ntitle" data-live value="${ntitle}" placeholder="例如：本周冲 3 条开团片"

@@ -128,6 +128,12 @@ window.PAGES["B2.4"].render = function (ctx) {
       ${step(2, "选声音", "谁在念这段词")}
       <div style="padding:0 16px">
         <div class="vgrid">${D.voices().map(voiceCell).join("")}</div>
+        <div class="card" style="margin-top:10px;padding:12px 14px;display:flex;align-items:center;gap:10px"
+             data-go="G1.4" data-label="克隆我的声音">
+          <div style="width:32px;height:32px;border-radius:10px;background:var(--brand-weak);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 32px">声</div>
+          <div style="flex:1;min-width:0"><div class="h3">我的声音</div><div class="xs" style="margin-top:2px">还没克隆？用你自己的声音生成，更像你</div></div>
+          <span class="btn-pill line">去克隆</span>
+        </div>
         <div class="note" style="margin:7px 2px 0">${v.k === "self"
           ? "自己念信任最高，但要按分段录一遍（约 3 分钟），改词还得重录。"
           : "AI 配音不用出声，改完台词直接重配；老客听得出不是你本人。"}</div>

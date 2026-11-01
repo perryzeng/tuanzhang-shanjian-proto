@@ -112,3 +112,44 @@ window.PAGES["F1"].render = function (ctx) {
     ${C.tab("F1")}
   </div>`;
 };
+
+/* 平台精选 · 专题页：首页大卡点进来的落点 */
+window.PAGES["F1.1"].prd = "剪同款 · 精选专题详情";
+window.PAGES["F1.1"].render = function (ctx) {
+  const C = window.C, DATA = window.DATA;
+  const picks = DATA.platformPicks || [];
+  const p = picks.filter((x) => x.id === ctx.id)[0] || picks[0] || { title: "精选专题", sub: "", img: "assets/bn-2.jpg" };
+  const ITEMS = [
+    { img: "assets/gen/t-compare.jpg", sub: "3 段 · 28 秒" },
+    { img: "assets/gen/p-product.jpg", sub: "开箱 · 22 秒" },
+    { img: "assets/gen/t-text.jpg", sub: "口播 · 35 秒" },
+    { img: "assets/gen/p-still.jpg", sub: "摆台 · 18 秒" }
+  ];
+
+  return `<div class="app">
+    ${C.sb()}
+    ${C.ab({ title: p.title, sub: p.sub || "平台精选", back: "A1", act: "收藏" })}
+    <div class="body">
+      <div class="thm" style="height:150px" data-label="${p.title}">
+        <img src="${p.img}" alt="" style="object-position:${p.pos || "center"}">
+        <div class="ov"></div>
+        <div class="tx"><b style="font-size:16px">${p.title}</b><span>${p.sub || ""}</span></div>
+      </div>
+
+      <div class="card" style="margin-top:12px;padding:14px">
+        <div class="h3">这个专题里有什么</div>
+        <div class="xs" style="margin-top:6px;line-height:1.7">平台已经把这批素材剪成 3 段式结构，画面、台词、封面都配好；你只要换成自己的产品和口播就能发。</div>
+      </div>
+
+      ${C.sec("专题里的模板", "全部 ›", "F1")}
+      <div class="g2">
+        ${ITEMS.map((it) => `<div class="tile" data-go="F3" data-label="做同款">
+          <div class="im" style="aspect-ratio:3/4"><img src="${it.img}" alt=""></div>
+        </div>`).join("")}
+      </div>
+    </div>
+    <div class="actionbar">
+      <div class="btn ai" data-go="B2?kind=script&src=tpl&struct=s3&tpl=tp_trust" data-label="用这个专题开剪">用这个专题开剪</div>
+    </div>
+  </div>`;
+};

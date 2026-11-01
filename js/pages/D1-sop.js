@@ -57,7 +57,7 @@ window.PAGES["D1"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ k: "系列", t: "SOP 主题系列", act: `<span class="btn-pill line">怎么玩</span>` })}
+    ${C.ab({ title: "SOP 主题系列", sub: "系列 · 今天该发哪一集", back: "A1", act: "怎么玩" })}
 
     <div class="body">
       <div class="card" style="background:var(--g-deep);color:#fff;box-shadow:0 12px 26px rgba(20,40,110,.24)"
