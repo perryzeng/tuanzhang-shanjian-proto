@@ -32,7 +32,7 @@ window.PAGES["B1"].render = function (ctx) {
       <div class="src3">
         ${src({ name: "导入脚本", sub: "从我的 / 团队库<br>选一份", ic: "⧉", bg: G("#2C5BFF", "#5B8CFF"), go: "B1.2" })}
         ${src({ name: "导入视频", sub: "本地或链接<br>抽出口播", ic: "▷", bg: G("#00A8E8", "#00C2FF"), go: "C1" })}
-        ${src({ name: "系列", sub: "总部战役<br>Day " + run.day + " 待发", ic: "▤", bg: G("#7C5CFF", "#B08CFF"), go: "D1", dot: true })}
+        ${src({ name: "系列", sub: "总部战役<br>Day " + run.day + " 待发", ic: "≡", bg: G("#7C5CFF", "#B08CFF"), go: "D1", dot: true })}
       </div>
 
       ${C.sec("继续创作", "全部", "A1")}

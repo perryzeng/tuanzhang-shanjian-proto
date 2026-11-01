@@ -492,6 +492,16 @@ window.DATA = {
     }
   ],
 
+  /* SOP 系列落地页顶部的三个数字
+     接真接口：内容数据后台按月聚合（published / avg_completion），
+     连续天数取打卡表，别用前端算——用户换设备要一致 */
+  seriesStats: {
+    published: 18,        // 本月已发集数
+    monthTarget: 26,      // 本月目标（总部给战役定的节奏）
+    avgCompletion: 41,    // 已发集的平均完播率（%）
+    bestTopic: "信任背书"
+  },
+
   /* 新建战役时 AI 给的选题建议（可逐条改、可换一批） */
   topicSeeds: {
     "磷虾油": ["为什么选这款", "成分怎么讲", "含量看哪里", "谁适合谁不适合", "信任背书", "老客晒单", "常见问题答疑", "团价怎么算", "拍一单看看", "收官复盘"],
@@ -691,6 +701,7 @@ window.DERIVE = (function () {
     return {
       ...d,
       cname: c.name, total: c.total, owner: c.owner, product: c.product,
+      brief: today ? c.today.why.split("。")[0] + "。" : "第 " + d.n + " 天讲「" + d.topic + "」，只把这个点讲透。",
       why: today ? c.today.why
         : "第 " + d.n + " 天讲「" + d.topic + "」。这是" + c.owner + "按 " + c.total + " 天节奏排的，前几天已经铺过，这天只把一个点讲透，别贪多。",
       points: today ? c.today.points
