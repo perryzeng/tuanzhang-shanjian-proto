@@ -315,38 +315,66 @@ window.PAGES["E3.7"].render = function (ctx) {
   const C = window.C, LIB = window.DATA.library;
   const banners = LIB.teamBanners || [];
   const off = (ctx.off || "").split(",").filter(Boolean);
-  const mine = (ctx.mine || "").split("|").filter(Boolean);
+  const raw = (ctx.mine || "").split("|").filter(Boolean);
+  const mine = raw.map((s, i) => {
+    const p = s.split("~~").map(decodeURIComponent);
+    return { id: "m" + i, t: p[0] || "自定义 Banner", img: p[1] || "", link: p[2] || "" };
+  });
   const isOff = (id) => off.indexOf(id) >= 0;
   const toggle = (id) => "E3.7.off=" + (isOff(id) ? off.filter((x) => x !== id) : off.concat(id)).join(",");
   const formOpen = ctx.new === "1";
-  const ntitle = (ctx.ntitle || "").replace(/"/g, "&quot;");
+  const BIMG = ["assets/bn-1.jpg", "assets/bn-2.jpg", "assets/bn-3.jpg"];
+  const ni = Math.max(0, Math.min(2, (+ctx.nimg || 0) - 1));
+  const hasImg = +ctx.nimg > 0;
+  const nlink = (ctx.nlink || "").replace(/"/g, "&quot;");
 
   const items = banners.map((b, i) => ({ id: "b" + i, t: b.t, sub: b.sub, tag: b.tag, bg: b.bg }))
-    .concat(mine.map((t, i) => ({ id: "m" + i, t, sub: "自定义 Banner", tag: "新增", bg: "linear-gradient(135deg,#5B8CFF,#2C5BFF)" })));
+    .concat(mine.map((m, i) => ({ id: m.id, t: m.t, sub: m.link ? "跳转 · " + m.link : "只展示，不跳转",
+      tag: "新增", img: m.img })));
 
   const row = (it) => `<div class="tmr">
-      <span class="tav" style="background:${it.bg};border-radius:10px">${(it.t || "B").slice(0, 1)}</span>
+      <span class="tav" style="${it.img ? `background-image:url(${it.img});background-size:cover;background-position:center` : `background:${it.bg};border-radius:10px`}">${it.img ? "" : (it.t || "B").slice(0, 1)}</span>
       <div class="tmt"><b>${it.t}${it.tag ? `<em>${it.tag}</em>` : ""}</b><span>${it.sub}</span></div>
       <span class="mact ${isOff(it.id) ? "mute" : ""}" data-set="${toggle(it.id)}">${isOff(it.id) ? "已下线" : "上线中"}</span>
     </div>`;
+
+  const saveMine = mine.map((m) => [m.t, m.img, m.link].map(encodeURIComponent).join("~~"))
+    .concat([[hasImg ? "自定义 Banner " + (mine.length + 1) : "", hasImg ? BIMG[ni] : "", ctx.nlink || ""].map(encodeURIComponent).join("~~")])
+    .join("|");
 
   return `<div class="app">
     ${C.sb()}
     ${C.ab({ title: "Banner 运营", sub: "团队首页轮播", back: "E3.4" })}
     <div class="body">
       <div class="note" style="margin:2px 2px 8px;line-height:1.7">团队长与管理员都可设置；轮播按顺序展示，最多 5 张。点右侧可临时下线。</div>
+
       ${!formOpen ? `<div class="row" style="justify-content:flex-end;margin:0 2px 10px">
         <span class="btn-pill" data-set="E3.7.new=1" data-label="新增 Banner">＋ 新增 Banner</span>
       </div>` : ""}
+
       ${formOpen ? `<div class="card" style="padding:14px">
-        <div class="s" style="margin-bottom:7px">Banner 标题</div>
-        <input data-bind="E3.7.ntitle" data-live value="${ntitle}" placeholder="例如：本周冲 3 条开团片"
-          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:13px;font-weight:600" />
-        <div style="display:flex;gap:10px;margin-top:12px">
-          <div class="btn ai" style="flex:1" data-set="E3.7.mine=${mine.concat(ctx.ntitle || "新 Banner").join("|")}&E3.7.new=&E3.7.ntitle=" data-label="保存 Banner">保存</div>
-          <div class="btn ghost" style="flex:0 0 92px" data-set="E3.7.new=" data-label="取消">取消</div>
+        <div class="s" style="margin-bottom:8px">Banner 图片</div>
+        ${hasImg ? `<div class="upbox has">
+          <img src="${BIMG[ni]}" alt="">
+          <span class="upchg" data-set="E3.7.nimg=${((ni + 1) % 3) + 1}" data-label="换一张">换一张</span>
+          <span class="updel" data-set="E3.7.nimg=" data-label="删除图片">删除</span>
+        </div>` : `<div class="upbox" data-set="E3.7.nimg=1" data-label="上传图片">
+          <b>＋ 上传图片</b><span>建议 16:9，单张 ≤ 5MB</span>
+        </div>`}
+
+        <div class="s" style="margin:14px 0 7px">图片链接（选填）</div>
+        <input data-bind="E3.7.nlink" data-live value="${nlink}" placeholder="https:// 或站内页面，例如 /E4"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:12.5px" />
+        <div class="xs" style="margin-top:7px">不填就是纯展示图，点了不跳转。</div>
+
+        <div style="display:flex;gap:10px;margin-top:14px">
+          ${hasImg
+            ? `<div class="btn ai" style="flex:1" data-set="E3.7.mine=${saveMine}&E3.7.new=&E3.7.nimg=&E3.7.nlink=" data-label="保存 Banner">保存</div>`
+            : `<div class="btn" style="flex:1;opacity:.45">先上传图片</div>`}
+          <div class="btn ghost" style="flex:0 0 92px" data-set="E3.7.new=&E3.7.nimg=&E3.7.nlink=" data-label="取消">取消</div>
         </div>
       </div>` : ""}
+
       <div class="feedhd" style="margin-top:14px">轮播内容<span>${items.length}</span></div>
       <div class="card" style="padding:2px 14px;border-radius:16px">${items.map(row).join("") || `<div class="frempty">还没有 Banner</div>`}</div>
     </div>

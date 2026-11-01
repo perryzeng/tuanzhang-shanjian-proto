@@ -2083,3 +2083,15 @@
 /* 搜索框压到 36px：它是常驻控件，但不需要 44px 那么高 */
 .gsearch.compact{height:36px;padding:0 13px;font-size:12px}
 .gsearch.compact .mag{font-size:13px}
+
+/* Banner 上传框 */
+.upbox{position:relative;height:120px;border-radius:14px;border:1.5px dashed #D8D3EC;background:var(--bg-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;overflow:hidden}
+.upbox b{font-size:12.5px;font-weight:600;color:var(--brand)}
+.upbox span{font-size:10px;color:var(--text-4)}
+.upbox.has{border-style:solid;border-color:transparent}
+.upbox.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.upbox .upchg,.upbox .updel{position:absolute;bottom:8px;z-index:2;font-size:10px;font-weight:600;color:#fff;
+  background:rgba(6,12,30,.58);border-radius:999px;padding:4px 9px}
+.upbox .upchg{right:72px}
+.upbox .updel{right:8px}
