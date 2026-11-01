@@ -49,6 +49,7 @@ window.PAGES["B2"].render = function (ctx) {
       return ctx.local
         ? "本地视频「IMG_2043.MOV」· 52 秒 · " + (+ctx.sec > 0 ? "每 " + ctx.sec + " 秒切一段" : "AI 自动分段")
         : "二创自 " + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放";
+    if (src === "tpl") return "来自同款「磷虾油 3 段式 · 信任版」· 已按模板铺好 3 段";
     if (src === "import" && ctx.doc) {
       const sc = D.script(ctx.doc);
       return "来自脚本库 ·「" + sc.title + "」· " + sc.who;
@@ -77,7 +78,7 @@ window.PAGES["B2"].render = function (ctx) {
     const slot = badShot
       ? { miss: true, label: "缺" + badShot.label, go: pickGo(s.id) }
       : okShot
-        ? { label: okShot.label, bg: okShot.bg, pvAct: "B2.pv=" + s.id + "&B2.pause=", swGo: pickGo(s.id) }
+        ? { label: okShot.label, bg: okShot.bg, img: okShot.img, pvAct: "B2.pv=" + s.id + "&B2.pause=", swGo: pickGo(s.id) }
         : { empty: true, label: "添加素材", go: pickGo(s.id) };
 
     /* 段上只挂"这段有什么特殊"的三类标记：固定 / 品牌锁定 / 建议改。
@@ -157,6 +158,7 @@ window.PAGES["B2"].render = function (ctx) {
   })();
 
   const backGo = kind === "remix" ? (ctx.local ? "C1?for=remix" : "C1.2")
+    : src === "tpl" ? "F3"
     : src === "import" || src === "struct" ? "B1.2"
     /* 抽取是在 C1 页内完成的，不是从 C1.2 来的——返回就回 C1 */
     : src === "extract" ? "C1"

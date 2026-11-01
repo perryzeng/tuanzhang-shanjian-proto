@@ -156,6 +156,7 @@
           <span class="ic">＋</span><b>${sl.label}</b>
         </div>`
       : `<div class="slot fill" style="background:${sl.bg || ""}">
+          ${sl.img ? `<img src="${sl.img}" alt="">` : ""}
           <b>${sl.label}</b>
           <span class="pvbtn" data-set="${sl.pvAct || ""}" title="预览这一段">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>

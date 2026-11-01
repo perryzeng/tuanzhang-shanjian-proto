@@ -1937,6 +1937,24 @@
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
 .crs{font-size:9.5px;color:var(--text-4);margin-top:3px}
 
+/* 模板详情 · 三个数（icon + 小字） */
+.tstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.tstat-i{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:10px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:2px}
+.tstat-i .ic{color:var(--text-3);display:flex}
+.tstat-i .ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.tstat-i b{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.25}
+.tstat-i .lb{font-size:9.5px;color:var(--text-4)}
+
+/* 脚本段画面槽：图片打底 */
+.slot{position:relative;overflow:hidden}
+.slot>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.slot>img+*{position:relative;z-index:2}
+.slot>b{z-index:2;text-shadow:0 1px 6px rgba(0,0,0,.45)}
+.slot .pvbtn,.slot .swbtn{z-index:2}
+.slot.fill:after{content:"";position:absolute;left:0;right:0;bottom:0;height:58%;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.46))}
+
 /* 生成图填充：模块卡 / 列表卡 / 大预览 */
 .modb .mth{position:relative;overflow:hidden}
 .modb .mth img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}

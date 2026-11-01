@@ -1509,6 +1509,7 @@ window.DERIVE = (function () {
           ...sh, dur, miss,
           label: sh.label || (a ? a.label : "待补画面"),
           bg: a ? a.bg : "",
+          img: a ? a.img : "",
           from: a ? a.from : "",
           pip: sh.pip || (!!a && a.kind === "pip")
         };
