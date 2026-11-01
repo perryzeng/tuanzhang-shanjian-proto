@@ -3,7 +3,8 @@ window.PAGES["B2.1"].prd = "PRD §6.7～6.9 · 素材选择与语义匹配";
 /* 素材选择器：从"给哪一段配画面"进入，推荐顺序由素材标签与该段画面的语义重合度决定 */
 window.PAGES["B2.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
-  const d = D.draft();
+  const kind = ctx.kind || "script";
+  const d = D.draft(kind);
   const seg = d.segments.filter((s) => s.id === ctx.seg)[0] || d.missSegs[0] || d.cur;
   const tab = ctx.tab || "rec";
   const list = D.recommend(seg, tab);

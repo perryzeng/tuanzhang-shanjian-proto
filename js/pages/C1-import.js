@@ -17,7 +17,7 @@ window.PAGES["C1"].render = function () {
     ${C.ab({ title: "剪同款", sub: "导入别人的爆款，改成你的", back: "B1" })}
 
     <div class="body">
-      <div class="card" style="display:flex;align-items:center;gap:12px;margin-bottom:11px" data-go="C2" data-label="导入本地视频">
+      <div class="card" style="display:flex;align-items:center;gap:12px;margin-bottom:11px" data-go="B2?kind=remix" data-label="导入本地视频">
         <div style="width:46px;height:46px;border-radius:15px;background:var(--brand-weak);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 46px">↓</div>
         <div style="flex:1;min-width:0">
           <div class="h3">导入本地视频</div>
@@ -34,7 +34,7 @@ window.PAGES["C1"].render = function () {
         <div class="row" style="gap:6px;margin-top:10px">
           <span class="pill">抖音</span><span class="pill">视频号</span><span class="pill">小红书</span>
         </div>
-        <div class="btn" style="margin-top:14px" data-go="C2" data-label="开始拆解">开始拆解</div>
+        <div class="btn" style="margin-top:14px" data-go="B2?kind=remix" data-label="开始拆解">开始拆解</div>
       </div>
 
       <div class="card" style="margin-top:14px">

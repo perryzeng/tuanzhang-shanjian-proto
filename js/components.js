@@ -124,9 +124,11 @@
         `<span class="op ${o.cls || ""}"${o.go ? ` data-go="${o.go}" data-label="${o.t}"` : ""}>${o.t}</span>`).join("")}</div>`;
     }
     const note = s.note ? `<div class="note">${s.note}</div>` : "";
+    /* 剪同款：先给原文案做对照，再给可编辑的我方台词 */
+    const orig = s.orig ? `<div class="orig"><b>原文案</b><span>${s.orig}</span></div>` : "";
     return `<div class="seg ${s.state || ""}">
       <div class="seg-h"><span class="seg-no">${s.no}</span><span class="seg-name">${s.name}</span>${tags}${dur}</div>
-      ${vo}${clips}${ops}${note}
+      ${orig}${vo}${clips}${ops}${note}
     </div>`;
   };
 
@@ -255,6 +257,13 @@
       `<div class="chk ${c.done ? "done" : ""}">
         <span class="bx">${c.done ? "✓" : ""}</span><span>${c.tx}</span>
         ${c.done ? "" : `<span class="go2" data-go="${c.go}" data-label="${c.tx}">去完成 ›</span>`}
+      </div>`).join("")}</div>`;
+
+  /* 发布器来源切换：三个发布器合成一个，切的是"从哪来"，不是换页面 */
+  C.pseg = (list, active) =>
+    `<div class="pseg">${list.map((x) =>
+      `<div class="ps ${x.k === active ? "on" : ""}" data-set="B2.kind=${x.k}">
+        <span class="ic">${x.ic}</span><b>${x.tx}</b>
       </div>`).join("")}</div>`;
 
   window.C = C;

@@ -247,6 +247,110 @@ window.DATA = {
     ]
   },
 
+  /* ---------- 剪同款二创：同一段落模型，每段多一个「原文案」 ----------
+     来源是别人的视频，所以段落是"拆出来的"，不是"写出来的"：
+     orig = 原片口播，vo = 我要改成的话，suggest = AI 判断这段要不要改 */
+  draftRemix: {
+    id: "df_2880",
+    title: "阿玲爆款 · 二创版",
+    kind: "remix",
+    productId: "p_krill", product: "磷虾油",
+    status: "draft",
+    updatedAt: "2026-11-01T13:05:00+08:00",
+    curSeg: "rs03",
+    compliance: { ok: true, hits: [], checkedAt: "2026-11-01T13:05:00+08:00" },
+    /* 来源片信息：团队动态流里的原片 + 二创安全度 */
+    source: {
+      who: "阿玲", plays: 124000, title: "磷虾油开箱 · 我妈也在吃",
+      safety: 62, changed: 2, needChange: 2
+    },
+    segments: [
+      {
+        id: "rs01", role: "hook", name: "开场提问", dur: 9,
+        orig: "磷虾油到底值不值得买？", vo: "你知道磷虾油和鱼油差在哪吗？", suggest: "换",
+        needTags: ["product", "still"], lock: null, hint: "换成你自己的开场画面，别用原片开头",
+        shots: [{ id: "rm_101", asset: "as_502", dur: 9 }]
+      },
+      {
+        id: "rs02", role: "explain", name: "成分讲解", dur: 8,
+        orig: "这个成分是真的猛。", vo: "这个成分是真的猛。", suggest: "",
+        needTags: ["ingredient"], lock: null, hint: "成分段用示意动画，别用真人出镜",
+        shots: [{ id: "rm_201", asset: "as_504", dur: 4 }, { id: "rm_202", asset: "as_516", dur: 4 }]
+      },
+      {
+        id: "rs03", role: "proof", name: "使用感受", dur: 9,
+        orig: "我吃了三个月，真的绝了，睡眠好了很多……",
+        vo: "我自己吃了两个月，最明显的是早上起来不那么累。", suggest: "换",
+        needTags: ["person"], lock: null, hint: "这段是原作者的出镜表述，必须换成你自己的话和画面",
+        shots: [{ id: "rm_301", asset: "as_511", dur: 9, pip: true }]
+      },
+      {
+        id: "rs04", role: "proof", name: "对比", dur: 8,
+        orig: "比我之前买的那个强太多了。", vo: "比之前那款腥味小很多，也更好吸收。", suggest: "换",
+        needTags: ["product", "hand"], lock: null, hint: "对比要克制，别贬低别人家产品",
+        shots: [{ id: "rm_401", asset: "as_501", dur: 3 }, { id: "rm_402", asset: "as_503", dur: 5 }]
+      },
+      {
+        id: "rs05", role: "cta", name: "团购引导", dur: 10,
+        orig: "赶紧囤，链接在评论区。", vo: "赶紧囤，链接在评论区。", suggest: "",
+        needTags: ["price", "cta"], lock: null, hint: "价格和开团时间要说清",
+        shots: [{ id: "rm_501", asset: "as_508", dur: 4 }, { id: "rm_502", asset: "as_506", dur: 2 }, { id: "rm_503", asset: "as_512", dur: 4 }]
+      },
+      {
+        id: "rs06", role: "cta", name: "结尾花字", dur: 8,
+        orig: "扣 1，我私发你。", vo: "想试的直接扣 1，我发你配料表。", suggest: "务必改",
+        needTags: ["textcard", "cta"], lock: null, hint: "结尾必须有花字卡写清参团方式",
+        shots: [{ id: "rm_601", asset: null, label: "花字卡", state: "miss", dur: 0 }]
+      }
+    ]
+  },
+
+  /* ---------- SOP 系列：同一段落模型，多一个系列进度 ----------
+     总部定主题和节奏，团长只填自己的话；素材与话术按天备好 */
+  draftSeries: {
+    id: "df_3102",
+    title: "磷虾油战役 · Day 5 信任背书",
+    kind: "series",
+    productId: "p_krill", product: "磷虾油",
+    status: "draft",
+    updatedAt: "2026-11-01T13:10:00+08:00",
+    curSeg: "se02",
+    compliance: { ok: true, hits: [], checkedAt: "2026-11-01T13:10:00+08:00" },
+    series: { name: "磷虾油 10 天战役", day: 5, total: 10, topic: "信任背书", owner: "总部 · 运营中心" },
+    segments: [
+      {
+        id: "se01", role: "trust", name: "我是谁 · 立信任", dur: 8,
+        vo: "我是阿珍，做大健康选品 5 年。", needTags: ["person", "broll"], lock: null,
+        hint: "每天开头都用这段，观众才记得住你",
+        shots: [{ id: "ss_101", asset: "as_518", dur: 8, pip: true }]
+      },
+      {
+        id: "se02", role: "hook", name: "今天讲什么", dur: 6,
+        vo: "第 5 天讲信任——为什么我敢一直推这一款。", needTags: ["product"], lock: null,
+        hint: "报出天数和主题，让人觉得你在系统地讲",
+        shots: [{ id: "ss_201", asset: "as_502", dur: 4 }, { id: "ss_202", asset: "as_513", dur: 2 }]
+      },
+      {
+        id: "se03", role: "proof", name: "顾客反馈", dur: 10,
+        vo: "上周有 37 个老客回购，这条是她们的原话。", needTags: ["proof"], lock: null,
+        hint: "用真实的反馈截图，打码后再用",
+        shots: [{ id: "ss_301", asset: "as_512", dur: 3 }, { id: "ss_302", asset: "as_506", dur: 2 }, { id: "ss_303", asset: "as_503", dur: 5 }]
+      },
+      {
+        id: "se04", role: "explain", name: "我的观点", dur: 10,
+        vo: "我不推荐所有人都吃，先看你是否真的需要。", needTags: ["person"], lock: null,
+        hint: "敢说「不是人人都要」，信任才立得住",
+        shots: [{ id: "ss_401", asset: "as_511", dur: 10, pip: true }]
+      },
+      {
+        id: "se05", role: "cta", name: "CTA · 开团", dur: 6,
+        vo: "今晚 8 点开团，点我头像进。", needTags: ["cta", "textcard"], lock: null,
+        hint: "结尾花字卡写清开团时间和价格",
+        shots: [{ id: "ss_501", asset: "as_507", dur: 3 }, { id: "ss_502", asset: "as_508", dur: 3 }]
+      }
+    ]
+  },
+
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
   teamVideos: [
     { id: "v_901", who: "阿玲", whoBg: "rgba(44,91,255,.92)", plays: 124000, title: "磷虾油开箱 · 我妈也在吃", ago: "2 小时前", bg: "linear-gradient(135deg,#2C5BFF,#00C2FF)", go: "F3" },
@@ -381,8 +485,18 @@ window.DERIVE = (function () {
     ];
   }
 
-  function draft() {
-    const d = window.DATA.draft;
+  /* 三种来源 → 三份草稿，共用同一套段落结构与派生逻辑。
+     这就是"三个发布器合成一个"的数据基础：换的是来源，不是编辑器。 */
+  const DRAFT_OF = { script: "draft", remix: "draftRemix", series: "draftSeries" };
+  const KINDS = [
+    { k: "script", ic: "✎", tx: "脚本混剪" },
+    { k: "remix", ic: "⧉", tx: "剪同款" },
+    { k: "series", ic: "▤", tx: "系列" }
+  ];
+
+  function draft(kind) {
+    const k = DRAFT_OF[kind] ? kind : "script";
+    const d = window.DATA[DRAFT_OF[k]];
     let acc = 0;
     const segs = d.segments.map((s, i) => {
       const start = acc;
@@ -407,6 +521,7 @@ window.DERIVE = (function () {
       if (s.lock === "brand") tags.push(["", "品牌锁定"]);
       if (shots.some((x) => x.from === "ai")) tags.push(["a", "AI 生成"]);
       if (missN) tags.push(["r", "缺素材"]);
+      if (s.suggest) tags.push([s.suggest === "务必改" ? "r" : "o", s.suggest]);
       return {
         ...s, no: (i + 1 < 10 ? "0" : "") + (i + 1), idx: i,
         start, shots, shotTotal, missN, tags,
@@ -419,11 +534,16 @@ window.DERIVE = (function () {
     const missSegs = segs.filter((s) => s.missN > 0);
     const curIdx = Math.max(0, segs.map((s) => s.id).indexOf(d.curSeg));
     const cur = segs[curIdx];
+    /* 二创安全度：服务端按「画面相似度 + 文案相似度」算，这里按已改段数做前端估算，
+       只用于原型演示，真实值以后端返回为准（改了文案但没换画面，分不会涨太多） */
+    const changed = segs.filter((s) => s.orig && s.vo !== s.orig).length;
+    const needChange = segs.filter((s) => s.suggest).length;
     return {
-      ...d, segments: segs, cur, curIdx,
+      ...d, kind: k, segments: segs, cur, curIdx,
       segCount: segs.length, durTotal: total,
       missCount: missSegs.reduce((n, s) => n + s.missN, 0),
-      missSegs,
+      missSegs, changed, needChange,
+      safety: k === "remix" ? Math.min(95, 38 + changed * 6) : null,
       code: mmss(cur.start + 4) + " / " + mmss(total),
       track: segs.map((s) => [s.dur, ""]),
       /* 缺素材不阻断「生成预览」，但阻断「发布」——预览/发布是两道门 */
@@ -455,5 +575,5 @@ window.DERIVE = (function () {
   }
 
   return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now,
-           draft, recommend, resolveFix, mmss, pool };
+           draft, recommend, resolveFix, mmss, pool, KINDS };
 })();

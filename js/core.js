@@ -9,6 +9,7 @@
 
   let LINKS = {}, REV = {}, ORDER = [];
   let bnPausedUntil = 0;            // 用户手动操作后暂停自动轮播
+  let skipHashQuery = false;        // 同页改过状态后，跳过一次 hash 参数回填
   const BN_EVERY = 4200, BN_RESUME = 8000;
 
   const cur = () => {
@@ -71,7 +72,8 @@
   function renderPhone() {
     const id = cur(), p = P[id];
     const q = (location.hash.split("?")[1] || "");
-    if (q) new URLSearchParams(q).forEach((v, k) => { STATE[id] = STATE[id] || {}; STATE[id][k] = v; });
+    if (q && !skipHashQuery) new URLSearchParams(q).forEach((v, k) => { STATE[id] = STATE[id] || {}; STATE[id][k] = v; });
+    skipHashQuery = false;
     phone.innerHTML = p && p.render ? p.render(STATE[id] || {}) : ghost(id);
   }
 
@@ -137,14 +139,21 @@
 
   /* ---------- 交互 ---------- */
   function applySet(expr) {
-    /* 支持一次设多个：B2.mode=edit&B2.seg=sg03 */
+    /* 支持一次设多个：B2.mode=edit&B2.seg=sg03；
+       页面 id 本身带点（B2.1），所以要按最后一个点拆，不能直接 split(".") */
     expr.split("&").forEach((pair) => {
-      const [path, val] = pair.split("=");
-      if (!path || val === undefined) return;
-      const [pid, key] = path.split(".");
+      const i = pair.indexOf("=");
+      if (i < 0) return;
+      const path = pair.slice(0, i), val = pair.slice(i + 1);
+      const d = path.lastIndexOf(".");
+      const pid = path.slice(0, d), key = path.slice(d + 1);
+      if (!pid || !key) return;
       STATE[pid] = STATE[pid] || {};
       STATE[pid][key] = val;
     });
+    /* 同页改过状态后，下一次渲染不许再用 hash 里的旧参数覆盖它，
+       否则点了像没反应（B2 切来源、退出修缺口态都会踩到） */
+    skipHashQuery = true;
     renderAll();
   }
 

@@ -19,7 +19,7 @@ window.PAGES["C3"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "二创检查站", sub: "发出去之前最后一道关", back: "C2", act: "规则" })}
+    ${C.ab({ title: "二创检查站", sub: "发出去之前最后一道关", back: "B2", act: "规则" })}
 
     <div class="body">
       <div class="hero" style="text-align:center;padding:22px 18px">
@@ -49,7 +49,7 @@ window.PAGES["C3"].render = function () {
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 118px" data-go="C2" data-label="回去再改一段">再改 1 段</div>
+      <div class="btn line" style="flex:0 0 118px" data-go="B2?kind=remix" data-label="回去再改一段">再改 1 段</div>
       <div class="btn" data-go="B4" data-label="生成并去字幕封面">生成 · 下一步</div>
     </div>
   </div>`;
