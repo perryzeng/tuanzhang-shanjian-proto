@@ -28,10 +28,19 @@ window.PAGES["B4.1"].render = function (ctx) {
      不是让用户在成品页上拨的那根档位杆。 */
   const heat = D.heat("warming");
 
+  /* one：小图标里只放一个字。三个 icon 挂在卡片右侧，位置太窄，
+     放不下"视频号"三个字；用单字 + 平台色，认得出就够了。 */
+  /* icon：三个平台色圆里各放一个简笔图形。放单字（视/抖/红）认得出，
+     但一眼扫过去像三个标签；画成图形才是"图标"，点哪儿去哪儿不用读。 */
+  const PFICON = {
+    wx: `<svg viewBox="0 0 24 24"><path d="M8 5.5 19 12 8 18.5z" fill="#fff"/></svg>`,
+    dy: `<svg viewBox="0 0 24 24"><circle cx="9" cy="16.4" r="3.4" fill="#fff"/><path d="M12.4 16.4V5.2l7.2 1.9v3.2l-4.6-1.2v7.3z" fill="#fff"/></svg>`,
+    xhs: `<svg viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="15" rx="2.6" fill="none" stroke="#fff" stroke-width="2"/><path d="M9 9.6h6M9 13.2h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>`
+  };
   const PLAT = {
-    wx: { name: "视频号", dot: "#FA9D3B", tip: "主阵地，默认按这个样式" },
-    dy: { name: "抖音", dot: "#FE2C5B", tip: "图标更大、贴边" },
-    xhs: { name: "小红书", dot: "#FF2442", tip: "白底正文 + 话题标签" }
+    wx: { name: "视频号", dot: "#FA9D3B" },
+    dy: { name: "抖音", dot: "#FE2C5B" },
+    xhs: { name: "小红书", dot: "#FF2442" }
   };
 
   const vrow = (u) => `<div class="vrow2" data-go="G3.1" data-label="跟进 ${u.name}">
@@ -61,12 +70,7 @@ window.PAGES["B4.1"].render = function (ctx) {
     </div>
 
     <div class="body">
-      <!-- 导出是这一页的第一个动作，不是最后一个：发群、发别的平台都从这里走 -->
-      <div class="btn ${saved ? "gray" : "ai"}" ${saved ? "" : `data-set="B4.1.saved=1"`}>
-        ${saved ? "✓ 已导出到相册 · 1080×1920" : "⬇ 导出下载视频"}
-      </div>
-
-      <div class="donecard" style="margin-top:12px" data-go="B4.1.1?pf=wx" data-label="看视频号样式">
+      <div class="donecard" data-go="B4.1.1?pf=wx" data-label="看视频号样式">
         <div class="th">
           <div class="src" style="background:linear-gradient(160deg,#2C5BFF 0%,#0E2A6B 55%,#08142F 100%)"></div>
           <div class="cvtxt"><b>磷虾油今晚<br>8 点开团</b></div>
@@ -76,20 +80,20 @@ window.PAGES["B4.1"].render = function (ctx) {
         <div class="tx">
           <b>磷虾油今晚开团，3 步选对不踩坑</b>
           <span>点一下进播放页 · 看互动和评论</span>
-          <div class="plats">${Object.keys(PLAT).map((k) =>
-            `<i style="background:${PLAT[k].dot}"></i>${PLAT[k].name}`).join("")}</div>
         </div>
-        <span class="go">›</span>
+        <!-- 三个平台 icon 直接挂在卡片右侧：点哪个进哪个样式的播放页。
+             上一版下面是三张带标题和说明的大卡，占了半屏却只干一件事——
+             换成 icon 之后，"按平台样式看"这块整块可以删掉。 -->
+        <div class="pfmini">
+          ${Object.keys(PLAT).map((k) =>
+            `<b style="background:${PLAT[k].dot}" data-go="B4.1.1?pf=${k}" data-label="看${PLAT[k].name}样式">${PFICON[k]}</b>`).join("")}
+        </div>
       </div>
 
-      <div class="sec-h" style="margin:16px 2px 9px"><span class="h2">按平台样式看</span>
-        <span class="more">同一条，三种长相</span></div>
-      <div class="platbtns">${Object.keys(PLAT).map((k) =>
-        `<div class="pb" data-go="B4.1.1?pf=${k}" data-label="看${PLAT[k].name}样式">
-          <span class="dot" style="background:${PLAT[k].dot}"></span>
-          <b>${PLAT[k].name}</b>
-          <i>${PLAT[k].tip}</i>
-        </div>`).join("")}</div>
+      <!-- 导出紧跟着卡片：先看这条是什么，再决定要不要存下来 -->
+      <div class="btn ai" style="margin-top:12px" ${saved ? "" : `data-set="B4.1.saved=1"`}>
+        ${saved ? "✓ 已导出到相册 · 1080×1920" : "⬇ 导出下载视频"}
+      </div>
 
       <div class="sharedata" style="margin-top:16px">
         <div class="hd"><b>分享带来的</b><span>已分享 ${st.times} 次</span></div>
