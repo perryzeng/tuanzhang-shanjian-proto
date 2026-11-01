@@ -37,16 +37,14 @@ window.PAGES["D1.3"].render = function (ctx) {
   const topics = gen ? D.planTopics(product, n) : [];
   const toCampaign = { "磷虾油": "cp_1", "换季免疫": "cp_2", "老客复购": "cp_3" }[product] || "cp_1";
 
-  /* 按钮三态：没选（灰、点不动）/ 选了（蓝、可点）/ 生成过了（蓝、去排日程）。
+  /* 生成按钮二态：没选（灰、点不动）/ 选了（蓝、可点）。
      灰态也写着"生成主题系列"，只是点不动——按钮身份要一致，
      否则用户会以为"先选分几个视频"是另一个动作。
-     生成过之后这颗按钮变成"去排日程"：选条数 → 生成 → 确认，一条直线走完；
-     "重新排"降级成小标题右侧的一个小链接，它是兜底动作，不该占主位。 */
+     生成之后这颗按钮就**消失**了：它已经完成任务，留在原处只会和
+     最下面那颗"排成每天的任务"抢位置。 */
   const cta = !pick
     ? `<div class="btn gray">✦ 生成主题系列</div>`
-    : gen
-      ? `<div class="btn" data-go="D1.1?c=${toCampaign}&days=${n}" data-label="去排日程">✓ 就用这 ${n} 条 · 去排日程</div>`
-      : `<div class="btn ai" data-set="D1.3.gen=1" data-label="生成主题系列">✦ 生成主题系列 · ${n} 条</div>`;
+    : `<div class="btn ai" data-set="D1.3.gen=1" data-label="生成主题系列">✦ 生成主题系列 · ${n} 条</div>`;
 
   const chip = (k, tx) =>
     `<span class="chip ${pick === k ? "on" : ""}" data-set="D1.3.days=${k}&D1.3.gen=">${tx}</span>`;
@@ -79,7 +77,7 @@ window.PAGES["D1.3"].render = function (ctx) {
         <span>条视频 · 可填 2 ~ 21</span>
       </div>` : ""}
 
-      <div style="margin-top:12px">${cta}</div>
+      <div style="margin-top:12px">${!gen ? cta : ""}</div>
 
       ${!gen ? `<div class="card plain" style="margin-top:11px">
         <div class="xs" style="line-height:1.7">
@@ -99,7 +97,17 @@ window.PAGES["D1.3"].render = function (ctx) {
             </span>
             <span style="flex:0 0 auto;color:var(--brand);font-size:11.5px;font-weight:600;padding:8px 0 0 8px;cursor:pointer">换</span>
           </div>`).join("")}
+        </div>
+        <div class="xs" style="margin:10px 2px 0;line-height:1.6">
+          确认之后，这 ${n} 条会变成每天一条任务：今天做第 1 条，明天第 2 条，做完打勾。
         </div>` : ""}
     </div>
+
+    <!-- 生成之后最下面才出现这颗确认键：它的作用是"把这份选题变成日程"，
+         所以必须在**看完三条之后**才出现，而且要钉在底部——
+         条数自定义到 21 的时候，跟着列表滚的按钮会离得很远。 -->
+    ${gen ? `<div class="actionbar">
+      <div class="btn" data-go="D1.1?c=${toCampaign}&days=${n}" data-label="排成每天的任务">✓ 就用这 ${n} 条 · 排成每天的任务</div>
+    </div>` : ""}
   </div>`;
 };
