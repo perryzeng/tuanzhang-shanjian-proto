@@ -87,11 +87,19 @@
           <span class="lb" style="color:var(--text-2)">${s.n}</span></div>`).join("")}
       </div>` : "";
 
+    const sources = p.sources ? `<div class="box"><div class="bt">数据来源 / 口径</div>
+        ${p.sources.map((s) => `<div class="srow">
+          <div class="s1">${s.block}<em>${s.sys}</em></div>
+          <div class="s2">${s.rule}</div>
+        </div>`).join("")}
+      </div>` : "";
+
     panelEl.innerHTML = `
       <span class="tagline">${p.group}</span>
       <h4>${p.id} · ${p.title}</h4>
       <div class="sub">${p.desc}</div>
       ${states}
+      ${sources}
       <div class="box">
         <div class="bt">本页出口 ${uniq.length}${dead.length ? ` · <span style="color:var(--danger)">断 ${dead.length}</span>` : ""}</div>
         ${uniq.length ? uniq.map((o) => `<div class="lk ${isDead(o.to) ? "dead" : ""}" data-nav="${o.to}">

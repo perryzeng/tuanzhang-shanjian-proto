@@ -61,6 +61,17 @@ URL 也能直接分享某一页：`index.html#/B2`、`index.html#/B2?mode=edit`�
 
 换 Banner 图：把图丢进 `assets/`，改 `A1-home.js` 里 `img` 路径和 `pos`（`object-position`，图被裁时用它对准主体）。文案在 HTML 里叠，不烧进图片——**改文案不用重新出图**。
 
+### 数据从哪来（重要）
+
+首页**不再手写任何数字和结论**：
+
+- 数据都在 `js/data.js`（mock 数据 + 每块标注了「接真接口时应当来自哪个系统」）
+- 排序、打分、格式化在 `window.DERIVE`：`mustDo()` 三源合并排序、`todayPost()` 四维打分 + 同商品去重、`plays()` / `leftText()` 统一口径
+- 页面上每个区块下面那行灰色小字就是**口径**，右侧面板「数据来源 / 口径」是同一份说明
+- 完整契约见 `spec/data-contract.md`（字段、来源系统、刷新频率、空态）
+
+要改"今天必须做"的排序规则，只改 `DERIVE.mustDo` 一处；要换数据，只改 `DATA`，页面代码不用动。
+
 ---
 
 ## 怎么改一页
@@ -104,13 +115,15 @@ proto/
 ├── css/tokens.css          设计令牌：主蓝 #2C5BFF · 青 #00C2FF · 紫 #7C5CFF + 四套渐变
 ├── css/ui.css              手机内组件样式（375×812 真机尺寸）
 ├── js/components.js        通用组件：页头 / 深色数据卡 / 图标行 / 列表项 / chips / 段卡 / Tab / 底部栏
+├── js/data.js              首页数据层（mock 数据 + DERIVE 排序打分），页面不写死数字
 ├── js/core.js              路由、链路索引、面板、导出、缩放
 ├── js/pages/registry.js    24 页清单（标题/分组/说明），是页面树和统计的唯一来源
 ├── js/pages/*.js           一个文件 = 一页
 ├── assets/bn-1..3.jpg      首页 Banner 图片（可自由替换）
 └── spec/
     ├── pages.csv           页面规格表（24 页 × 状态 × 出口数 × 出口目标）
-    └── links.md            全量点击链路清单（按分组）
+    ├── links.md            全量点击链路清单（按分组）
+    └── data-contract.md    首页数据契约：每个数字来自哪个系统、什么口径、空态怎么办
 ```
 
 ## 约定
