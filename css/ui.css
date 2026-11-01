@@ -1937,6 +1937,17 @@
 .selbar .sb.warn{color:#FF5C6E;font-weight:700}
 .selbar .sb.warn.off{color:var(--text-4);font-weight:600}
 
+/* 首页 · 我的创作 */
+.crail{display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none}
+.crail::-webkit-scrollbar{display:none}
+.crc{flex:0 0 126px;cursor:pointer}
+.crim{position:relative;aspect-ratio:3/4;border-radius:14px;box-shadow:var(--sh-1);overflow:hidden}
+.crdraft{position:absolute;left:6px;top:6px;font-size:8.5px;font-weight:800;color:#fff;
+  background:rgba(255,110,90,.95);border-radius:999px;padding:2px 7px;letter-spacing:.2px}
+.crt{font-size:11.5px;font-weight:600;color:var(--text);margin-top:8px;line-height:1.35;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.crs{font-size:9.5px;color:var(--text-4);margin-top:3px}
+
 /* 团队事务：紧凑置顶卡（公告 / 任务各一行） */
 .affair{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:8px 12px;margin-top:10px}
 .affair .ah{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);padding:3px 0 5px}

@@ -20,6 +20,7 @@ window.PAGES["E2"].render = function (ctx) {
   const side = forcedSide || "mine";
   const tview = side === "team" ? (["owner", "admin", "member"].indexOf(ctx.view) >= 0 ? ctx.view : "owner") : "";
   const mng = ctx.mng === "1";
+  const isSelf = side === "mine";
   const friendName = ctx.__friend || "";
   const friend = (LIB.friends || []).filter((f) => f.name === friendName)[0] || {};
 
@@ -47,7 +48,7 @@ window.PAGES["E2"].render = function (ctx) {
   const extraFd = nfdStr.split(",").filter(Boolean).map((n, i) => ({ id: "nf" + i, name: n, n: 0, fresh: true }));
 
   const qs = (kv) => pid + ".side=" + side + "&" + pid + ".tid=" + tid + "&" + pid + ".open=" + open
-    + "&" + pid + ".tab=" + (ctx.tab || "log") + "&" + pid + ".q=" + q + "&" + pid + ".moved=" + movStr
+    + "&" + pid + ".tab=" + (ctx.tab || (isSelf ? "latest" : "log")) + "&" + pid + ".q=" + q + "&" + pid + ".moved=" + movStr
     + "&" + pid + ".del=" + delStr + "&" + pid + ".nfd=" + nfdStr + "&" + pid + ".tsw=" + tsw
     + "&" + pid + ".mng=" + (mng ? "1" : "") + "&" + pid + ".pick=" + picked.join(",") + "&" + (kv || "");
 
@@ -222,13 +223,11 @@ window.PAGES["E2"].render = function (ctx) {
   const pickCount = allItems.filter((x) => x.pick).length;
   const kindFlow = flow.filter((f) => f.type === kind);
 
-  const TABS = [
-    ["log", "动态", kindFlow.length],
-    ["latest", "最新", allItems.length],
-    ["pick", "精选", pickCount],
-    ["dir", "目录", folders.length]
-  ];
-  const curTab = TABS.some((t) => t[0] === ctx.tab) ? ctx.tab : "log";
+  /* 自己的库不需要「动态」：默认就是最新；好友/团队才看动态 */
+  const TABS = isSelf
+    ? [["latest", "最新", allItems.length], ["pick", "精选", pickCount], ["dir", "目录", folders.length]]
+    : [["log", "动态", kindFlow.length], ["latest", "最新", allItems.length], ["pick", "精选", pickCount], ["dir", "目录", folders.length]];
+  const curTab = TABS.some((t) => t[0] === ctx.tab) ? ctx.tab : (isSelf ? "latest" : "log");
   const canOrganize = open && curTab !== "log";
 
   const toggle = (id) => pid + ".pick=" + (picked.indexOf(id) >= 0 ? picked.filter((x) => x !== id) : picked.concat(id)).join(",");

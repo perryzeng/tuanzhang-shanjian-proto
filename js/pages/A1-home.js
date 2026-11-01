@@ -81,6 +81,17 @@ window.PAGES["A1"].render = function () {
         ]
       })}
 
+      ${C.sec("我的创作", "全部 ›", "E2?open=work&tab=latest")}
+      <div class="crail">
+        ${(D.creations || []).map((c) => `<div class="crc" data-go="E2?open=work&tab=latest" data-label="${c.name}">
+          <div class="crim" style="background:${c.bg}">
+            ${c.kind === "draft" ? `<span class="crdraft">草稿 · 未完成</span>` : ""}
+          </div>
+          <div class="crt">${c.name}</div>
+          <div class="crs">${c.at}</div>
+        </div>`).join("")}
+      </div>
+
       ${C.sec("今天必须做", tasksAll.length + " 项 · 全部 ›", "D1")}
       ${C.tasks(taskCards)}
 

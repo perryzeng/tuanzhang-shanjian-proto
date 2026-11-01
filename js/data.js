@@ -1106,6 +1106,14 @@ window.DATA = {
     { seats: 50, pay: 500, tag: "更省" }
   ],
   points: { balance: 1260, monthUse: 320 },
+  /* 我的创作：草稿 + 作品，按时间倒序（最新在前） */
+  creations: [
+    { id: "cr_1", name: "磷虾油开箱 · 3 秒钩子", kind: "draft", at: "刚刚", bg: "linear-gradient(150deg,#7C6CFF,#A78BFA)" },
+    { id: "cr_2", name: "素颜出镜 · 换季话术", kind: "work", at: "今天 10:24", bg: "linear-gradient(150deg,#FF8FB1,#FF5C8A)" },
+    { id: "cr_3", name: "复购催单 · 3 句收尾", kind: "work", at: "昨天 18:40", bg: "linear-gradient(150deg,#5AC8FA,#7C6CFF)" },
+    { id: "cr_4", name: "团价对比 · 竖版", kind: "draft", at: "昨天 09:12", bg: "linear-gradient(150deg,#B18CFF,#FF9AC4)" },
+    { id: "cr_5", name: "秋季滋补 · 空镜合集", kind: "work", at: "10-30 15:02", bg: "linear-gradient(150deg,#8B5CF6,#C4A7FF)" }
+  ],
   pointPlans: [
     { id: "pp20", pay: 20, points: 2000, bonus: 0 },
     { id: "pp50", pay: 50, points: 5200, bonus: 200, tag: "送 200" },
