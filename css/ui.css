@@ -453,3 +453,14 @@
 .src2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .src2 .srcitem{padding:13px 13px 14px}
 .src2 .srcitem span{font-size:10.5px;line-height:1.5;margin-top:5px}
+
+/* ========== part 内的预览播放 ========== */
+.pp{width:22px;height:22px;border-radius:50%;flex:0 0 22px;margin-left:5px;background:#F1F3F9;color:var(--text-2);
+    display:flex;align-items:center;justify-content:center;font-size:8.5px;line-height:1;cursor:pointer;padding-left:1px}
+.pp.on{background:var(--g-brand);color:#fff;padding-left:0}
+.part.playing{box-shadow:0 0 0 2px rgba(44,91,255,.55),0 8px 22px rgba(44,91,255,.12)}
+.pvline{display:flex;align-items:center;gap:8px;margin-top:9px}
+.pvline .bar2{flex:1;height:3px;border-radius:2px;background:#E8EDF8;overflow:hidden}
+.pvline .bar2 i{display:block;height:100%;width:0;border-radius:2px;background:var(--g-brand);animation:pvgo linear forwards}
+.pvline span:last-child{flex:0 0 auto;font-size:10px;font-weight:600;color:var(--brand);font-variant-numeric:tabular-nums}
+@keyframes pvgo{from{width:0}to{width:100%}}

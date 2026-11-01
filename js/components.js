@@ -166,10 +166,17 @@
       : "";
     const meta = p.meta ? `<div class="pmeta">${p.meta}</div>` : "";
     const note = p.note ? `<div class="note">${p.note}</div>` : "";
+    /* 预览中：一条按这段真实时长走完的进度条，播完就停，不循环 */
+    const playing = p.playing
+      ? `<div class="pvline"><span class="bar2"><i style="animation-duration:${p.playing}s"></i></span><span>预览中 · ${p.playing}s</span></div>`
+      : "";
+    const playBtn = p.play
+      ? `<span class="pp${p.play.on ? " on" : ""}" data-set="${p.play.act}" title="预览这一段">${p.play.on ? "⏸" : "▶"}</span>`
+      : "";
 
-    return `<div class="part${p.on ? " on" : ""}">
-      <div class="part-h"><span class="pn">${p.no}</span><span class="pt">${p.name}</span>${tags}<span class="pd">${p.dur}</span></div>
-      <div class="part-b">${slot}<div class="pvo">${orig}${vo}${ops}${note}${meta}</div></div>
+    return `<div class="part${p.on ? " on" : ""}${p.play && p.play.on ? " playing" : ""}">
+      <div class="part-h"><span class="pn">${p.no}</span><span class="pt">${p.name}</span>${tags}<span class="pd">${p.dur}</span>${playBtn}</div>
+      <div class="part-b">${slot}<div class="pvo">${orig}${vo}${playing}${ops}${note}${meta}</div></div>
     </div>`;
   };
 

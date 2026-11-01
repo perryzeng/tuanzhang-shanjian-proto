@@ -23,6 +23,7 @@ window.PAGES["D2"].render = function (ctx) {
   const plan = D.dayPlan(c, day);
   const focus = d.segments.filter((s) => s.id === ctx.seg)[0] || d.cur;
   const pending = !!d.pendDay;
+  const playing = ctx.pv || "";
 
   const pickGo = (id) => "B2.1?seg=" + id + "&kind=series&day=" + day;
   const backGo = "D1.2?c=" + c.id + "&d=" + day;
@@ -44,7 +45,12 @@ window.PAGES["D2"].render = function (ctx) {
       s.shots.some((x) => x.pip) ? [["p", "画中画"]] : []
     );
 
-    const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit" };
+    const on = playing === s.id;
+    const p = {
+      no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit",
+      play: { on: on, act: on ? "D2.pv=" : "D2.pv=" + s.id }
+    };
+    if (on) p.playing = s.dur;
 
     if (mode === "edit" && isFocus) {
       p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : s.vo;
@@ -59,7 +65,7 @@ window.PAGES["D2"].render = function (ctx) {
     }
     p.meta = pending ? (s.fixed ? "这段每天一样，已备好" : "") : D.slotMeta(s);
     if (mode === "edit" && isFocus && s.fixed) p.note = "这段每天固定，不用每天改；要改一次就全季生效";
-    if (!s.fixed && !pending && s.vo) {
+    if (!s.fixed && !pending && s.vo && !on) {
       p.ops = [{ t: "✦ 换成我的说法", cls: "hot" }, { t: "从昨天抄", go: backGo }];
     }
     return C.part(p);

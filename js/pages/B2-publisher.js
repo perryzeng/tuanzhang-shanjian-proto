@@ -7,8 +7,11 @@ window.PAGES["B2"].prd = "PRD §6 · 结构化脚本框（全产品唯一的脚�
 
 /* 结构化脚本框：不管脚本从哪来（AI 写 / 脚本库引 / 视频抽 / 二创），
    落到这一页都是同一个结构——**N 个 part，每个 part = 一段台词 + 一个画面槽**。
-   所以页面里没有"来源切换器"：来源只影响顶部那一行说明，不影响结构。
-   系列不走这里，它有自己的 D2（结构是「按天 + 模板」，不是单条）。 */
+
+   这一版把顶部那条大预览去掉了，原因有两个：
+   ① 它占掉近 1/5 屏，但只显示"当前这一段"，和下面那张 part 卡是同一件事；
+   ② 有了它，用户会以为要在这里"播放整条片子"，而真正的检查方式是逐段看。
+   改成每个 part 自带的 ▶：点哪段预览哪段，条形进度按这段的实际时长走。 */
 window.PAGES["B2"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const kind = ctx.kind === "remix" ? "remix" : "script";
@@ -22,53 +25,35 @@ window.PAGES["B2"].render = function (ctx) {
   const miss = d.missSegs[0];
   const byId = (id) => d.segments.filter((s) => s.id === id)[0];
   const focus = byId(ctx.seg) || (mode === "fix" && miss ? miss : d.cur);
+  const playing = ctx.pv || "";
 
   /* 每个槽都带着"这一段 + 从哪来"，否则换完就掉回默认草稿 */
   const pickGo = (id) => "B2.1?seg=" + id + "&kind=" + kind + "&src=" + src
     + (ctx.doc ? "&doc=" + ctx.doc : "");
 
-  /* 来源上下文：一行说清"这条从哪来"。六种来路各有各的一句。 */
-  const ctxLine = (function () {
+  /* 来源只说一句话，数字交给下面的小标题——两处都在说"5 段 46 秒"就是重复 */
+  const srcLine = (function () {
     if (kind === "remix")
-      return "来源：" + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放 · 建议改 " + d.needChange + " 段";
+      return "二创自 " + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放";
     if (src === "import" && ctx.doc) {
       const sc = D.script(ctx.doc);
-      return "来自脚本库 ·「" + sc.title + "」· " + sc.who + " · " + sc.segs + " 段 · 画面已按语义配好";
+      return "来自脚本库 ·「" + sc.title + "」· " + sc.who;
     }
-    if (src === "import") return "已粘贴脚本 · 自动拆成 " + d.segCount + " 段 · 画面待确认";
-    if (src === "struct") return "只借了结构 · 台词按你的话重写 · 画面重新配";
-    if (src === "extract") {
-      const x = D.extract();
-      return "来自抽取的视频文案 · 已清掉 " + x.cleanedN + " 处原作者痕迹 · 画面全新配";
-    }
-    if (src === "ai") return "AI 刚写完 · " + d.product + " · " + d.segCount + " 段 " + d.durTotal + " 秒 · 台词可逐段改";
-    return "商品：" + d.product + " · 素材库 " + window.DATA.assets.length + " 段 · 已配 " + (d.segCount - d.missSegs.length) + "/" + d.segCount + " 段";
+    if (src === "import") return "已粘贴脚本 · 画面待确认";
+    if (src === "struct") return "只借了结构 · 台词按你的话重写";
+    if (src === "extract") return "来自抽取的视频文案 · 已清 " + D.extract().cleanedN + " 处原作者痕迹";
+    if (src === "ai") return "AI 刚写完 · " + d.product + " · 台词可逐段改";
+    return d.product + " · 素材库 " + window.DATA.assets.length + " 段";
   })();
 
-  /* 预览条纹：只给"当前在哪一段、一共多长"，真正的编辑在下面的 part 里 */
-  const first = focus.shots.filter((s) => !s.miss)[0] || focus.shots[0] || {};
-  const estage = C.estage({
-    preview: {
-      bg: first.bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
-      no: focus.idx + 1 + "/" + d.segCount,
-      cap: (focus.vo || focus.name).slice(0, 12),
-      pip: focus.shots.some((s) => s.pip)
-    },
-    code: focus.code,
-    track: d.track.map(([f], i) => [f, i === focus.idx ? "cur" : (i < focus.idx ? "done" : "")]),
-    paused: mode !== "browse",
-    now: mode === "edit"
-      ? "<b>试听中 · 第 " + (focus.idx + 1) + " 段（AI 配音）</b> · 改完即时重配"
-      : "<b>第 " + (focus.idx + 1) + " 段 · " + focus.name + "</b><br>" +
-        (kind === "remix" && focus.suggest ? "建议" + focus.suggest + "：这段带着原作者的痕迹" : D.slotMeta(focus))
-  });
-
-  /* 一个 part = 一段台词 + 一个画面槽。点槽就开素材选择器。 */
+  /* 一个 part = 一段台词 + 一个画面槽 + 一个 ▶。
+     点 ▶ 只预览这一段：条形按这段的真实时长走完，不用看整条。 */
   function partHtml(s) {
     const isFocus = s.id === focus.id;
     const editable = s.lock !== "brand";
     const okShot = s.shots.filter((x) => !x.miss)[0];
     const badShot = s.shots.filter((x) => x.miss)[0];
+    const on = playing === s.id;
     const slot = badShot
       ? { miss: true, label: badShot.label || "缺画面", go: pickGo(s.id) }
       : okShot
@@ -82,7 +67,10 @@ window.PAGES["B2"].render = function (ctx) {
       s.shots.some((x) => x.pip) ? [["p", "画中画"]] : []
     );
 
-    const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit" };
+    const p = {
+      no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit",
+      play: { on: on, act: on ? "B2.pv=" : "B2.pv=" + s.id }
+    };
     if (s.orig) p.orig = s.orig;
 
     if (mode === "edit" && isFocus && editable) {
@@ -95,14 +83,16 @@ window.PAGES["B2"].render = function (ctx) {
       p.edit = editable;
       if (editable) p.editSet = "B2.mode=edit&B2.seg=" + s.id;
     }
-    p.meta = D.slotMeta(s);
+    /* 缺口段的槽上已经写着缺什么，就不再多一行"画面还缺" */
+    p.meta = badShot ? "" : D.slotMeta(s);
+    if (on) p.playing = s.dur;
     if (mode === "edit" && isFocus && !editable) p.note = "品牌方锁定的必播口播，台词不可改，只能调顺序";
 
     if (s.missN) {
       p.ops = D.resolveFix(s).filter((o) => o.ok).slice(0, 3)
         .map((o) => ({ t: o.tx, go: o.go, cls: o.key === "aigen" ? "hot" : "" }));
-    } else if (isFocus && mode !== "edit" && s.vo) {
-      p.ops = [{ t: "✦ AI 重写这段", cls: "hot" }, { t: "▶ 试听" }, { t: "＋ 画中画", go: "B2.3" }];
+    } else if (isFocus && mode !== "edit" && s.vo && !on) {
+      p.ops = [{ t: "✦ AI 重写这段", cls: "hot" }, { t: "＋ 画中画", go: "B2.3" }];
     }
     return C.part(p);
   }
@@ -124,18 +114,11 @@ window.PAGES["B2"].render = function (ctx) {
     ? `<div class="blk"><span class="ic">!</span><span><b>发布卡在第 ${miss.idx + 1} 段</b> · 缺 ${miss.missN} 段画面，补齐才能发布；先出预览不受影响</span></div>`
     : "";
 
-  const head = `<div class="listhead"><b>脚本</b>${d.segCount} 个 part · 约 ${d.durTotal} 秒
-      ${kind === "remix" ? `· <span style="color:var(--warn);font-weight:700">安全度 ${d.safety}</span>` : `· <span style="color:var(--success);font-weight:700">合规 ${d.compliance.ok ? "✓" : "!"}</span>`}
-      <span style="flex:1"></span>${d.missCount ? `<span class="tag r">缺 ${d.missCount} 段画面</span>` : ""}</div>`;
-
-  const hint = mode === "browse"
-    ? `<div class="hintline"><span class="hic">✦</span><span>${
-        kind === "remix"
-          ? "<b>和原片不一样的段已标出来</b>，其余可以直接照用"
-          : "<b>每个 part 一个画面槽</b>，点槽换素材，AI 已按台词语义铺好"}</span><span class="r2">全部重配</span></div>`
-    : mode === "edit"
-      ? `<div class="hintline"><span class="hic">✦</span><span><b>改台词不会动画面</b>，改完直接重新配音，不用重新生成</span><span class="r2">重配 3 秒</span></div>`
-      : "";
+  const head = `<div class="listhead"><b>脚本</b>${d.segCount} 个 part · 约 ${d.durTotal} 秒 ·
+      ${kind === "remix"
+        ? `<span style="color:var(--warn);font-weight:700">安全度 ${d.safety}</span>`
+        : `<span style="color:var(--success);font-weight:700">合规 ✓</span>`}
+      <span style="flex:1"></span>${d.missCount ? `<span class="tag r">缺 ${d.missCount} 段画面</span>` : `<span class="tag g">可以发</span>`}</div>`;
 
   const primary = (function () {
     if (mode === "fix" && miss) return { t: "✦ 补上第 " + (miss.idx + 1) + " 段", go: pickGo(miss.id) };
@@ -162,8 +145,7 @@ window.PAGES["B2"].render = function (ctx) {
     ? "正在改第 " + (focus.idx + 1) + " 段台词" + (voVer === "ai" ? " · AI 建议版" : "")
     : mode === "fix"
       ? "缺 " + d.missCount + " 段画面 · 补齐才能发布"
-      : kind === "remix" ? "已改 " + d.changed + "/" + d.segCount + " 段 · 安全度 " + d.safety
-      : d.segCount + " 个 part · " + d.durTotal + " 秒 · 每个 part 一个画面槽";
+      : srcLine;
 
   return `<div class="app">
     ${C.sb()}
@@ -173,11 +155,7 @@ window.PAGES["B2"].render = function (ctx) {
       <span class="act" data-set="B2.mode=${mode === "browse" ? "edit" : "browse"}&B2.vo=self">${mode === "browse" ? "编辑" : "完成"}</span>
     </div>
 
-    <div class="ctxline">${ctxLine}</div>
-
-    ${estage}
     ${blocker}
-    ${hint}
     ${head}
 
     ${mode === "browse" ? `<div class="fade" style="bottom:74px"></div>` : ""}
