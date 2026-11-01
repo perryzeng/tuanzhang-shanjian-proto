@@ -70,7 +70,7 @@
     `<div class="sec-h"><span class="h2">${title}</span>${more ? `<span class="more"${moreGo ? ` data-go="${moreGo}" data-label="${more}"` : ""}>${more}</span>` : ""}</div>`;
 
   C.tab = (active) => {
-    const items = [["A1", "⌂", "首页"], ["B1", "✦", "创作"], ["E1", "◍", "团队"], ["F1", "⊞", "广场"], ["G1", "◎", "我的"]];
+    const items = [["A1", "⌂", "首页"], ["E2", "▤", "素材"], ["F1", "⊞", "广场"], ["G1", "◎", "我的"]];
     return `<div class="tb">${items.map(([id, ic, tx]) =>
       `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${ic}</span>${tx}</b>`).join("")}</div>`;
   };
@@ -160,20 +160,23 @@
       </div>
     </div>`;
 
-  /* 图片 Banner 轮播：每张可点落地页；dots 走 data-slide-to，不触发重渲染 */
+  /* 图片 Banner 轮播：自动播放；每张可带落地页，也可以是不带链接的纯图片位 */
   C.banner = (o) => {
-    const slides = o.items.map((b) =>
-      `<div class="bn" data-go="${b.go}" data-label="Banner·${b.title}">
+    const slides = o.items.map((b) => {
+      const linked = !!b.go;
+      return `<div class="bn${b.poster || !linked ? " poster" : ""}"${linked ? ` data-go="${b.go}" data-label="Banner·${b.title}"` : ""}>
         <img src="${b.img}" alt="" style="object-position:${b.pos || "center"}">
         <div class="scrim"></div>
         ${b.badge ? `<span class="bdg">${b.badge}</span>` : ""}
         <div class="tx"><b>${b.title}</b>${b.sub ? `<span>${b.sub}</span>` : ""}</div>
-        <span class="go">${b.btn || "去看看"} ›</span>
-      </div>`).join("");
+        ${linked ? `<span class="go">${b.btn || "去看看"} ›</span>` : ""}
+      </div>`;
+    }).join("");
     const dots = o.items.length > 1
       ? `<div class="dots">${o.items.map((b, i) => `<i class="${i === 0 ? "on" : ""}" data-slide-to="${i}"></i>`).join("")}</div>`
       : "";
-    return `<div class="bnwrap" data-bn><div class="carousel">${slides}</div>${dots}</div>`;
+    const auto = o.items.length > 1 ? " data-auto" : "";
+    return `<div class="bnwrap" data-bn${auto}><div class="carousel">${slides}</div>${dots}</div>`;
   };
 
   /* 发布器 Dock：左侧一个大发布器 + 右侧四个小工具 */

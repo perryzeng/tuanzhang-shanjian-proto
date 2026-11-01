@@ -47,6 +47,6 @@ window.PAGES["B1"].render = function () {
       ${C.li({ bg: G("#00A8E8", "#00C2FF"), title: "阿玲爆款 · 二创版", m1: "已改 2 段 · 安全度 62", btn: "继续", btnCls: "line", go: "C2" })}
     </div>
 
-    ${C.tab("B1")}
+    ${C.tab("")}
   </div>`;
 };

@@ -52,6 +52,17 @@ window.DATA = {
       audience: "团队人数 ≥ 5 的团长",
       window: "10-25 ~ 11-08",
       expireAt: "2026-11-08T23:59:59+08:00"
+    },
+    {
+      /* 纯图片位：不带落地页，不显示按钮，用于品牌 / 公告展示 */
+      id: "bn_8790", img: "assets/bn-2.jpg", pos: "center 30%",
+      badge: "平台公告", poster: true,
+      title: "11 月团价手册已更新",
+      sub: "全品类供货价 · 见素材库公告",
+      btn: "", go: "",
+      audience: "全体团长",
+      window: "11-01 ~ 11-30",
+      expireAt: "2026-11-30T23:59:59+08:00"
     }
   ],
 
@@ -109,6 +120,7 @@ window.DATA = {
       structure: "开箱 → 成分 → 价格",
       duration: 38, segs: 4, stockClips: 8,
       perf: 0.86, cvr: 0.052, cvrTop: 8, relevance: 9, cost: 0,
+      why: "换季囤货期又赶上今晚开团，这条上周给你出了 12 单",
       source: "团队爆款结构", short: "爆款",
       cta: { tx: "生成", go: "B1" }
     },
@@ -118,6 +130,7 @@ window.DATA = {
       structure: "问题 → 原理 → 用法",
       duration: 45, segs: 5, stockClips: 6,
       perf: 0.74, cvr: 0.038, cvrTop: 22, relevance: 12, cost: 1,
+      why: "这周 12 个粉丝在问「孩子能吃吗」，这条正好答",
       source: "粉丝问题库", short: "问题",
       cta: { tx: "生成", go: "B1" }
     },
@@ -127,6 +140,7 @@ window.DATA = {
       structure: "晒单 → 复购理由 → 团价",
       duration: 32, segs: 3, stockClips: 12,
       perf: 0.91, cvr: 0.061, cvrTop: 5, relevance: 4, cost: 0,
+      why: "团队这条今天跑了 12.4 万，你的老客也到复购期了",
       source: "剪同款现成", short: "同款",
       cta: { tx: "套用", go: "C1" }
     },
@@ -136,6 +150,7 @@ window.DATA = {
       structure: "疑问 → 回答 → 引导下单",
       duration: 40, segs: 4, stockClips: 5,
       perf: 0.79, cvr: 0.031, cvrTop: 30, relevance: 15, cost: 2,
+      why: "同一个问题被问了 15 次，做成视频比逐条回省力",
       source: "粉丝问题库", short: "问题",
       cta: { tx: "生成", go: "B1" }
     }
@@ -148,8 +163,15 @@ window.DATA = {
     { id: "v_890", who: "小雨", whoBg: "rgba(0,168,232,.92)", plays: 52000, title: "换季话术 · 3 句话讲完", ago: "昨天", bg: "linear-gradient(135deg,#00A8E8,#5B8CFF)", go: "F3" }
   ],
 
-  /* 平台精选：运营后台专题位，按人群包下发 */
-  platformPicks: [
+  /* 新用户「同行都在这么发」：平台内容池
+     只取「同类目 + 同粉丝量级 + 近 7 天完播率最高」的 3 条，给新人有样可抄 */
+  newbieCases: [
+    { id: "nc_21", who: "阿玲", whoBg: "rgba(44,91,255,.92)", plays: 124000, title: "开箱第一句就说价格", sub: "新手最容易抄的一条", bg: "linear-gradient(135deg,#2C5BFF,#00C2FF)", go: "F3" },
+    { id: "nc_22", who: "阿强", whoBg: "rgba(124,92,255,.92)", plays: 86000, title: "先讲问题再讲产品", sub: "完播率最高结构", bg: "linear-gradient(135deg,#7C5CFF,#B08CFF)", go: "F3" },
+    { id: "nc_23", who: "小雨", whoBg: "rgba(0,168,232,.92)", plays: 52000, title: "晒单 + 一句我的感受", sub: "不用出镜也能拍", bg: "linear-gradient(135deg,#00A8E8,#5B8CFF)", go: "F3" }
+  ],
+
+  /* 平台精选：运营后台专题位，按人群包下发 */  platformPicks: [
     { id: "tp_31", img: "assets/bn-2.jpg", pos: "center 34%", title: "秋季滋补专题", sub: "12 条现成素材 · 平台已过审", go: "F1", audience: "全体团长" },
     { id: "tp_28", img: "assets/bn-1.jpg", pos: "center 44%", title: "高转化开箱合集", sub: "照着结构改就能发", go: "F1", audience: "近 7 天有发布的团长" }
   ]
@@ -211,6 +233,14 @@ window.DERIVE = (function () {
     return window.DATA.teamVideos.slice(0, limit || 3);
   }
 
+  /* 新用户同行案例：同池子取前 N，按播放量倒序 */
+  function newbieCases(limit) {
+    return window.DATA.newbieCases
+      .slice()
+      .sort((a, b) => b.plays - a.plays)
+      .slice(0, limit || 3);
+  }
+
   /* 数字口径统一在这里格式化，页面不再各写一套 */
   function plays(n) {
     return n >= 10000 ? (n / 10000).toFixed(1).replace(/\.0$/, "") + "万" : String(n);
@@ -221,10 +251,10 @@ window.DERIVE = (function () {
     if (h < 24) return Math.round(h) + " 小时";
     return Math.ceil(h / 24) + " 天";
   }
-  /* 建议理由：用分项指标说话，不写"我觉得" */
+  /* 推荐理由：由推荐服务生成（LLM 写 + 数据校验），前端只展示，不自己拼
+     生成时必须满足：① 说清"为什么是今天" ② 至少引用一个真实事实 ③ 不超过 2 行 */
   function reason(s) {
-    if (s.relevance >= 12) return "粉丝 7 天问了 " + s.relevance + " 次同类问题";
-    return "出单率 " + (s.cvr * 100).toFixed(1) + "%，全库前 " + s.cvrTop + "%";
+    return s.why || "这条和你上周的爆款结构一致";
   }
   function meta(s) {
     const stock = s.cost === 0
@@ -233,5 +263,5 @@ window.DERIVE = (function () {
     return s.duration + " 秒 · " + s.segs + " 段 · " + stock;
   }
 
-  return { mustDo, todayPost, banners, teamVideos, plays, leftText, reason, meta, now };
+  return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now };
 })();

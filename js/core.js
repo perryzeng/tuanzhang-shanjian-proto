@@ -8,6 +8,8 @@
   const deadEl = document.getElementById("deadtip");
 
   let LINKS = {}, REV = {}, ORDER = [];
+  let bnPausedUntil = 0;            // 用户手动操作后暂停自动轮播
+  const BN_EVERY = 4200, BN_RESUME = 8000;
 
   const cur = () => {
     const raw = decodeURIComponent(location.hash.replace(/^#\/?/, "") || "A1");
@@ -108,7 +110,7 @@
         <div class="bt">谁跳到这里 ${rev.length}</div>
         ${rev.length ? rev.map((r) => `<div class="lk" data-nav="${r.from}">
             <span class="to">${r.from}</span><span class="lb">${r.label}${r.n > 1 ? ` 等 ${r.n} 个入口` : ""}</span></div>`).join("")
-        : `<div class="empty">还没有入口，用户走不到这页</div>`}
+        : (p.sysEntry ? `<div class="empty">系统入口：${p.sysEntry}</div>` : `<div class="empty">还没有入口，用户走不到这页</div>`)}
       </div>
       <div class="note">右侧由页面里的 <code>data-go</code> 自动算出，改完页面刷新即同步。断链会标红——那就是还没画或还没接的地方。</div>`;
   }
@@ -129,6 +131,7 @@
     renderPhone(); renderTree(); renderPanel(); renderTop();
     const i = ORDER.indexOf(cur());
     document.getElementById("pgnum").textContent = i >= 0 ? `${i + 1} / ${ORDER.length} · ${cur()}` : `${cur()} · 未迁`;
+    if (btnUser) btnUser.textContent = cur() === "A1.1" ? "看老用户版" : "看新用户版";
   }
 
   /* ---------- 交互 ---------- */
@@ -151,6 +154,7 @@
         /* 直接改 scrollLeft：smooth 在部分环境（含截图工具）不生效，且和 scroll-snap 打架 */
         box.scrollLeft = i * (box.clientWidth + 10);
         wrap.querySelectorAll("[data-slide-to]").forEach((d, k) => d.classList.toggle("on", k === i));
+        bnPausedUntil = Date.now() + BN_RESUME;   // 手动点过就先别自动走
       }
       return;
     }
@@ -172,6 +176,23 @@
     const i = Math.round(box.scrollLeft / (box.clientWidth + 10));
     box.parentElement.querySelectorAll("[data-slide-to]").forEach((d, k) => d.classList.toggle("on", k === i));
   }, true);
+
+  /* 自动轮播：用户一旦上手就暂停 8 秒，避免"刚看清就跳走" */
+  phone.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("[data-bn]")) bnPausedUntil = Date.now() + BN_RESUME;
+  }, true);
+
+  setInterval(() => {
+    const wrap = phone.querySelector("[data-bn][data-auto]");
+    if (!wrap) return;
+    const box = wrap.querySelector(".carousel");
+    if (!box || box.children.length < 2) return;
+    if (Date.now() < bnPausedUntil) return;
+    if (document.hidden) return;
+    const i = (Math.round(box.scrollLeft / (box.clientWidth + 10)) + 1) % box.children.length;
+    box.scrollLeft = i * (box.clientWidth + 10);
+    wrap.querySelectorAll("[data-slide-to]").forEach((d, k) => d.classList.toggle("on", k === i));
+  }, BN_EVERY);
 
   document.getElementById("prev").onclick = () => {
     const i = ORDER.indexOf(cur());
@@ -234,6 +255,8 @@
 
   /* ---------- 窄屏：页面树当抽屉 ---------- */
   const menuBtn = document.getElementById("btn-menu");
+  const btnUser = document.getElementById("btn-user");
+  if (btnUser) btnUser.onclick = () => go(cur() === "A1.1" ? "A1" : "A1.1");
   if (menuBtn) {
     menuBtn.onclick = () => {
       treeEl.classList.toggle("open");

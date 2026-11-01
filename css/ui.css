@@ -95,6 +95,9 @@
 .li .tx .pr{font-size:12.5px;color:var(--warm);font-weight:700;margin-top:4px}
 .li.dim{opacity:.55}
 .li .tx span.hint{color:var(--brand-ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* AI 推荐理由：最多两行，超出省略 */
+.li .tx span.ai{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+                color:var(--brand-ink);font-weight:500;line-height:1.5;white-space:normal}
 
 .iconrow{display:flex;background:var(--surface);border-radius:var(--r-lg);padding:14px 6px;box-shadow:var(--sh-1)}
 .iconrow .ic{flex:1;text-align:center;cursor:pointer}
@@ -272,6 +275,8 @@
 .bn .bdg{position:absolute;left:12px;top:12px;font-size:9.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px);border-radius:999px;padding:3px 9px;letter-spacing:.2px}
 .bn .tx{position:absolute;left:14px;right:96px;bottom:15px;color:#fff}
 .bn .tx b{display:block;font-size:15.5px;font-weight:700;line-height:1.32;letter-spacing:-.2px;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.bn.poster{cursor:default}
+.bn.poster .tx{right:14px}
 .bn .tx span{display:block;font-size:11px;opacity:.82;margin-top:4px;line-height:1.45}
 .bn .go{position:absolute;right:12px;bottom:15px;height:29px;padding:0 13px;border-radius:999px;background:#fff;color:var(--brand-ink);font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:3px;box-shadow:0 4px 12px rgba(0,0,0,.18)}
 .bnwrap .dots{gap:4px;margin-top:9px}

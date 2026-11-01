@@ -35,6 +35,6 @@ window.PAGES["E5"].render = function () {
       </div>
     </div>
 
-    ${C.tab("E1")}
+    ${C.tab("")}
   </div>`;
 };
