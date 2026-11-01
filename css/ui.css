@@ -1090,27 +1090,39 @@
 .tcard.sel .tn{color:var(--brand-ink)}
 .tcard .tr{font-size:9.5px;color:var(--text-3);margin-top:2px}
 
-/* 选中模板后的人话解释：名字 + 一句效果 + 一句实例 + 三个特征。
-   实例那句是关键——"1.5 秒一切"没人看得懂，"30 秒切 20 个画面"一听就明白。 */
-.pickread{background:var(--surface);border-radius:14px;box-shadow:var(--sh-1);padding:12px 13px}
-.pickread .pr-h{display:flex;align-items:baseline;gap:8px}
-.pickread .pr-h b{font-size:13px;font-weight:700}
-.pickread .pr-h span{margin-left:auto;font-size:10px;font-weight:700;color:var(--brand-ink);
-                     background:var(--brand-weak);border-radius:999px;padding:2px 7px}
-.pickread .pr-d{font-size:11.5px;color:var(--text-2);margin-top:5px;line-height:1.5}
-.pickread .pr-eg{font-size:11.5px;color:var(--text-2);margin-top:6px;line-height:1.6;
-                 background:var(--bg-2);border-radius:9px;padding:7px 9px}
-.pickread .pr-bits{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.pickread .pr-bits span{font-size:10px;color:var(--text-3);background:var(--bg-2);
-                        border-radius:999px;padding:3px 8px}
+/* 选中模板后只留一行：名字 + 一句"剪出来是什么样"。
+   上一版这块是四行（名字/效果/比如/三个标签），占了 110px——
+   卡上已经画出版式了，再补四行说明是替他读一遍他刚看到的东西。 */
+.tpline{display:flex;align-items:baseline;gap:5px;padding:9px 12px;margin-top:2px;
+        background:var(--surface);border-radius:11px;box-shadow:var(--sh-1);
+        font-size:11.5px;line-height:1.45}
+.tpline b{font-size:12px;font-weight:700;flex:0 0 auto;letter-spacing:-.2px}
+.tpline i{font-style:normal;color:var(--text-4);flex:0 0 auto}
+.tpline span{color:var(--text-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* 声音：一行一个，不展开解释 */
-.vrow .vw b{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
-.vrow .vw i{display:block;font-style:normal;font-size:10.5px;color:var(--text-3);margin-top:2px}
-.vrow .vtag{font-style:normal;font-size:9px;font-weight:700;color:var(--brand-ink);
-            background:var(--brand-weak);border-radius:4px;padding:1px 5px}
-.vrow .vact{font-size:10.5px;font-weight:600;color:var(--brand);flex:0 0 auto;margin-left:auto}
-.vrow .vact.off{color:var(--text-4);font-weight:500}
+/* 声音：一行三格，而不是三行横条。
+   三选一本来就该并排摆——横条每行右侧还要挂「▶ 听一句」，三行下来 160px，
+   信息量却只有三个名字。并排之后一屏看完，且再多两个声音也只是换行，不会变成六行。
+   要录 / 推荐这类标记不单独占位：默认选中的那个就是推荐，原音那格副句已写「要你念一遍」。 */
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vcell{position:relative;background:var(--surface);border-radius:13px;box-shadow:var(--sh-1);
+       padding:10px 6px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;
+       text-align:center;cursor:pointer}
+.vcell.on{box-shadow:0 0 0 2px var(--brand),0 6px 16px rgba(44,91,255,.18)}
+/* 三根竖条的波形：一眼能认出"这是声音"，比放一个喇叭图标安静 */
+.vcell .vv{display:flex;align-items:flex-end;gap:2px;height:15px;margin-bottom:3px}
+.vcell .vv i{width:2.5px;border-radius:2px;background:var(--text-4);display:block}
+.vcell .vv i:nth-child(1){height:7px}
+.vcell .vv i:nth-child(2){height:15px}
+.vcell .vv i:nth-child(3){height:10px}
+.vcell.on .vv i{background:var(--brand)}
+.vcell b{font-size:12.5px;font-weight:700;letter-spacing:-.2px;white-space:nowrap}
+.vcell.on b{color:var(--brand-ink)}
+.vcell em{font-style:normal;font-size:9.5px;color:var(--text-3);line-height:1.3;
+          max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vcell .vk{position:absolute;right:5px;top:5px;width:15px;height:15px;border-radius:50%;
+           background:var(--brand);color:#fff;font-size:9px;font-weight:700;
+           display:flex;align-items:center;justify-content:center}
 
 .okline{display:flex;align-items:flex-start;gap:6px;margin-top:9px;font-size:10.5px;
         color:#2F7F68;line-height:1.5}
@@ -1118,24 +1130,32 @@
 
 /* ========== 封面编辑器（B2.4 内嵌 / B4 独立共用） ========== */
 .ckit{margin-top:2px}
-.ck-head{display:flex;gap:12px;align-items:flex-start}
+.ck-head{display:flex;gap:11px;align-items:center}
 .ck-pv{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
-.ck-pv .cv{width:92px;height:164px;border-radius:13px;box-shadow:0 10px 26px rgba(20,40,110,.2)}
-.ck-pv .cap{margin-top:6px;font-size:9px;color:var(--text-4);text-align:center;line-height:1.4}
-.ck-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;padding-top:1px}
-.ck-fields .fd{background:var(--surface);border-radius:11px;box-shadow:var(--sh-1);padding:7px 10px}
-.ck-fields .fl{display:block;font-size:9px;font-weight:700;color:var(--text-4);letter-spacing:.2px}
-.ck-fields input{width:100%;border:0;outline:0;background:transparent;font-family:inherit;
-                 font-size:13px;font-weight:600;color:var(--text);padding:2px 0 0;line-height:1.35}
-.ck-fields input::placeholder{font-weight:400;color:var(--text-4)}
-.ck-tip{font-size:9px;color:var(--text-4);line-height:1.5;padding-left:2px}
-.ck-tip b{color:var(--text-2)}
+.ck-pv .cv{width:86px;height:153px;border-radius:12px;box-shadow:0 10px 26px rgba(20,40,110,.2)}
+.ck-pv .cap{margin-top:5px;font-size:9px;color:var(--text-4);text-align:center;line-height:1.4}
+.ck-fields{flex:1;min-width:0}
+/* 主副标题合成一张卡：它们本来就是同一件事（封面那句话），
+   拆成两张卡只多一条 7px 的缝和一个圆角，看着还碎。 */
+.fd2{background:var(--surface);border-radius:12px;box-shadow:var(--sh-1);padding:3px 11px}
+.fd2 .fd{display:block;padding:7px 0}
+.fd2 .fd+.fd{box-shadow:inset 0 1px 0 var(--line-2)}
+.fd2 .fl{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;
+         color:var(--text-4);letter-spacing:.2px}
+/* 「打 | 换行」这个提示不另占一行，直接塞进标签里——一行小字的高度成本为零 */
+.fd2 .fl em{font-style:normal;font-weight:500;font-size:8.5px;color:var(--text-4);opacity:.9}
+.fd2 input{width:100%;border:0;outline:0;background:transparent;font-family:inherit;
+           font-size:13px;font-weight:600;color:var(--text);padding:2px 0 0;line-height:1.35}
+.fd2 input::placeholder{font-weight:400;color:var(--text-4)}
 /* 六种排法要**一屏看完**——看不到第六种，用户就只会在前三个里挑。
    52px × 6 + 间距正好塞满 375 的屏宽，不用横滑。 */
 .ckit .ctray{gap:6px}
 .ckit .cvt{flex:0 0 52px}
-.ckit .cvt .cv{width:52px;height:94px}
-.ckit .cvt .nm{font-size:9px}
+.ckit .cvt .cv{width:52px;height:86px}
+.ckit .cvt .nm{font-size:9px;margin-top:4px}
+/* 底图两张卡压矮一档：它们是"换哪张画面"，不是主角 */
+.ckit .bset{flex:0 0 132px;padding:6px 8px}
+.ckit .bset .th{width:30px;height:42px}
 
 /* 旧的"模板货架"（分类 tab + 渐变大卡）已随 B2.4 改版删除：
    8 款横滑一屏看得完，分类 tab 只是多让用户点一次。 */

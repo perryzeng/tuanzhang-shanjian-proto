@@ -22,9 +22,8 @@ window.PAGES["B4"].render = function (ctx) {
     <div class="body">
       ${C.coverKit({ pid: "B4", ctx })}
 
-      <div class="note" style="margin-top:12px;line-height:1.7">
+      <div class="note" style="margin-top:11px;line-height:1.7">
         换成自己那张脸、那盘货，点击率本来就更高——AI 只负责排字，不负责编画面。
-        主标题里打 <b>|</b> 可以手动换行。
       </div>
     </div>
 

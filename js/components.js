@@ -411,26 +411,27 @@
 
     return `<div class="ckit${compact ? " sm" : ""}">
       <div class="ck-head">
-        <div class="ck-pv">${shot(cur, base, compact ? 9.2 : 12)}
+        <div class="ck-pv">${shot(cur, base, compact ? 9 : 12)}
           <div class="cap">${base.name}${base.at ? " · " + base.at : ""}</div>
         </div>
         <div class="ck-fields">
-          <div class="fd"><span class="fl">主标题</span>
-            <input data-bind="${pid}.big" data-live value="${String(bigTx).replace(/"/g, "&quot;")}"
-                   placeholder="封面主打那句" /></div>
-          <div class="fd"><span class="fl">副标题</span>
-            <input data-bind="${pid}.small" data-live value="${String(smallTx).replace(/"/g, "&quot;")}"
-                   placeholder="价格 / 时间" /></div>
-          <div class="ck-tip">打 <b>|</b> 手动换行 · 改完立刻见</div>
+          <div class="fd2">
+            <label class="fd"><span class="fl">主标题 <em>打 | 可换行</em></span>
+              <input data-bind="${pid}.big" data-live value="${String(bigTx).replace(/"/g, "&quot;")}"
+                     placeholder="封面主打那句" /></label>
+            <label class="fd"><span class="fl">副标题</span>
+              <input data-bind="${pid}.small" data-live value="${String(smallTx).replace(/"/g, "&quot;")}"
+                     placeholder="价格 / 时间" /></label>
+          </div>
         </div>
       </div>
 
-      <div class="bsets" style="margin-top:10px">
+      <div class="bsets" style="margin-top:9px">
         ${baseTile(D.coverBase("frame"), true)}
         ${hasPh ? baseTile(base, true) : baseTile({ k: "photo" }, false)}
       </div>
 
-      <div class="ctray" style="margin-top:9px">${D.covers().map(tile).join("")}</div>
+      <div class="ctray" style="margin-top:8px">${D.covers().map(tile).join("")}</div>
     </div>`;
   };
 

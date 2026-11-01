@@ -94,12 +94,17 @@ window.PAGES["B2.4"].render = function (ctx) {
       <div class="tr">${t.rate}</div>
     </div>`;
 
-  /* 声音：一行一个，谁在念 + 一句差别。不铺开写解释，选完在下面给一句提示 */
-  const voiceRow = (x) => `<div class="vrow${x.id === vid ? " on" : ""}" data-set="B2.4.voice=${x.id}">
-      <span class="rd"></span>
-      <span class="vw"><b>${x.name}${x.tag ? `<em class="vtag">${x.tag}</em>` : ""}</b>
-        <i>${x.sub}</i></span>
-      ${x.k === "ai" ? `<span class="vact">▶ 听一句</span>` : `<span class="vact off">要录</span>`}
+  /* 声音：一行三格。上一版是三行横条，每行右边还挂一个「▶ 听一句」，
+     占掉 160px 却只说清三件事。现在并排三格，一屏看完。
+     格子比横条更容易"扫"——三选一本来就该并排摆，不该竖着一条条读；
+     以后再多个声音也只是换行，不会变成六行。
+     「推荐 / 要录」不单独占位：默认选中的那个就是推荐，原音那格副句已写「要你念一遍」。
+     试听按钮也去掉了——原型里点了没有真声音，留着反而是个假按钮。 */
+  const voiceCell = (x) => `<div class="vcell${x.id === vid ? " on" : ""}" data-set="B2.4.voice=${x.id}">
+      <span class="vv"><i></i><i></i><i></i></span>
+      <b>${x.name}</b>
+      <em>${x.sub}</em>
+      ${x.id === vid ? `<span class="vk">✓</span>` : ""}
     </div>`;
 
   return `<div class="app">
@@ -110,24 +115,19 @@ window.PAGES["B2.4"].render = function (ctx) {
       <div style="padding:0 16px">
         <div class="cfgbrief">
           <b>${summary}</b>
-          <span>${d.segCount} 段 · 约 ${d.durTotal} 秒 · ${tpl.name} · ${v.name}</span>
+          <span>${d.segCount} 段 · 约 ${d.durTotal} 秒</span>
         </div>
       </div>
 
       ${step(1, "选模板", "这条片子怎么剪")}
       <div class="trow">${D.templates().map(card).join("")}</div>
       <div style="padding:0 16px">
-        <div class="pickread">
-          <div class="pr-h"><b>${tpl.name}</b><span>${tpl.rate}</span></div>
-          <div class="pr-d">${tpl.desc}</div>
-          <div class="pr-eg">比如：${tpl.eg}</div>
-          <div class="pr-bits">${tpl.bits.map((b) => `<span>${b}</span>`).join("")}</div>
-        </div>
+        <div class="tpline"><b>${tpl.name}</b><i>·</i><span>${tpl.desc}</span></div>
       </div>
 
       ${step(2, "选声音", "谁在念这段词")}
       <div style="padding:0 16px">
-        <div class="card" style="padding:2px 15px 4px">${D.voices().map(voiceRow).join("")}</div>
+        <div class="vgrid">${D.voices().map(voiceCell).join("")}</div>
         <div class="note" style="margin:7px 2px 0">${v.k === "self"
           ? "自己念信任最高，但要按分段录一遍（约 3 分钟），改词还得重录。"
           : "AI 配音不用出声，改完台词直接重配；老客听得出不是你本人。"}</div>
