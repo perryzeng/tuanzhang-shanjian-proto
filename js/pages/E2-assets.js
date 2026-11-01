@@ -1,31 +1,25 @@
-window.PAGES["E2"].prd = "PRD §6.21 · 素材库（我的 / 团队 · 数据 + 模块卡 + 动态/最新/精选/目录）";
+window.PAGES["E2"].prd = "PRD §6.21 · 素材库（我的 · 数据 + 模块卡 + 动态/最新/精选/目录）";
 window.PAGES["E2"].states = [
-  { k: "", n: "我的：数据（只数字）+ 三张模块卡 + 我的好友（各出最新几条变动）" },
-  { k: "side=team", n: "团队：数据 + 通知 + 任务(一条条) + 作品/素材/脚本 + 整个团队动态" },
+  { k: "", n: "我的素材：数据（只数字）+ 作品/素材/脚本模块卡 + 我的好友" },
   { k: "open=script", n: "钻取：tab 动态/最新/精选/目录（目录可建/移/删）" },
   { k: "open=asset", n: "钻取素材：同 4 个 tab" },
-  { k: "open=work", n: "钻取作品：同 4 个 tab" },
-  { k: "team=0", n: "没团队：只有「我的」一个 tab" }
+  { k: "open=work", n: "钻取作品：同 4 个 tab" }
 ];
 
-/* 素材库 v10 —— 四个 tab：动态 / 最新 / 精选 / 目录。
-   - 顶部只留数字（脚本 / 素材 / 作品 / 今日更新），团队那侧还有团队名与切换；
-   - 主界面：三张模块卡（作品 / 素材 / 脚本）；「我的」底部是「我的好友」，
-     每个好友默认列出他最近几条素材库变动；团队底部是「整个团队的动态」；
-   - 团队任务不再一张张割裂的大卡，收成一张卡里一条条任务；
-   - 点进任意一类：tab = 动态（这类内容的变更记录）/ 最新 / 精选 / 目录；
-     目录里按文件夹分组，可新建文件夹、把条目移进文件夹、删除条目（整理模式）。 */
+/* 素材库（E2 = 我的；E3 团队复用同一套渲染，ctx.__side 强制 team、ctx.__pid 决定写哪个页面的状态）。
+   - 顶部只留数字（脚本 / 素材 / 作品 / 今日更新）；
+   - 三张模块卡（作品 / 素材 / 脚本）；「我的」底部是「我的好友」；
+   - 点任意一类：tab = 动态（变更记录）/ 最新 / 精选 / 目录；目录可建文件夹、移动、删除。 */
 window.PAGES["E2"].render = function (ctx) {
   const C = window.C;
   const D = window.DERIVE;
   const LIB = window.DATA.library;
 
+  const pid = ctx.__pid || "E2";          // 状态写到哪个页面（E2 或 E3）
+  const forcedSide = ctx.__side || "";    // E3 传 "team"
+  const side = forcedSide || "mine";
+
   const teams = LIB.teams || [];
-  const teamOn = LIB.teamOn && ctx.team !== "0" && teams.length > 0;
-
-  const SIDES = [["mine", "我的"], ["team", "团队"]].filter(([k]) => k === "mine" || (k === "team" && teamOn));
-  const side = SIDES.some((s) => s[0] === ctx.side) ? ctx.side : "mine";
-
   const tid = teams.some((t) => t.id === ctx.tid) ? ctx.tid : (teams[0] || {}).id;
   const team = teams.filter((t) => t.id === tid)[0] || {};
 
@@ -48,9 +42,10 @@ window.PAGES["E2"].render = function (ctx) {
   const nfdStr = ctx.nfd || "";
   const extraFd = nfdStr.split(",").filter(Boolean).map((n, i) => ({ id: "nf" + i, name: n, n: 0, fresh: true }));
 
-  const qs = (kv) => "E2.side=" + side + "&E2.tid=" + tid + "&E2.open=" + open
-    + "&E2.tab=" + (ctx.tab || "log") + "&E2.q=" + q + "&E2.moved=" + movStr
-    + "&E2.del=" + delStr + "&E2.nfd=" + nfdStr + "&E2.tsw=" + tsw + "&E2.pick=" + picked.join(",") + "&" + (kv || "");
+  const qs = (kv) => pid + ".side=" + side + "&" + pid + ".tid=" + tid + "&" + pid + ".open=" + open
+    + "&" + pid + ".tab=" + (ctx.tab || "log") + "&" + pid + ".q=" + q + "&" + pid + ".moved=" + movStr
+    + "&" + pid + ".del=" + delStr + "&" + pid + ".nfd=" + nfdStr + "&" + pid + ".tsw=" + tsw
+    + "&" + pid + ".pick=" + picked.join(",") + "&" + (kv || "");
 
   const FICON = { script: "文", asset: "图", work: "作" };
   const KBG = {
@@ -86,9 +81,9 @@ window.PAGES["E2"].render = function (ctx) {
     const av = AV[who];
     const item = f.item ? D.libItem(f.item) : null;
     let go = "";
-    if (f.type === "script") go = item ? "E2.2?id=" + item.id : "E2?open=script&tab=log";
-    else if (f.type === "asset") go = item ? "E2.3?id=" + item.id : "E2?open=asset&tab=log";
-    else if (f.type === "work") go = item ? (item.go || "B4.1?id=" + item.id) : (f.go || "E2?open=work&tab=log");
+    if (f.type === "script") go = item ? "E2.2?id=" + item.id : pid + "?open=script&tab=log";
+    else if (f.type === "asset") go = item ? "E2.3?id=" + item.id : pid + "?open=asset&tab=log";
+    else if (f.type === "work") go = item ? (item.go || "B4.1?id=" + item.id) : (f.go || pid + "?open=work&tab=log");
     return {
       ...f, t, go, item,
       av: av ? av.av : (who === "我" ? "暴" : (who || "?").slice(0, 1)),
@@ -111,31 +106,32 @@ window.PAGES["E2"].render = function (ctx) {
     ? LIB.mineFeed.map((f) => decorate(f, "我"))
     : ((LIB.teamFeed && LIB.teamFeed[tid]) || []).filter((x) => x.type !== "notice" && x.type !== "task").map((f) => decorate(f, f.who));
 
-  /* ---------- 顶部：只留数字（团队那侧保留团队名/切换） ---------- */
+  /* ---------- 顶部：只留数字（团队那侧保留团队名，点名字进团队信息/通讯录） ---------- */
   const cntOf = (k) => D.lib(side, k, {}).items.filter((x) => !delSet[x.id]).length;
   const CNT = { script: cntOf("script"), asset: cntOf("asset"), work: cntOf("work") };
   const recentN = KINDS.reduce((s, [k]) => s + D.lib(side, k, {}).items.filter((x) => x.at === 1 && !delSet[x.id]).length, 0);
 
   const statNums = `<div class="stg">
-      <div data-set="${qs()}&E2.open=script&E2.tab=log&E2.q="><b>${CNT.script}</b><span>脚本</span></div>
-      <div data-set="${qs()}&E2.open=asset&E2.tab=log&E2.q="><b>${CNT.asset}</b><span>素材</span></div>
-      <div data-set="${qs()}&E2.open=work&E2.tab=log&E2.q="><b>${CNT.work}</b><span>作品</span></div>
+      <div data-set="${qs()}&${pid}.open=script&${pid}.tab=log&${pid}.q="><b>${CNT.script}</b><span>脚本</span></div>
+      <div data-set="${qs()}&${pid}.open=asset&${pid}.tab=log&${pid}.q="><b>${CNT.asset}</b><span>素材</span></div>
+      <div data-set="${qs()}&${pid}.open=work&${pid}.tab=log&${pid}.q="><b>${CNT.work}</b><span>作品</span></div>
       <div class="rc"><b>${recentN}</b><span>今日更新</span></div>
     </div>`;
   const statCard = side === "team"
     ? `<div class="statc">
         <div class="sth"><span class="sav">${(team.name || "团").slice(0, 1)}</span>
-          <div class="stt"><b>${team.name}</b><span>${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"}</span></div>
-          ${teams.length > 1 ? `<span class="chg" data-set="${qs()}&E2.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : ""}</div>
+          <div class="stt" data-go="E3.1" data-label="团队信息"><b>${team.name}<span class="tin">›</span></b>
+            <span>${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"} · 通讯录</span></div>
+          ${teams.length > 1 ? `<span class="chg" data-set="${qs()}&${pid}.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : ""}</div>
         ${statNums}</div>`
     : `<div class="statc plain">${statNums}</div>`;
 
   const teamSw = tsw && teams.length > 1 && side === "team" ? `<div class="teamsw">
-      ${teams.map((t) => `<b class="${t.id === tid ? "on" : ""}" data-set="${qs()}&E2.tid=${t.id}&E2.tsw=&E2.tab=log">
+      ${teams.map((t) => `<b class="${t.id === tid ? "on" : ""}" data-set="${qs()}&${pid}.tid=${t.id}&${pid}.tsw=&${pid}.tab=log">
         <i>${t.name.slice(0, 1)}</i>${t.name}<em>${t.members} 人</em>${t.id === tid ? "✓" : ""}</b>`).join("")}
     </div>` : "";
 
-  /* ---------- 团队：通知（紧凑） + 任务（一条条，收在一张卡里） ---------- */
+  /* ---------- 团队：公告（紧凑） + 任务（一条条，收在一张卡里） ---------- */
   const notices = LIB.notices || [];
   const noticeCard = notices.length ? `<div class="ncard">
       <div class="nh"><span class="ni">!</span>公告<span class="cnt">${notices.length}</span></div>
@@ -166,7 +162,7 @@ window.PAGES["E2"].render = function (ctx) {
       ? `<div class="modb col">${show.map((x) => `<span class="mrow"><i class="d"></i>${x.name}</span>`).join("") || `<span class="mem">暂无脚本</span>`}</div>`
       : `<div class="modb">${show.map((x) => `<span class="mth" style="background:${x.bg || KBG[k]}">${x.pick ? `<span>精选</span>` : ""}</span>`).join("") || `<span class="mem">暂无</span>`}</div>`;
     const cap = hero && show[0] ? `<div class="modcap">最新 · ${show[0].name}</div>` : "";
-    return `<div class="mod${hero ? " hero" : ""}" data-set="${qs()}&E2.open=${k}&E2.tab=log&E2.q=" data-label="${TITLE[k]}">
+    return `<div class="mod${hero ? " hero" : ""}" data-set="${qs()}&${pid}.open=${k}&${pid}.tab=log&${pid}.q=" data-label="${TITLE[k]}">
       <div class="modh"><span class="mi" style="background:${KBG[k]}">${FICON[k]}</span>
         <b>${TITLE[k]}</b><em>${its.length}</em><span class="go">›</span></div>
       ${body}${cap}</div>`;
@@ -208,7 +204,7 @@ window.PAGES["E2"].render = function (ctx) {
   const curTab = TABS.some((t) => t[0] === ctx.tab) ? ctx.tab : "log";
   const canOrganize = open && curTab !== "log";
 
-  const toggle = (id) => "E2.pick=" + (picked.indexOf(id) >= 0 ? picked.filter((x) => x !== id) : picked.concat(id)).join(",");
+  const toggle = (id) => pid + ".pick=" + (picked.indexOf(id) >= 0 ? picked.filter((x) => x !== id) : picked.concat(id)).join(",");
 
   const rowScript = (x) => `<div class="srow" ${sel
       ? `data-set="${qs(toggle(x.id))}"`
@@ -241,21 +237,21 @@ window.PAGES["E2"].render = function (ctx) {
   const empty = `<div class="emptybox"><span class="ei">${q ? "⌕" : "▦"}</span>
       <b>${q ? "没找到「" + q + "」" : "这里还是空的"}</b>
       <span>${q ? "换个词试试，或者清掉搜索" : "上传素材、或者新建一个文件夹开始整理"}</span>
-      ${q ? `<em data-set="E2.q=">清掉搜索</em>` : ""}</div>`;
+      ${q ? `<em data-set="${pid}.q=">清掉搜索</em>` : ""}</div>`;
   const emptyLog = `<div class="emptybox"><span class="ei">≡</span><b>这类还没有变更记录</b>
       <span>上传或更新${KINDNAME[kind]}后，这里会按时间记下流水</span></div>`;
 
-  /* 新建文件夹：点开原地变成输入框，起名再确定（不再直接塞一个"新建文件夹N"） */
+  /* 新建文件夹：点开原地变成输入框，起名再确定 */
   const nfNew = ctx.nfnew === "1";
   const nfNameRaw = (ctx.nfname || "").trim().replace(/[&=><"]/g, "");
   const nfInputVal = (ctx.nfname || "").replace(/"/g, "&quot;");
   const dirNew = nfNew
     ? `<div class="dirnew editing">
-        <input data-bind="E2.nfname" data-live value="${nfInputVal}" placeholder="给文件夹起个名字" />
-        <b class="ok${nfNameRaw ? "" : " off"}" ${nfNameRaw ? `data-set="${qs("E2.nfd=" + (nfdStr ? nfdStr + "," : "") + nfNameRaw + "&E2.nfnew=&E2.nfname=")}&E2.toast=已新建「${nfNameRaw}」"` : ""}>确定</b>
-        <span class="cnl" data-set="E2.nfnew=&E2.nfname=">取消</span>
+        <input data-bind="${pid}.nfname" data-live value="${nfInputVal}" placeholder="给文件夹起个名字" />
+        <b class="ok${nfNameRaw ? "" : " off"}" ${nfNameRaw ? `data-set="${qs(pid + ".nfd=" + (nfdStr ? nfdStr + "," : "") + nfNameRaw + "&" + pid + ".nfnew=&" + pid + ".nfname=")}&${pid}.toast=已新建「${nfNameRaw}」"` : ""}>确定</b>
+        <span class="cnl" data-set="${pid}.nfnew=&${pid}.nfname=">取消</span>
       </div>`
-    : `<div class="dirnew" data-set="E2.nfnew=1">＋ 新建文件夹</div>`;
+    : `<div class="dirnew" data-set="${pid}.nfnew=1">＋ 新建文件夹</div>`;
 
   const dirBody = `
     ${dirNew}
@@ -283,19 +279,19 @@ window.PAGES["E2"].render = function (ctx) {
   }
 
   const otabs = `<div class="otabs">
-      ${TABS.map(([k, tx, n]) => `<b class="${curTab === k ? "on" : ""}" data-set="${qs()}&E2.tab=${k}&E2.q=&E2.pick=&E2.sel=">${tx}<em>${n}</em></b>`).join("")}
+      ${TABS.map(([k, tx, n]) => `<b class="${curTab === k ? "on" : ""}" data-set="${qs()}&${pid}.tab=${k}&${pid}.q=&${pid}.pick=&${pid}.sel=">${tx}<em>${n}</em></b>`).join("")}
     </div>`;
 
   const searchBar = `<div class="gsearch compact" style="margin-top:10px">
       <span class="mag">⌕</span>
-      <input data-bind="E2.q" data-live value="${q.replace(/"/g, "&quot;")}"
+      <input data-bind="${pid}.q" data-live value="${q.replace(/"/g, "&quot;")}"
              placeholder="${curTab === "log" ? "搜变更记录" : "搜" + KINDNAME[kind] + "名称"}" />
-      ${q ? `<span class="clr" data-set="E2.q=">清空</span>` : ""}
+      ${q ? `<span class="clr" data-set="${pid}.q=">清空</span>` : ""}
     </div>`;
 
   const openBody = `
     <div class="kfbar">
-      <span class="bk" data-set="${qs()}&E2.open=&E2.tab=log&E2.pick=&E2.sel=">‹ 全部</span>
+      <span class="bk" data-set="${qs()}&${pid}.open=&${pid}.tab=log&${pid}.pick=&${pid}.sel=">‹ 全部</span>
       <b>${KINDNAME[kind]} · ${allItems.length} 个</b>
     </div>
     ${otabs}
@@ -305,17 +301,12 @@ window.PAGES["E2"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <div class="ttl" style="margin-left:2px">素材库
+      <div class="ttl" style="margin-left:2px">${side === "team" ? "团队" : "素材库"}
         <small>${side === "team" ? team.name : "我的"}</small></div>
-      ${canOrganize ? `<span class="act" data-set="${sel ? "E2.sel=&E2.pick=&E2.mv=" : "E2.sel=1"}">${sel ? "完成" : "整理"}</span>` : ""}
+      ${canOrganize ? `<span class="act" data-set="${sel ? pid + ".sel=&" + pid + ".pick=&" + pid + ".mv=" : pid + ".sel=1"}">${sel ? "完成" : "整理"}</span>` : ""}
     </div>
 
     <div class="body" style="padding-bottom:110px">
-      <div class="sidetabs">
-        ${SIDES.map(([k, tx]) => `<b class="${side === k ? "on" : ""}"
-          data-set="${qs()}&E2.side=${k}&E2.open=&E2.tab=log&E2.pick=&E2.sel=">${tx}</b>`).join("")}
-      </div>
-
       ${open ? openBody : `
         ${statCard}
         ${teamSw}
@@ -329,19 +320,19 @@ window.PAGES["E2"].render = function (ctx) {
 
     ${sel && canOrganize ? `<div class="selbar">
       <b>已选 ${picked.length} 个</b>
-      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="E2.mv=1"` : ""}>移动到</span>
-      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs("E2.pick=&E2.sel=")}&E2.toast=已设为精选"` : ""}>设为精选</span>
-      <span class="sb warn${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs("E2.del=" + (delStr ? delStr + "," : "") + picked.join(",") + "&E2.pick=&E2.sel=")}&E2.toast=已删除 ${picked.length} 项"` : ""}>删除</span>
+      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="${pid}.mv=1"` : ""}>移动到</span>
+      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs(pid + ".pick=&" + pid + ".sel=")}&${pid}.toast=已设为精选"` : ""}>设为精选</span>
+      <span class="sb warn${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs(pid + ".del=" + (delStr ? delStr + "," : "") + picked.join(",") + "&" + pid + ".pick=&" + pid + ".sel=")}&${pid}.toast=已删除 ${picked.length} 项"` : ""}>删除</span>
     </div>
     ${mvOpen && picked.length ? `<div class="mvpanel">
       <div class="mh">移动到哪个文件夹</div>
       <div class="mlist">
-        ${folders.map((f) => `<b data-set="${qs("E2.moved=" + movStr + (movStr ? ";" : "")
-          + picked.map((id) => id + ">" + f.id).join(";") + "&E2.pick=&E2.mv=")}&E2.toast=已移到「${f.name}」">${f.name}</b>`).join("")}
-        <b class="nf" data-set="${qs("E2.nfd=" + (nfdStr ? nfdStr + "," : "") + "新建文件夹" + (extraFd.length + 1) + "&E2.pick=&E2.mv=")}&E2.toast=已新建文件夹">＋ 新建文件夹</b>
+        ${folders.map((f) => `<b data-set="${qs(pid + ".moved=" + movStr + (movStr ? ";" : "")
+          + picked.map((id) => id + ">" + f.id).join(";") + "&" + pid + ".pick=&" + pid + ".mv=")}&${pid}.toast=已移到「${f.name}」">${f.name}</b>`).join("")}
+        <b class="nf" data-set="${qs(pid + ".nfd=" + (nfdStr ? nfdStr + "," : "") + "新建文件夹" + (extraFd.length + 1) + "&" + pid + ".pick=&" + pid + ".mv=")}&${pid}.toast=已新建文件夹">＋ 新建文件夹</b>
       </div>
     </div>` : ""}` : ""}
 
-    ${C.tab("E2")}
+    ${C.tab(pid)}
   </div>`;
 };

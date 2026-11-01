@@ -857,6 +857,17 @@ window.DATA = {
       { id: "tm_1", name: "暴富者的团", members: 12, role: "团长", brief: "本周目标 · 3 条开团片", day: "第 3 周" },
       { id: "tm_2", name: "深圳健康选品联盟", members: 86, role: "团员", brief: "总部直管 · 每周 5 条", day: "第 8 周" }
     ],
+    /* 团队成员通讯录：点团队名进团队信息时展示。真实产品里来自团队成员表 + 手机号（脱敏） */
+    teamMembers: [
+      { name: "暴富者", role: "团长", av: "暴", bg: "#2C5BFF", joined: "第 1 周", posts: 18, phone: "138****6600" },
+      { name: "阿玲", role: "副团长", av: "玲", bg: "#7C5CFF", joined: "第 1 周", posts: 22, phone: "137****2231" },
+      { name: "阿强", role: "团员", av: "强", bg: "#00A8E8", joined: "第 2 周", posts: 15, phone: "135****8890" },
+      { name: "小雨", role: "团员", av: "雨", bg: "#00B389", joined: "第 2 周", posts: 12, phone: "136****4412" },
+      { name: "小敏", role: "团员", av: "敏", bg: "#FF7A45", joined: "第 3 周", posts: 9, phone: "139****7702" },
+      { name: "阿黎", role: "团员", av: "黎", bg: "#F5A623", joined: "第 3 周", posts: 7, phone: "133****5521" },
+      { name: "阿北", role: "团员", av: "北", bg: "#C71F37", joined: "第 4 周", posts: 6, phone: "132****9987" },
+      { name: "小晓", role: "团员", av: "晓", bg: "#5B8CFF", joined: "第 5 周", posts: 4, phone: "131****3345" }
+    ],
     /* 团队首页是一条**混排信息流**：公告置顶、任务插在中间、动态按时间排。
        分三个区块摆（公告一摞、任务一摞、动态一摞）看着整齐，但没人会挨个区块看完——
        团长打开团队是想知道"今天有什么动静"，那就该像论坛一样按时间往下刷。 */
