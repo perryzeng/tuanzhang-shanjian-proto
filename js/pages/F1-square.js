@@ -48,14 +48,13 @@ window.PAGES["F1"].render = function (ctx) {
   ];
 
   /* 视频模板卡（热门 / 视频模板共用） */
-  const vcard = (t) => `<div class="ttile">
+  const vcard = (t) => `<div class="ttile" data-go="F3" data-label="做同款 · ${t.title}">
       <div class="tcov" style="background:${t.bg}">
         ${t.img ? `<img src="${t.img}" alt="">` : ""}<span class="tscrim"></span>
         ${t.tag ? `<span class="tctag">${t.tag}</span>` : ""}
         <span class="tcdur">${t.dur}</span>
         <div class="tcovtx">${t.cap}</div>
       </div>
-      <div class="ttcap">${t.title}</div>
       <div class="ttmeta">用 ${t.uses} · ♥ ${t.likes}</div>
       <div class="ttft"><span class="tav" style="background:${t.avbg}">${t.av}</span>
         <span class="tname">${t.by}</span>
@@ -72,7 +71,7 @@ window.PAGES["F1"].render = function (ctx) {
           <div class="tfcap">${f.cap}</div>
           <span class="tfmeta">▶ 8.6 万播放 · 已用 128 次</span>
         </div>
-        <div class="tfinfo"><b>${f.title}</b><span>@${f.by} · 3 段 40 秒</span>
+        <div class="tfinfo"><span>@${f.by} · 3 段 40 秒</span>
           <span class="tdo" data-go="F3" data-label="做同款 · ${f.title}">做同款</span></div>
       </div>
       <div class="ttgrid">${VIDEO.slice(1, 5).map(vcard).join("")}</div>`;
@@ -103,7 +102,7 @@ window.PAGES["F1"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ k: "剪同款", t: "同行都在拍，一键做同款", act: `<span class="btn-pill line">＋ 发布</span>` })}
+    ${C.ph({ t: "同行都在拍，一键做同款" })}
 
     <div class="body" style="padding-bottom:100px">
       <div class="gsearch"><span class="mag">⌕</span><span>搜模板、脚本、封面、主题</span></div>

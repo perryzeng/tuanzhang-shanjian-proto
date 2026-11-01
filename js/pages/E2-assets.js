@@ -252,7 +252,7 @@ window.PAGES["E2"].render = function (ctx) {
         ${x.pick ? `<span class="pickmark">精选</span>` : ""}
         <span class="cnt">${x.sub.split(" · ")[0]}</span>
       </div>
-      <div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span><span style="display:block;font-size:8.5px;color:var(--text-4);margin-top:1px">用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>
+      ${kind === "work" ? "" : `<div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span><span style="display:block;font-size:8.5px;color:var(--text-4);margin-top:1px">用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>`}
     </div>`;
 
   const tileGo = (x) => (kind === "asset" ? "E2.3?id=" + x.id + (mng ? "&mng=1" : "") : (x.go || "B4.1?id=" + x.id));

@@ -50,7 +50,7 @@ window.PAGES["A1"].render = function () {
   }));
 
   /* ---------- 团队最新 / 平台精选 ---------- */
-  const TEAM_IMG = ["assets/gen/p-still.jpg", "assets/gen/p-person.jpg", "assets/gen/p-unbox.jpg"];
+  const TEAM_IMG = ["assets/gen/t-shot.jpg", "assets/gen/p-unbox.jpg", "assets/gen/p-person.jpg"];
   const teamCards = A.teamVideos(3).map((v, i) => ({
     bg: v.bg, img: TEAM_IMG[i % TEAM_IMG.length], who: v.who.slice(-1), whoBg: v.whoBg,
     plays: A.plays(v.plays), title: v.title,
@@ -89,7 +89,6 @@ window.PAGES["A1"].render = function () {
             ${c.img ? `<img src="${c.img}" alt="">` : ""}
             ${c.kind === "draft" ? `<span class="crdraft">草稿 · 未完成</span>` : ""}
           </div>
-          <div class="crt">${c.name}</div>
           <div class="crs">${c.at}</div>
         </div>`).join("")}
       </div>

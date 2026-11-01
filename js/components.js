@@ -323,7 +323,6 @@
           ${v.who ? `<span class="wh" style="background:${v.whoBg || "rgba(124,92,255,.9)"}">${v.who}</span>` : ""}
           ${v.plays ? `<span class="pl">▶ ${v.plays}</span>` : ""}
         </div>
-        <b>${v.title}</b><span>${v.sub || ""}</span>
       </div>`).join("")}</div>`;
 
   /* 平台专题大卡 */
