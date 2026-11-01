@@ -331,37 +331,23 @@ window.PAGES["E2"].render = function (ctx) {
       <span class="vlab">${tview === "owner" ? "超管" : tview === "admin" ? "管理员" : "只读"}</span>
     </div>` : "";
 
-  const MANAGE = tview === "owner"
-    ? [["☺", "成员管理", "E3.3"], ["◫", "席位管理", "E3.2"], ["▦", "素材管理", pid + "?open=asset&tab=dir"], ["⚙", "团队设置", "E3.1"]]
-    : tview === "admin"
-      ? [["☺", "成员管理", "E3.3"], ["▦", "素材管理", pid + "?open=asset&tab=dir"]]
-      : [];
-  const manageBar = MANAGE.length ? `<div class="mgbar">
-      <div class="mgh">管理台<em>${tview === "owner" ? "团队长 · 超管" : "管理员"}</em></div>
-      <div class="mgg">${MANAGE.map(([ic, tx, go]) => `<div class="mgc" data-go="${go}" data-label="${tx}">
-        <span class="mgi">${ic}</span><b>${tx}</b></div>`).join("")}</div>
-    </div>` : "";
-
-  const seatInfo = window.DATA.seatInfo || { total: 0, used: 0, price: 10, min: 10 };
-  const seatStrip = tview === "owner" ? `<div class="seatbar" data-go="E3.2" data-label="席位管理">
-      <div class="sbt"><b>席位</b><span>已用 ${seatInfo.used}/${seatInfo.total} · 剩余 ${seatInfo.total - seatInfo.used} · ¥${seatInfo.price}/席</span></div>
-      <span class="sbgo">加购 ›</span></div>` : "";
-
   return `<div class="app">
     ${C.sb()}
     ${side === "friend"
       ? C.ab({ title: friendName, sub: `好友 · ${friend.n || (CNT.script + CNT.asset + CNT.work)} 份资料`, back: "E2" })
       : `<div class="ab">
-      <div class="ttl" style="margin-left:2px"${side === "team" ? ` data-go="E3.1" data-label="团队信息"` : ""}>${side === "team" ? team.name : "素材库"}
+      <div class="ttl" style="margin-left:2px"${side === "team" ? ` data-go="E3.1?view=${tview}" data-label="团队信息"` : ""}>${side === "team" ? team.name : "素材库"}
         <small>${side === "team" ? `${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"} · 通讯录 ›` : "我的"}</small></div>
       ${canOrganize
         ? `<span class="act" data-set="${sel ? pid + ".sel=&" + pid + ".pick=&" + pid + ".mv=" : pid + ".sel=1"}">${sel ? "完成" : "整理"}</span>`
-        : (side === "team" && teams.length > 1 ? `<span class="act" data-set="${qs()}&${pid}.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : "")}
+        : (side === "team"
+          ? `${(tview === "owner" || tview === "admin") ? `<span class="act" data-go="E3.4?view=${tview}" data-label="团队管理">管理</span>` : ""}${teams.length > 1 ? `<span class="act" style="background:var(--bg-2);color:var(--text-2);box-shadow:none" data-set="${qs()}&${pid}.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : ""}`
+          : "")}
     </div>`}
 
     <div class="body" style="padding-bottom:110px">
       ${open ? openBody : (side === "team"
-        ? `${tviewBar}${teamSw}${manageBar}${seatStrip}${bannerCard}${noticeCard}${taskList}${mods}
+        ? `${tviewBar}${teamSw}${bannerCard}${noticeCard}${taskList}${mods}
            <div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
         : side === "friend"
           ? `${searchEntry}${mods}<div class="feedhd">${friendName}的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`

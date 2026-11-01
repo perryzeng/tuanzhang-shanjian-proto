@@ -1805,6 +1805,10 @@
 
 .okbar{background:#EAF9F3;border:1px solid #BFE9DA;color:#0B7D5E;border-radius:12px;padding:10px 12px;
   font-size:11.5px;font-weight:700;margin-top:10px;line-height:1.5}
+.only{font-style:normal;font-size:8.5px;font-weight:700;color:#C2410C;background:#FFE9D9;border-radius:5px;
+  padding:1px 6px;margin-left:6px;vertical-align:middle}
+.warnnote{background:#FFF3F0;border:1px solid #FFD9CC;color:#C2410C;border-radius:12px;padding:10px 12px;
+  font-size:11px;line-height:1.6;margin-top:14px}
 
 /* 公告：紧凑两行，点进通知中心 */
 .ncard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:8px 13px 4px;margin-top:10px}

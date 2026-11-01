@@ -12,10 +12,11 @@ window.PAGES["E3"].render = function (ctx) {
   return window.PAGES["E2"].render(Object.assign({}, ctx, { __pid: "E3", __side: "team" }));
 };
 
-window.PAGES["E3.1"].prd = "PRD §6.22.1 · 团队信息（基本资料 + 成员通讯录）";
+window.PAGES["E3.1"].prd = "PRD §6.22.1 · 团队资料（基本资料 + 席位 + 成员通讯录 + 管理入口）";
 window.PAGES["E3.1"].render = function (ctx) {
   const C = window.C;
   const LIB = window.DATA.library;
+  const DATA = window.DATA;
   const teams = LIB.teams || [];
   const tid = teams.some((t) => t.id === ctx.tid) ? ctx.tid : (teams[0] || {}).id;
   const team = teams.filter((t) => t.id === tid)[0] || {};
@@ -23,6 +24,8 @@ window.PAGES["E3.1"].render = function (ctx) {
   const totalPosts = mem.reduce((s, m) => s + (m.posts || 0), 0);
   const show = mem.slice(0, 8);
   const more = Math.max(0, (team.members || 0) - show.length);
+  const s = DATA.seatInfo || { total: 20, used: 12, price: 10, min: 10 };
+  const view = ctx.view === "admin" ? "admin" : ctx.view === "member" ? "member" : "owner";
 
   const row = (m) => `<div class="tmr" data-label="${m.name}">
       <span class="tav" style="background:${m.bg}">${m.av}</span>
@@ -31,9 +34,14 @@ window.PAGES["E3.1"].render = function (ctx) {
       <span class="tmp">${m.phone}</span>
     </div>`;
 
+  const linkRow = (ic, t, sub, go) => `<div class="li" style="box-shadow:none;margin:0;border-radius:0;padding:13px 0" data-go="${go}" data-label="${t}">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--brand-weak);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 34px">${ic}</div>
+      <div class="tx"><b style="margin-bottom:2px">${t}</b><span>${sub}</span></div>
+      <span style="color:var(--text-4);font-size:16px">›</span></div>`;
+
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "团队信息", sub: team.name, back: "E3", act: "邀请" })}
+    ${C.ab({ title: "团队资料", sub: team.name, back: "E3" })}
 
     <div class="body">
       <div class="tinfo" style="background:linear-gradient(135deg,#2C5BFF,#7C5CFF)">
@@ -45,6 +53,11 @@ window.PAGES["E3.1"].render = function (ctx) {
         <div><b>${team.members}</b><span>成员</span></div>
         <div><b>${totalPosts}</b><span>本月发布</span></div>
         <div><b>${team.role}</b><span>我的身份</span></div>
+      </div>
+
+      <div class="card" style="margin-top:12px;padding:0 14px">
+        ${linkRow("◎", "席位", `已用 ${s.used}/${s.total} · 剩余 ${s.total - s.used} · ¥${s.price}/席`, "E3.2")}
+        ${view !== "member" ? linkRow("⚙", "团队管理", "发公告 / 任务 · 成员 · 素材 · Banner", "E3.4?view=" + view) : ""}
       </div>
 
       <div class="feedhd">团队成员<span>${team.members}</span></div>
@@ -177,6 +190,129 @@ window.PAGES["E3.3"].render = function (ctx) {
       <div class="feedhd">全部成员<span>${list.length}</span></div>
       <div class="card" style="padding:2px 14px;border-radius:16px">${list.map(row).join("")}</div>
       ${removed.length ? `<div class="note" style="margin:10px 2px 0">已移出 ${removed.length} 人（演示，刷新后恢复）</div>` : ""}
+    </div>
+  </div>`;
+};
+
+/* 团队管理：首页右上角「管理」进来的唯一入口页。
+   按互联网习惯分区：内容运营 / 成员与权限 / 素材 / 团队设置，权限不同看到的项不同。 */
+window.PAGES["E3.4"].prd = "PRD §6.22.5 · 团队管理（权限分离：团队长 vs 管理员）";
+window.PAGES["E3.4"].render = function (ctx) {
+  const C = window.C, LIB = window.DATA.library, DATA = window.DATA;
+  const team = (LIB.teams || [])[0] || {};
+  const role = ctx.view === "admin" ? "admin" : "owner";
+  const owner = role === "owner";
+  const s = DATA.seatInfo || { total: 20, used: 12, price: 10, min: 10 };
+  const left = s.total - s.used;
+  const members = (LIB.teamMembers || []).length;
+
+  const row = (ic, t, sub, go, badge) => `<div class="li" style="box-shadow:none;margin:0;border-radius:0;padding:13px 0" data-go="${go}" data-label="${t}">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--brand-weak);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 34px">${ic}</div>
+      <div class="tx"><b style="margin-bottom:2px">${t}${badge ? `<em class="only">${badge}</em>` : ""}</b><span>${sub}</span></div>
+      <span style="color:var(--text-4);font-size:16px">›</span></div>`;
+  const grp = (title, rows) => `<div class="feedhd" style="margin-top:14px">${title}</div><div class="card" style="padding:0 16px">${rows.join("")}</div>`;
+
+  return `<div class="app">
+    ${C.sb()}
+    ${C.ab({ title: "团队管理", sub: `${team.name || ""} · ${owner ? "团队长（超管）" : "管理员"}`, back: "E3" })}
+    <div class="body">
+      <div class="note" style="margin:2px 2px 8px;line-height:1.7">${owner
+        ? "团队长拥有全部权限：发公告 / 任务、管理成员与素材、设置管理员、管理席位与 Banner。"
+        : "管理员可发公告 / 任务、管理成员与素材、设置 Banner；席位与解散团队仅团队长可操作。"}</div>
+
+      ${grp("内容运营", [
+        row("✎", "发布公告", "公告会出现在团队首页顶部", "E3.5"),
+        row("✓", "发布任务", "派给成员，带截止时间与进度", "E4"),
+        row("▤", "Banner 运营", "首页轮播位，可新增 / 上下线", "E3.7")
+      ])}
+
+      ${grp("成员与权限", [
+        row("☺", "成员管理", `${members} 位成员 · 剩余 ${left} 席`, "E3.3"),
+        owner ? row("★", "设置管理员", "在成员管理里指定 / 取消管理员", "E3.3") : ""
+      ].filter(Boolean))}
+
+      ${grp("团队素材", [
+        row("◫", "素材整理", "移动 / 删除 / 设精选，按文件夹归置", "E3?open=asset&tab=dir")
+      ])}
+
+      ${grp("团队设置", [
+        row("ⓘ", "团队资料", "名称、简介、成员通讯录", "E3.1"),
+        owner ? row("◎", "席位管理", `已用 ${s.used}/${s.total} · 剩余 ${left} 席 · ¥${s.price}/席`, "E3.2") : ""
+      ].filter(Boolean))}
+
+      ${owner ? `<div class="warnnote">解散团队：清空成员与内容，席位与积分不退，需二次确认。</div>` : ""}
+    </div>
+  </div>`;
+};
+
+/* 发布公告（团队长 / 管理员） */
+window.PAGES["E3.5"].prd = "PRD §6.22.6 · 发布公告";
+window.PAGES["E3.5"].render = function (ctx) {
+  const C = window.C;
+  const done = ctx.done === "1";
+  const top = ctx.top === "1";
+  const title = (ctx.title || "").replace(/"/g, "&quot;");
+  const body = (ctx.body || "").replace(/</g, "&lt;");
+  return `<div class="app">
+    ${C.sb()}
+    ${C.ab({ title: "发布公告", sub: "团队首页 · 公告", back: "E3.4" })}
+    <div class="body">
+      ${done ? `<div class="okbar">公告已发布，成员会在团队首页看到（演示）</div>
+        <div style="margin-top:16px"><div class="btn ai" data-go="E3" data-label="返回团队">返回团队 ›</div></div>` : `
+      <div class="card" style="padding:14px">
+        <div class="s" style="margin-bottom:7px">标题</div>
+        <input data-bind="E3.5.title" data-live value="${title}" placeholder="例如：10 月团价已调整"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:13px;font-weight:600;margin-bottom:13px" />
+        <div class="s" style="margin-bottom:7px">内容</div>
+        <textarea data-bind="E3.5.body" data-live placeholder="写清楚改了什么、什么时候生效"
+          style="width:100%;height:110px;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:12.5px;line-height:1.6;resize:none">${body}</textarea>
+      </div>
+      <div class="card" style="margin-top:12px;padding:13px 14px;display:flex;align-items:center" data-set="E3.5.top=${top ? "" : "1"}">
+        <div style="flex:1"><div class="h3">置顶公告</div><div class="xs" style="margin-top:3px">置顶后会钉在团队首页最上方</div></div>
+        <span class="sw${top ? " on" : ""}"></span>
+      </div>`}
+    </div>
+    ${done ? "" : `<div class="actionbar"><div class="btn ai" data-set="E3.5.done=1" data-label="发布公告">发布公告</div></div>`}
+  </div>`;
+};
+
+/* Banner 运营（团队长 / 管理员）：列表 + 上下线 + 新增 */
+window.PAGES["E3.7"].prd = "PRD §6.22.7 · Banner 运营";
+window.PAGES["E3.7"].render = function (ctx) {
+  const C = window.C, LIB = window.DATA.library;
+  const banners = LIB.teamBanners || [];
+  const off = (ctx.off || "").split(",").filter(Boolean);
+  const mine = (ctx.mine || "").split("|").filter(Boolean);
+  const isOff = (id) => off.indexOf(id) >= 0;
+  const toggle = (id) => "E3.7.off=" + (isOff(id) ? off.filter((x) => x !== id) : off.concat(id)).join(",");
+  const formOpen = ctx.new === "1";
+  const ntitle = (ctx.ntitle || "").replace(/"/g, "&quot;");
+
+  const items = banners.map((b, i) => ({ id: "b" + i, t: b.t, sub: b.sub, tag: b.tag, bg: b.bg }))
+    .concat(mine.map((t, i) => ({ id: "m" + i, t, sub: "自定义 Banner", tag: "新增", bg: "linear-gradient(135deg,#5B8CFF,#2C5BFF)" })));
+
+  const row = (it) => `<div class="tmr">
+      <span class="tav" style="background:${it.bg};border-radius:10px">${(it.t || "B").slice(0, 1)}</span>
+      <div class="tmt"><b>${it.t}${it.tag ? `<em>${it.tag}</em>` : ""}</b><span>${it.sub}</span></div>
+      <span class="mact ${isOff(it.id) ? "mute" : ""}" data-set="${toggle(it.id)}">${isOff(it.id) ? "已下线" : "上线中"}</span>
+    </div>`;
+
+  return `<div class="app">
+    ${C.sb()}
+    ${C.ab({ title: "Banner 运营", sub: "团队首页轮播", back: "E3.4", act: "新增" })}
+    <div class="body">
+      <div class="note" style="margin:2px 2px 8px;line-height:1.7">团队长与管理员都可设置；轮播按顺序展示，最多 5 张。点右侧可临时下线。</div>
+      ${formOpen ? `<div class="card" style="padding:14px">
+        <div class="s" style="margin-bottom:7px">Banner 标题</div>
+        <input data-bind="E3.7.ntitle" data-live value="${ntitle}" placeholder="例如：本周冲 3 条开团片"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:13px;font-weight:600" />
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <div class="btn ai" style="flex:1" data-set="E3.7.mine=${mine.concat(ctx.ntitle || "新 Banner").join("|")}&E3.7.new=&E3.7.ntitle=" data-label="保存 Banner">保存</div>
+          <div class="btn ghost" style="flex:0 0 92px" data-set="E3.7.new=" data-label="取消">取消</div>
+        </div>
+      </div>` : ""}
+      <div class="feedhd" style="margin-top:14px">轮播内容<span>${items.length}</span></div>
+      <div class="card" style="padding:2px 14px;border-radius:16px">${items.map(row).join("") || `<div class="frempty">还没有 Banner</div>`}</div>
     </div>
   </div>`;
 };
