@@ -28,9 +28,8 @@ window.PAGES["B1"].render = function (ctx) {
         <div class="quick">${quick.map((t) => `<span class="chip" data-set="B1.topic=${t}">${t}</span>`).join("")}</div>
         <div class="cbot">
           <div class="ways">
-            <span class="wtip">手上已经有内容</span>
-            ${way("⧉", "导入脚本", "B1.2", G("#2C5BFF", "#5B8CFF"))}
-            ${way("▷", "导入视频", "C1", G("#00A8E8", "#00C2FF"))}
+            ${way("⧉", "引用已有脚本", "B1.2", G("#2C5BFF", "#5B8CFF"))}
+            ${way("▷", "视频文案抽取", "C1", G("#00A8E8", "#00C2FF"))}
           </div>
           <div class="cgo">
             <span class="hint">不用写完整，AI 会补成分段台词和画面</span>
@@ -40,26 +39,25 @@ window.PAGES["B1"].render = function (ctx) {
       </div>
 
       ${C.sec("其他发布器")}
-      <div class="g2">
-        <div class="pubcard" data-go="C1?for=remix" data-label="视频二创">
+      <div class="pubs">
+        <div class="pubrow" data-go="C1?for=remix" data-label="视频二创">
           <div class="pi" style="background:${G("#00A8E8", "#00C2FF")}">▷</div>
-          <b>视频二创</b>
-          <span>导入本地视频，连画面一起还原，发前过安全度</span>
+          <div class="pt">
+            <b>视频二创</b>
+            <span>上传本地视频，抽出文案和画面，改成你的再发</span>
+          </div>
+          <span class="pg">›</span>
         </div>
-        <div class="pubcard" data-go="D1" data-label="主题系列">
+        <div class="pubrow" data-go="D1" data-label="主题系列">
           <div class="pi" style="background:${G("#7C5CFF", "#B08CFF")}">≡</div>
-          <b>主题系列</b>
-          <span>定几天几趴，AI 排好每天主题，一天发一条</span>
+          <div class="pt">
+            <b>主题系列</b>
+            <span>定几天几趴，AI 排好每天主题，一天发一条</span>
+          </div>
+          <span class="pg">›</span>
         </div>
       </div>
 
-      <div class="card plain" style="margin-top:14px;display:flex;align-items:center;gap:10px"
-           data-go="B1.4" data-label="草稿箱">
-        <div style="flex:1;min-width:0">
-          <div class="xs" style="color:var(--text-2)"><b style="color:var(--text)">${drafts.length} 条草稿没收尾</b> · 最新一条改于 ${drafts[0].at}</div>
-        </div>
-        <span style="font-size:11.5px;font-weight:600;color:var(--brand)">去接着做 ›</span>
-      </div>
     </div>
 
     ${C.tab("")}

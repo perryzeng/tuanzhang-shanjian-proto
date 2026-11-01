@@ -38,7 +38,11 @@ window.PAGES["B2"].render = function (ctx) {
   /* 来源只说一句话，数字交给下面的小标题——两处都在说"5 段 46 秒"就是重复 */
   const srcLine = (function () {
     if (kind === "remix")
-      return "二创自 " + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放";
+      /* 本地视频二创：来源说"这是你自己上传的"，并交代怎么切的段——
+         用户刚在上一页选过切段方式，这里不呼应一下会以为白选了 */
+      return ctx.local
+        ? "本地视频「IMG_2043.MOV」· 52 秒 · " + (+ctx.sec > 0 ? "每 " + ctx.sec + " 秒切一段" : "AI 自动分段")
+        : "二创自 " + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放";
     if (src === "import" && ctx.doc) {
       const sc = D.script(ctx.doc);
       return "来自脚本库 ·「" + sc.title + "」· " + sc.who;
@@ -145,7 +149,7 @@ window.PAGES["B2"].render = function (ctx) {
   </div>`;
 
   /* 返回回到来路：走哪条路来的就回哪，不能回错地方 */
-  const backGo = kind === "remix" ? "C1.2"
+  const backGo = kind === "remix" ? (ctx.local ? "C1?for=remix" : "C1.2")
     : src === "import" || src === "struct" ? "B1.2"
     : src === "extract" ? "C1.2"
     : "B1";
@@ -170,7 +174,7 @@ window.PAGES["B2"].render = function (ctx) {
     ${C.sb()}
     <div class="ab">
       <span class="back" data-go="${backGo}" data-label="返回来路">‹</span>
-      <div class="ttl">${d.title}<small>${sub}</small></div>
+      <div class="ttl">${kind === "remix" && ctx.local ? "本地视频 · 二创" : d.title}<small>${sub}</small></div>
       <span class="act" data-set="B2.mode=${mode === "browse" ? "edit" : "browse"}&B2.vo=self">${mode === "browse" ? "编辑" : "完成"}</span>
     </div>
 
