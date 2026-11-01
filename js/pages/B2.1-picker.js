@@ -4,8 +4,10 @@ window.PAGES["B2.1"].prd = "PRD §6.7～6.9 · 素材选择与语义匹配";
 window.PAGES["B2.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const kind = ctx.kind || "script";
-  const d = D.draft(kind);
+  const d = D.draft(kind, { doc: ctx.doc, day: ctx.day, src: ctx.src });
   const seg = d.segments.filter((s) => s.id === ctx.seg)[0] || d.missSegs[0] || d.cur;
+  /* 回发布器要带上「从哪来」，否则回来会变成另一份草稿 */
+  const backQ = "B2?kind=" + kind + (ctx.doc ? "&src=import&doc=" + ctx.doc : "") + (ctx.day ? "&day=" + ctx.day : "");
   const tab = ctx.tab || "rec";
   const list = D.recommend(seg, tab);
   const sel = ctx.pick || (seg.shots[0] || {}).asset || (list[0] && list[0].id);
@@ -50,7 +52,7 @@ window.PAGES["B2.1"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <span class="back" data-go="B2" data-label="返回发布器">‹</span>
+      <span class="back" data-go="${backQ}" data-label="返回发布器">‹</span>
       <div class="ttl">发布器 · ${d.title}<small>给第 ${seg.idx + 1} 段配画面</small></div>
     </div>
 
@@ -81,7 +83,7 @@ window.PAGES["B2.1"].render = function (ctx) {
               <div class="t1">给「第 ${seg.idx + 1} 段 · ${seg.name}」配画面</div>
               <div class="t2">台词：${seg.vo}</div>
             </div>
-            <span style="font-size:12px;font-weight:700;color:var(--brand);cursor:pointer" data-go="B2" data-label="关闭选择器">关闭</span>
+            <span style="font-size:12px;font-weight:700;color:var(--brand);cursor:pointer" data-go="${backQ}" data-label="关闭选择器">关闭</span>
           </div>
           <div style="margin-top:10px;background:var(--warm-weak);border-radius:9px;padding:8px 10px;font-size:11.5px;color:#D9541F;line-height:1.5">
             <b>画面建议：</b>${seg.hint}
@@ -101,7 +103,7 @@ window.PAGES["B2.1"].render = function (ctx) {
         </div>
 
         <div class="sheet-f">
-          <div class="btn" data-go="B2" data-label="用这个片段">${selItem
+          <div class="btn" data-go="${backQ}" data-label="用这个片段">${selItem
             ? "用「" + selItem.label + "」· 替换第 1 个画面"
             : "先选一个片段"}</div>
         </div>

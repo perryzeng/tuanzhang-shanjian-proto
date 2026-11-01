@@ -351,6 +351,153 @@ window.DATA = {
     ]
   },
 
+  /* ---------- 脚本库 ----------
+     接真接口：GET /scripts?scope=my|team|brand
+     和素材库是两回事：素材库存画面，脚本库存「已经分好段的台词」。
+     团长要复用一条跑过单的脚本，比让 AI 重新写更稳。
+     scope：my 我存的 / team 团队共享 / brand 总部统一口径（locked） */
+  scriptLib: [
+    {
+      id: "sc_312", scope: "my", who: "我", title: "磷虾油 · 三步讲清成分",
+      product: "磷虾油", segs: 5, dur: 46, used: 12, at: "10-28", compliance: true,
+      tags: ["口播", "成分"], note: "跑过 12 单，结尾是开团话术",
+      lines: [
+        { name: "我是谁 · 立信任", dur: 8, vo: "我是阿珍，做大健康选品 5 年。" },
+        { name: "磷虾油是什么", dur: 14, vo: "今晚开团磷虾油，选购门道一次讲清楚。" },
+        { name: "血管知识示意", dur: 8, vo: "每粒含磷脂型 Omega-3，吸收比普通鱼油更好。" },
+        { name: "产品落卖点", dur: 10, vo: "品牌方提供的卖点口播，锁定不可改。", lock: "brand" },
+        { name: "CTA · 开团", dur: 6, vo: "点我头像参团，只有 500 单。" }
+      ]
+    },
+    {
+      id: "sc_318", scope: "my", who: "我", title: "老客复购 · 晒单三连",
+      product: "磷虾油", segs: 3, dur: 32, used: 7, at: "10-24", compliance: true,
+      tags: ["晒单", "复购"], note: "不用出镜，全是截图和空镜",
+      lines: [
+        { name: "开场晒单", dur: 10, vo: "这三个老客，这个月第三次下单了。" },
+        { name: "复购理由", dur: 14, vo: "她们说的最多的一句是：比以前那款好吞。" },
+        { name: "CTA · 团价", dur: 8, vo: "老客直接拍，今晚团价截止到 12 点。" }
+      ]
+    },
+    {
+      id: "sc_402", scope: "team", who: "阿玲", title: "开箱第一句先说价格",
+      product: "磷虾油", segs: 4, dur: 38, used: 23, at: "10-30", compliance: true,
+      tags: ["爆款结构"], note: "团队播放最高，改 2 句就能发",
+      lines: [
+        { name: "开场报价", dur: 8, vo: "这一瓶合下来一天不到 3 块钱。" },
+        { name: "开箱", dur: 12, vo: "拆开看看里面是什么，两瓶装还有一板分装。" },
+        { name: "成分", dur: 10, vo: "重点是磷脂型 Omega-3，不用再另外补鱼油。" },
+        { name: "CTA", dur: 8, vo: "链接放评论区了，今晚 8 点开团。" }
+      ]
+    },
+    {
+      id: "sc_407", scope: "team", who: "阿强", title: "换季免疫 · 问题先行",
+      product: "换季免疫", segs: 5, dur: 45, used: 15, at: "10-29", compliance: true,
+      tags: ["问题结构"], note: "先抛粉丝问题再回答，互动率高",
+      lines: [
+        { name: "抛问题", dur: 8, vo: "最近最多人问我的一个问题：孩子能吃吗？" },
+        { name: "给答案", dur: 10, vo: "先看年龄，再看剂量，别自己加量。" },
+        { name: "讲原理", dur: 10, vo: "换季容易中招，主要是作息和营养跟不上。" },
+        { name: "怎么用", dur: 9, vo: "我的做法是早饭后一粒，配温水。" },
+        { name: "CTA", dur: 8, vo: "想要配料表的扣 1，我私发你。" }
+      ]
+    },
+    {
+      id: "sc_415", scope: "team", who: "小雨", title: "仓库发货 · 一句我的感受",
+      product: "磷虾油", segs: 4, dur: 36, used: 9, at: "10-26", compliance: true,
+      tags: ["不用出镜"], note: "仓库实拍，加一句自己的话",
+      lines: [
+        { name: "仓库实拍", dur: 8, vo: "今天的单已经堆到门口了。" },
+        { name: "打包过程", dur: 10, vo: "每一单都塞了一张手写卡。" },
+        { name: "我的感受", dur: 10, vo: "说实话我没想到这一款能卖这么久。" },
+        { name: "CTA", dur: 8, vo: "想试的趁这波团价，点我头像。" }
+      ]
+    },
+    {
+      id: "sc_501", scope: "brand", who: "总部", title: "换季免疫 · 官方口径（锁定）",
+      product: "换季免疫", segs: 4, dur: 40, used: 31, at: "10-31", compliance: true, locked: true,
+      tags: ["锁定"], note: "统一口径，第 2 段不可改",
+      lines: [
+        { name: "开场", dur: 8, vo: "换季这段时间，最该先稳住的是作息。" },
+        { name: "官方表述", dur: 12, vo: "本品为普通食品，不能替代药物。", lock: "brand" },
+        { name: "怎么吃", dur: 10, vo: "每天一粒，早饭后温水送服。" },
+        { name: "CTA", dur: 10, vo: "团购链接在视频下方，库存有限。" }
+      ]
+    }
+  ],
+
+  /* ---------- 视频导入记录 ----------
+     接真接口：GET /imports（只留最近 5 条，超过就滚掉）
+     state：done 抽取完成 / doing 抽取中 / fail 没识别到人声 */
+  imports: [
+    { id: "im_41", title: "磷虾油开箱 · 我妈也在吃", from: "链接 · 抖音", who: "阿玲", dur: 52, segs: 6, at: "今天 13:05", state: "done", go: "C1.2" },
+    { id: "im_38", title: "仓库实拍 · 发货流水线", from: "本地相册", who: "我", dur: 38, segs: 4, at: "昨天 19:20", state: "done", go: "C1.2" },
+    { id: "im_35", title: "顾客语音备忘", from: "本地相册", who: "我", dur: 0, segs: 0, at: "10-29", state: "fail", go: "C1" }
+  ],
+
+  /* ---------- 当前这一次抽取的结果 ----------
+     接真接口：POST /extract → 返回 { chars, segs, lines[], cleaned[] }
+     cleaned 是「原作者的痕迹」，抽取时必须清掉，否则二创会被判搬运 */
+  extract: {
+    id: "ex_41", from: "链接 · 抖音", who: "阿玲", title: "磷虾油开箱 · 我妈也在吃",
+    chars: 312, dur: 52, segs: 6,
+    cleaned: [
+      { k: "口头禅「真的绝了」", n: 2 },
+      { k: "原作者的自我介绍", n: 1 },
+      { k: "原片字幕水印", n: 1 }
+    ],
+    lines: [
+      { name: "开场提问", dur: 9, vo: "磷虾油到底值不值得买？" },
+      { name: "成分讲解", dur: 8, vo: "这个成分是真的猛。" },
+      { name: "使用感受", dur: 9, vo: "我吃了三个月，真的绝了，睡眠好了很多……" },
+      { name: "对比", dur: 8, vo: "比我之前买的那个强太多了。" },
+      { name: "团购引导", dur: 10, vo: "赶紧囤，链接在评论区。" },
+      { name: "结尾", dur: 8, vo: "扣 1，我私发你。" }
+    ]
+  },
+
+  /* ---------- SOP 战役 ----------
+     接真接口：GET /campaigns（总部下发的 + 团长自建的）
+     一天一个主题，团长只填自己的话；topics 是天级选题，
+     today 只有「正在跑的那个战役的今天」才有，其余天进去由 AI 按主题现写。 */
+  campaigns: [
+    {
+      id: "cp_1", name: "磷虾油 10 天战役", product: "磷虾油",
+      owner: "总部 · 运营中心", total: 10, day: 5, startAt: "10-28", status: "running",
+      joined: 86, mine: 4,
+      topics: ["为什么选这款", "成分怎么讲", "含量看哪里", "谁适合谁不适合", "信任背书", "老客晒单", "常见问题答疑", "团价怎么算", "拍一单看看", "收官复盘"],
+      today: {
+        why: "前四天讲的是产品，第五天要讲人。观众信的不是参数，是「你自己吃不吃、家里人吃不吃」。",
+        points: [
+          "先说自己吃了多久、身体有什么变化（只说感受，不说疗效）",
+          "再放一条真实顾客反馈截图，打码后用",
+          "敢说「不是人人都需要」，信任才立得住"
+        ],
+        material: "总部备了仓库发货 + 顾客反馈截图 3 段，缺一段你的手部特写",
+        ref: "同战役前 4 天平均完播 41%，晒单类高于均值 12 个点"
+      }
+    },
+    {
+      id: "cp_2", name: "换季免疫 7 天战役", product: "换季免疫",
+      owner: "总部 · 运营中心", total: 7, day: 0, startAt: "11-05", status: "soon",
+      joined: 0, mine: 0,
+      topics: ["换季最容易忽略的一件事", "谁最需要补", "孩子能吃吗", "怎么吃不浪费", "我家的做法", "顾客真实反馈", "收官 · 团价"]
+    },
+    {
+      id: "cp_3", name: "老客复购 14 天", product: "磷虾油",
+      owner: "我自建", total: 14, day: 14, startAt: "10-10", status: "done",
+      joined: 0, mine: 14,
+      topics: ["为什么老客会回头", "第一次买的人最担心什么", "怎么提醒复购不烦人", "晒单怎么挑", "价格敏感期怎么讲", "囤货节奏", "送礼场景", "家庭装怎么配", "断货怎么说", "新品怎么接", "老带新怎么开口", "售后怎么处理", "年度复盘", "下一轮预告"]
+    }
+  ],
+
+  /* 新建战役时 AI 给的选题建议（可逐条改、可换一批） */
+  topicSeeds: {
+    "磷虾油": ["为什么选这款", "成分怎么讲", "含量看哪里", "谁适合谁不适合", "信任背书", "老客晒单", "常见问题答疑", "团价怎么算", "拍一单看看", "收官复盘"],
+    "换季免疫": ["换季最容易忽略的一件事", "谁最需要补", "孩子能吃吗", "怎么吃不浪费", "我家的做法", "顾客真实反馈", "收官 · 团价"],
+    "老客复购": ["为什么老客会回头", "第一次买的人最担心什么", "怎么提醒复购不烦人", "晒单怎么挑"]
+  },
+
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
   teamVideos: [
     { id: "v_901", who: "阿玲", whoBg: "rgba(44,91,255,.92)", plays: 124000, title: "磷虾油开箱 · 我妈也在吃", ago: "2 小时前", bg: "linear-gradient(135deg,#2C5BFF,#00C2FF)", go: "F3" },
@@ -485,6 +632,83 @@ window.DERIVE = (function () {
     ];
   }
 
+  /* ---------- 脚本库 ----------
+     和素材库分开算：脚本是「已经分好段的台词」，素材是「画面」。
+     used 是这个脚本被引入过几次——复用得越多，越可能是个靠谱的底子。 */
+  function scripts(scope) {
+    const L = window.DATA.scriptLib;
+    return !scope || scope === "all" ? L : L.filter((s) => s.scope === scope);
+  }
+  function script(id) {
+    return window.DATA.scriptLib.filter((s) => s.id === id)[0] || window.DATA.scriptLib[0];
+  }
+  /* 我的库只放自己存的；团队库带上总部锁定口径，因为对团长来说都是"别人给的可直接用" */
+  function scriptTabs() {
+    return [
+      { k: "my", tx: "我的脚本", n: scripts("my").length },
+      { k: "team", tx: "团队脚本", n: scripts("team").length },
+      { k: "brand", tx: "总部口径", n: scripts("brand").length }
+    ];
+  }
+
+  /* ---------- 视频抽取 ---------- */
+  function extract() {
+    const x = window.DATA.extract;
+    return {
+      ...x,
+      cleanedN: x.cleaned.reduce((n, c) => n + c.n, 0),
+      lines: x.lines.map((l, i) => ({ ...l, no: (i + 1 < 10 ? "0" : "") + (i + 1) }))
+    };
+  }
+
+  /* ---------- SOP 战役 ----------
+     一条战役 = 一个天数序列，每天一个主题。
+     状态只看三档：done 已发 / today 今天该发 / soon 还没到。
+     团长最需要知道的是「今天讲什么」，其次才是「后面还有几天」。 */
+  function campaigns(scope) {
+    const L = window.DATA.campaigns;
+    return !scope || scope === "all" ? L : L.filter((c) => c.status === scope);
+  }
+  function campaign(id) {
+    return window.DATA.campaigns.filter((c) => c.id === id)[0] || window.DATA.campaigns[0];
+  }
+  function campaignDays(c) {
+    return (c.topics || []).map((t, i) => {
+      const n = i + 1;
+      const state = c.status === "done" ? "done"
+        : c.status === "soon" ? "soon"
+        : n < c.day ? "done" : n === c.day ? "today" : "soon";
+      return { n, topic: t, state, isToday: state === "today" };
+    });
+  }
+  /* 单日详情：今天那集有总部给的解读和要点，其余天只有主题，
+     进去由 AI 按主题现写——不要给没发生的事编数据 */
+  function dayPlan(c, n) {
+    const days = campaignDays(c);
+    const d = days.filter((x) => x.n === +n)[0] || days[0];
+    const today = !!d.isToday && !!c.today;
+    return {
+      ...d,
+      cname: c.name, total: c.total, owner: c.owner, product: c.product,
+      why: today ? c.today.why
+        : "第 " + d.n + " 天讲「" + d.topic + "」。这是" + c.owner + "按 " + c.total + " 天节奏排的，前几天已经铺过，这天只把一个点讲透，别贪多。",
+      points: today ? c.today.points
+        : ["开头一句话点题，别绕", "中间给一个具体例子或一个数字", "结尾把话头接到下一天，让人愿意等"],
+      material: today ? c.today.material : "这天还没到，素材包会在开始前一天下发；现在进去 AI 会先按主题写脚本",
+      ref: today ? c.today.ref : "还没发，没有数据",
+      canMake: d.state !== "done"
+    };
+  }
+  /* B2 的系列上下文要用：某一集的主题叫什么 */
+  function seriesDay(n) {
+    const run = window.DATA.campaigns.filter((c) => c.status === "running")[0];
+    if (!run) return null;
+    return campaignDays(run).filter((x) => x.n === +n)[0] || null;
+  }
+  function topicSeeds(product) {
+    return window.DATA.topicSeeds[product] || window.DATA.topicSeeds["磷虾油"];
+  }
+
   /* 三种来源 → 三份草稿，共用同一套段落结构与派生逻辑。
      这就是"三个发布器合成一个"的数据基础：换的是来源，不是编辑器。 */
   const DRAFT_OF = { script: "draft", remix: "draftRemix", series: "draftSeries" };
@@ -494,15 +718,91 @@ window.DERIVE = (function () {
     { k: "series", ic: "▤", tx: "系列" }
   ];
 
-  function draft(kind) {
+  /* 从脚本库引入的一段话，需要配什么画面——按段名猜语义标签。
+     这是引入脚本时唯一要做的一次推断：台词是现成的，画面从零配。 */
+  const NEED_OF = [
+    [/我是谁|立信任|开场提问|抛问题/, ["person", "broll"]],
+    [/开箱/, ["unbox", "product"]],
+    [/成分|原理|示意|血管/, ["ingredient", "explain"]],
+    [/卖点|产品|摆台/, ["brand", "product"]],
+    [/晒单|反馈|截图|成交|复购/, ["proof"]],
+    [/价格|团价|CTA|引导|结尾|报价/, ["cta", "price"]],
+    [/仓库|发货|打包/, ["product", "unbox"]],
+    [/怎么吃|用法|答疑|问题/, ["person", "explain"]]
+  ];
+  function needTagsOf(name) {
+    for (const [re, tags] of NEED_OF) if (re.test(name || "")) return tags;
+    return ["product"];
+  }
+
+  /* 按台词时长把画面铺满：语义最像的优先，不够就用下一个，最多 3 段 */
+  function fitShots(need, dur) {
+    const cand = recommend({ needTags: need }, "rec");
+    if (!cand.length) return [{ id: "fx0", asset: null, label: "待补画面", state: "miss", dur: 0 }];
+    const out = [];
+    let acc = 0, i = 0;
+    while (acc < dur - 0.5 && i < cand.length && out.length < 3) {
+      const a = cand[i++];
+      const d = Math.min(a.dur || 3, dur - acc);
+      out.push({ id: "fs_" + a.id + "_" + out.length, asset: a.id, dur: d });
+      acc += d;
+    }
+    return out;
+  }
+
+  /* 把「一串台词」拼成一份可编辑草稿：台词照搬，画面按语义重配。
+     脚本库和视频抽取都走这里——它们的差别只在台词从哪来，编辑体验完全一样。 */
+  function draftFromLines(lines, meta) {
+    return {
+      id: meta.id, title: meta.title, kind: "script",
+      product: meta.product || "磷虾油",
+      status: "draft", updatedAt: window.DATA.now,
+      src: meta.src, docId: meta.docId, who: meta.who,
+      compliance: { ok: meta.ok !== false, hits: [], checkedAt: window.DATA.now },
+      segments: lines.map((l, i) => ({
+        id: "im" + (i + 1), role: "seg", name: l.name, dur: l.dur, vo: l.vo,
+        voSrc: meta.who === "我" ? "self" : meta.src,
+        needTags: needTagsOf(l.name), lock: l.lock || null,
+        hint: "来自「" + meta.title + "」，画面按语义重新配；想换就点片段",
+        shots: fitShots(needTagsOf(l.name), l.dur)
+      })),
+      curSeg: "im1"
+    };
+  }
+
+  /* 脚本库的一份脚本 → 一份草稿 */
+  function draftFromScript(id) {
+    const sc = script(id);
+    return draftFromLines(sc.lines, {
+      id: "df_" + sc.id, title: sc.title, product: sc.product,
+      src: "import", docId: sc.id, who: sc.who, ok: sc.compliance
+    });
+  }
+
+  /* 抽取出来的一份文案 → 一份草稿（画面全新配，所以才叫「要文案」） */
+  function draftFromExtract() {
+    const x = window.DATA.extract;
+    return draftFromLines(x.lines, {
+      id: "df_" + x.id, title: x.title, product: "磷虾油",
+      src: "extract", docId: x.id, who: x.who
+    });
+  }
+
+  function draft(kind, opts) {
+    opts = opts || {};
     const k = DRAFT_OF[kind] ? kind : "script";
-    const d = window.DATA[DRAFT_OF[k]];
+    /* 导入脚本 / 视频抽取：都不进 DATA.draft，而是现拼一份草稿出来 */
+    const d = (k === "script" && opts.src === "extract") ? draftFromExtract()
+      : (k === "script" && opts.doc) ? draftFromScript(opts.doc)
+      : window.DATA[DRAFT_OF[k]];
+    /* 系列里还没轮到的那一天：结构在，台词和画面都还没生成 */
+    const pendDay = (k === "series" && opts.day && +opts.day !== d.series?.day) ? +opts.day : 0;
     let acc = 0;
     const segs = d.segments.map((s, i) => {
       const start = acc;
       acc += s.dur;
       let shotTotal = 0, missN = 0;
-      const shots = s.shots.map((sh) => {
+      const shots = (pendDay ? [] : s.shots).map((sh) => {
         const a = sh.asset ? window.DATA.assets.filter((x) => x.id === sh.asset)[0] : null;
         const miss = sh.state === "miss";
         const dur = sh.dur != null ? sh.dur : (a ? a.dur : 0);
@@ -523,7 +823,8 @@ window.DERIVE = (function () {
       if (missN) tags.push(["r", "缺素材"]);
       if (s.suggest) tags.push([s.suggest === "务必改" ? "r" : "o", s.suggest]);
       return {
-        ...s, no: (i + 1 < 10 ? "0" : "") + (i + 1), idx: i,
+        ...(pendDay ? { ...s, vo: "", voAlt: null, shots: [] } : s),
+        no: (i + 1 < 10 ? "0" : "") + (i + 1), idx: i,
         start, shots, shotTotal, missN, tags,
         fit: Math.round((s.dur - shotTotal) * 10) / 10,
         state: missN ? "miss" : ""
@@ -538,8 +839,11 @@ window.DERIVE = (function () {
        只用于原型演示，真实值以后端返回为准（改了文案但没换画面，分不会涨太多） */
     const changed = segs.filter((s) => s.orig && s.vo !== s.orig).length;
     const needChange = segs.filter((s) => s.suggest).length;
+    const pendTopic = pendDay ? ((seriesDay(pendDay) || {}).topic || (d.series && d.series.topic) || "") : "";
     return {
       ...d, kind: k, segments: segs, cur, curIdx,
+      title: pendDay ? "Day " + pendDay + " · " + pendTopic : d.title,
+      pendDay, pendTopic,
       segCount: segs.length, durTotal: total,
       missCount: missSegs.reduce((n, s) => n + s.missN, 0),
       missSegs, changed, needChange,
@@ -575,5 +879,7 @@ window.DERIVE = (function () {
   }
 
   return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now,
-           draft, recommend, resolveFix, mmss, pool, KINDS };
+           draft, recommend, resolveFix, mmss, pool, KINDS,
+           scripts, script, scriptTabs, extract,
+           campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds };
 })();

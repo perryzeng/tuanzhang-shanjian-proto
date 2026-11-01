@@ -157,6 +157,19 @@
     renderAll();
   }
 
+  /* 输入框直接绑页面状态：只写 STATE 不重渲染，否则每敲一个字光标就丢
+     用法：<textarea data-bind="B1.topic"> */
+  document.addEventListener("input", (e) => {
+    const el = e.target.closest && e.target.closest("[data-bind]");
+    if (!el) return;
+    const path = el.dataset.bind || "";
+    const i = path.lastIndexOf(".");
+    if (i < 0) return;
+    const pid = path.slice(0, i), key = path.slice(i + 1);
+    STATE[pid] = STATE[pid] || {};
+    STATE[pid][key] = el.value;
+  });
+
   document.addEventListener("click", (e) => {
     /* 轮播点：只滚容器，不重渲染（避免整页刷新丢滚动位置） */
     const dot = e.target.closest("[data-slide-to]");
