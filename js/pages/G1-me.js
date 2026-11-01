@@ -32,7 +32,7 @@ window.PAGES["G1"].render = function () {
 
       ${C.sec("账号")}
       <div class="card" style="padding:0 16px">
-        ${row("◍", "var(--brand-weak)", "var(--brand)", "个人主页", "看看别人眼中的你", "G1.0")}
+        ${row("◍", "var(--brand-weak)", "var(--brand)", "我的人设", "IP 定位、目标人群、记忆", "G1.0")}
         ${row("✎", "var(--brand-weak)", "var(--brand)", "编辑资料", "头像、昵称、简介、手机号", "G1.1")}
         ${row("⇄", "var(--violet-weak)", "var(--violet)", "授权管理", "微信 · 抖音 · 小红书", "G1.3")}
       </div>
@@ -48,7 +48,7 @@ window.PAGES["G1"].render = function () {
       ${C.sec("设置")}
       <div class="card" style="padding:0 16px">
         ${row("◔", "#F1F3F9", "var(--text-2)", "通知设置", "任务 / 团队 / 数据 三类", "E5")}
-        ${row("≡", "#F1F3F9", "var(--text-2)", "声音与形象", "温柔女声 · 克隆音已就绪", "B2.3")}
+        ${row("≡", "#F1F3F9", "var(--text-2)", "我的声音", "克隆自己的声音，生成时直接用", "G1.4")}
         ${row("◫", "#F1F3F9", "var(--text-2)", "席位与团队", "20 席 · 已用 12 · ¥10/席", "E3.2")}
         ${row("?", "#F1F3F9", "var(--text-2)", "帮助与反馈", "怎么过审 · 怎么算安全度", "A1")}
       </div>
@@ -61,34 +61,66 @@ window.PAGES["G1"].render = function () {
   </div>`;
 };
 
-/* 个人主页：别人点进来看的样子 */
-window.PAGES["G1.0"].prd = "我的 · 个人主页（对外展示）";
-window.PAGES["G1.0"].render = function () {
-  const C = window.C, DATA = window.DATA;
-  const works = (DATA.library.items["mine.work"] || []).slice(0, 3);
+/* 我的人设：IP 定位 + 记忆，自己填，AI 写脚本前先读这里 */
+window.PAGES["G1.0"].prd = "我的 · 人设 / IP 定位 / 记忆";
+window.PAGES["G1.0"].render = function (ctx) {
+  const C = window.C;
+  const one = ctx.one || "只推自己吃过的，不装专家";
+  const ip = ctx.ip || "大健康选品，给 30-45 岁宝妈讲清「为什么值得买」";
+  const aud = ctx.aud || "30-45 岁、有复购习惯的宝妈";
+  const style = ctx.style || "素颜真实";
+  const STYLES = ["素颜真实", "专业讲解", "生活流", "搞笑"];
+  const mem = (ctx.mem != null ? ctx.mem : "只推自己吃过的|不接医美|老客多在 30-45 岁")
+    .split("|").filter(Boolean);
+
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "个人主页", back: "G1", act: "分享" })}
+    ${C.ab({ title: "我的人设", sub: "AI 写脚本前会先读这里", back: "G1" })}
     <div class="body">
-      <div class="acct" style="text-align:center;padding:20px 16px 16px">
-        <div class="acct-av" style="margin:0 auto;width:64px;height:64px;font-size:22px">暴</div>
-        <div class="acct-n" style="margin-top:10px;font-size:19px">暴富者</div>
-        <div class="acct-s" style="margin-top:5px">大健康选品 5 年 · 深圳前海</div>
-        <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-          <span class="chip">团长</span><span class="chip">磷虾油</span><span class="chip">素颜出镜</span>
+      <div class="card" style="padding:16px;display:flex;align-items:center;gap:14px">
+        <div class="acct-av brand" style="width:52px;height:52px;font-size:17px">暴</div>
+        <div style="flex:1">
+          <div class="h2">暴富者</div>
+          <div class="xs" style="margin-top:4px">团长 · 深圳前海 · 大健康选品</div>
         </div>
       </div>
 
-      ${C.sec("我的作品", "全部 ›", "E2?open=work&tab=latest")}
-      <div class="g3">
-        ${works.map((w) => `<div class="tile" data-go="E2?open=work&tab=latest" data-label="${w.name}">
-          <div class="im" style="aspect-ratio:3/4">${w.img ? `<img src="${w.img}" alt="">` : ""}</div>
-        </div>`).join("")}
+      <div class="card" style="padding:14px;margin-top:12px">
+        <div class="s" style="margin-bottom:7px">一句话人设</div>
+        <input data-bind="G1.0.one" data-live value="${one.replace(/"/g, "&quot;")}" placeholder="例如：只推自己吃过的，不装专家"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:13px;font-weight:600" />
+
+        <div class="s" style="margin:14px 0 7px">IP 定位</div>
+        <textarea data-bind="G1.0.ip" data-live placeholder="卖什么、给谁、凭什么信你"
+          style="width:100%;height:72px;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:12.5px;line-height:1.6;resize:none">${ip}</textarea>
+
+        <div class="s" style="margin:14px 0 7px">目标人群</div>
+        <input data-bind="G1.0.aud" data-live value="${aud.replace(/"/g, "&quot;")}" placeholder="例如：30-45 岁宝妈"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:12.5px" />
+
+        <div class="s" style="margin:14px 0 8px">内容风格</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          ${STYLES.map((s) => `<span class="chip${style === s ? " on" : ""}" data-set="G1.0.style=${s}">${s}</span>`).join("")}
+        </div>
       </div>
+
+      ${C.sec("记忆", "AI 会记住这些")}
+      <div class="card" style="padding:2px 14px">
+        ${mem.map((m) => `<div class="tmr">
+          <span class="tav" style="background:var(--violet-weak);color:var(--violet)">记</span>
+          <div class="tmt"><b>${m}</b></div>
+        </div>`).join("")}
+        <div style="display:flex;gap:8px;padding:10px 0 12px">
+          <input data-bind="G1.0.newmem" data-live placeholder="再加一条，例如：不接医美"
+            style="flex:1;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:9px 11px;font-size:12px" />
+          <span class="btn-pill" data-set="G1.0.mem=${mem.concat(ctx.newmem || "新的一条记忆").join("|")}&G1.0.newmem=" data-label="添加记忆">添加</span>
+        </div>
+      </div>
+
+      <div class="note" style="margin:12px 2px 0;line-height:1.7">人设、定位和记忆会写进 AI 的提示词，生成脚本时更像你，也不会说你不认可的话。</div>
     </div>
-    <div class="actionbar">
-      <div class="btn" data-go="G1.1" data-label="编辑资料">编辑资料</div>
-    </div>
+
+    <div class="actionbar"><div class="btn ai" data-go="G1" data-label="保存">保存</div></div>
   </div>`;
 };
 
@@ -203,5 +235,81 @@ window.PAGES["G1.3"].render = function (ctx) {
         </div>`).join("")}
       </div>
     </div>
+  </div>`;
+};
+
+/* 我的声音：只做声音克隆（形象暂不做） */
+window.PAGES["G1.4"].prd = "我的 · 我的声音（克隆）";
+window.PAGES["G1.4"].render = function (ctx) {
+  const C = window.C;
+  const rec = ctx.rec === "1";
+  const BARS = [8, 14, 22, 30, 18, 26, 34, 20, 12, 24, 32, 16, 28, 36, 22, 14, 26, 18, 10, 20];
+
+  const wave = `<div style="display:flex;align-items:center;gap:3px;height:40px">
+      ${BARS.map((h) => `<i style="width:3px;height:${h}px;border-radius:2px;background:var(--brand);opacity:.55"></i>`).join("")}
+    </div>`;
+
+  return `<div class="app">
+    ${C.sb()}
+    ${C.ab({ title: "我的声音", sub: rec ? "录制中 · 读满 30 秒" : "已就绪 · 生成时默认用它", back: "G1" })}
+
+    <div class="body">
+      ${rec ? `
+      <div class="card" style="padding:16px">
+        <div class="h3" style="margin-bottom:8px">照着读，正常语速</div>
+        <div class="xs" style="line-height:1.9;color:var(--text-2)">
+          大家好，我是暴富者。<br>
+          做健康选品五年，只推自己吃过的。<br>
+          今天这条磷虾油，我想跟你说三句实话。
+        </div>
+      </div>
+
+      <div style="text-align:center;margin:28px 0 10px">
+        <div style="width:84px;height:84px;border-radius:50%;background:var(--g-brand);color:#fff;margin:0 auto;
+          display:flex;align-items:center;justify-content:center;box-shadow:0 12px 26px rgba(124,108,255,.34)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </div>
+        <div class="xs" style="margin-top:12px">点击开始，安静环境下读满 30 秒</div>
+      </div>
+
+      <div class="card plain" style="margin-top:8px">
+        <div class="xs" style="line-height:1.7">建议：离手机 20cm、别开风扇；读错一句不用重来，AI 会自己挑干净的片段。</div>
+      </div>
+      ` : `
+      <div class="card" style="padding:18px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="acct-av brand" style="width:44px;height:44px;font-size:15px">声</div>
+          <div style="flex:1">
+            <div class="h3">我的声音 · 温柔女声</div>
+            <div class="xs" style="margin-top:3px">45 秒样本 · 10-28 克隆</div>
+          </div>
+          <span class="tag g">已就绪</span>
+        </div>
+        <div style="margin-top:14px">${wave}</div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <span class="btn-pill line" style="flex:1;justify-content:center;display:flex" data-label="试听">▶ 试听</span>
+          <span class="btn-pill line" style="flex:1;justify-content:center;display:flex" data-set="G1.4.rec=1" data-label="重新克隆">重新克隆</span>
+        </div>
+      </div>
+
+      ${C.sec("怎么用")}
+      <div class="card" style="padding:2px 16px">
+        <div class="li" style="box-shadow:none;margin:0;border-radius:0;padding:13px 0">
+          <div class="tx"><b style="margin-bottom:2px">生成时默认用你的声音</b><span>不用每次选，想换可在生成页切换音色</span></div>
+        </div>
+        <div class="li" style="box-shadow:none;margin:0;border-radius:0;padding:13px 0">
+          <div class="tx"><b style="margin-bottom:2px">只克隆声音，不做数字人</b><span>形象仍用你自己的出镜素材</span></div>
+        </div>
+      </div>
+
+      <div class="warnnote">删除后需要重新录 30 秒；已生成的视频不受影响。</div>
+      <div style="margin-top:10px"><div class="btn ghost" style="color:#C2410C" data-label="删除声音">删除我的声音</div></div>
+      `}
+    </div>
+
+    ${rec
+      ? `<div class="actionbar"><div class="btn ai" data-go="G1" data-label="完成克隆">完成，生成我的声音</div></div>`
+      : `<div class="actionbar"><div class="btn ai" data-set="G1.4.rec=1" data-label="重新克隆">重新克隆</div></div>`}
   </div>`;
 };
