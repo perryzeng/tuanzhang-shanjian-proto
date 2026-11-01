@@ -1,33 +1,32 @@
-window.PAGES["B4.1"].prd = "PRD §6.20 · 成品详情（导出 / 三平台样式预览 / 互动量 / 谁看了）";
+window.PAGES["B4.1"].prd = "PRD §6.20 · 成品详情（导出 / 三平台入口 / 分享回传 / 谁动了）";
 window.PAGES["B4.1"].states = [
-  { k: "", n: "默认：动态 Tab、启动中热度；页面上三个平台按钮，点了直接进对应样式的全屏预览" }
+  { k: "", n: "默认：动态 Tab 流水、平台按钮直进对应样式的播放页" }
 ];
 
-/* 成品详情。这一页要回答一个问题：**这条发出去之后，谁动了。**
+/* 成品详情。这一页只回答一个问题：**这条发出去之后，谁动了。**
 
-   版面按团长的真实动作排：
-   ① 第一件事是**导出视频**——发给团队群、发到别的平台，导出是唯一出口，不给选项，点了就导；
-   ② 然后是**看长什么样**：三个平台按钮直接摆在页面上（视频号 / 抖音 / 小红书），
-      点哪个进哪个样式的全屏。不藏在预览里再切一次 tab——他想看抖音，就该一下点到抖音；
-   ③ **互动量**三档（冷启动 / 启动中 / 热门）：同一条片子在不同阶段的三种样子。
-      换一档，赞/评/转和播放/访客/潜客一起变，评论区条数也跟着变；
-   ④ 最后是**人**：动态 / 看过的人 / 潜客，默认给动态——"刚刚发生了什么"比"总共有谁"更急。
+   版面按团长的真实动作从上往下排：
+   ① **导出下载视频**放在最上面——他要做的第一件事常常不是看数据，是把片子存下来发群、发别的平台；
+   ② **这条长什么样**：成品卡 + 三个平台按钮，点哪个进哪个样式的播放页（B4.1.1）；
+   ③ **分享带来的**：播放 / 访客 / 停留 / 潜客；
+   ④ **人**：动态 / 看过的人 / 潜客，默认给动态——"刚刚发生了什么"比"总共有谁"更急。
 
-   分享只有一个入口，在预览里：在哪个样式下点分享，出去的链接就是那个样式，
-   别人打开看到的赞/评/转就是这里显示的那些数。 */
+   **互动量从这里挪走了**（V5.0）：它不再是页面上的一排档位按钮，而是进播放页之后
+   才出现的"这条现在多少人理"——因为互动量是**那条视频在平台里的样子**的一部分，
+   跟视频画面、评论区是一件事，不该脱离视频单独摆在成品页上。
+
+   动态流水不做二次加工：谁几点看了、谁几点点了赞、谁几点评论了什么，一条一条按时间排。
+   汇总数字上面已经有了（分享带来的那四个），流水再汇总一遍就没人看了。 */
 window.PAGES["B4.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const tab = ctx.tab === "all" ? "all" : ctx.tab === "lead" ? "lead" : "log";
-  const pf = ctx.pf || "wx";                  // wx 视频号 / dy 抖音 / xhs 小红书
-  const pv = ctx.pv === "1";                  // 全屏预览
-  const cm = ctx.cm === "1";                  // 预览里展开评论
-  const heat = D.heat(ctx.heat || "warming");
-  const sharedPf = ctx.shared || "";          // 分享时用的样式
   const saved = ctx.saved === "1";
 
   const all = D.viewers(), leads = D.leads();
   const st = D.shareStat();
-  const cms = D.comments().slice(0, Math.min(heat.comment, 8));
+  /* 回传数字固定用"中"档：这是这条视频真实跑出来的量，
+     不是让用户在成品页上拨的那根档位杆。 */
+  const heat = D.heat("warming");
 
   const PLAT = {
     wx: { name: "视频号", dot: "#FA9D3B", tip: "主阵地，默认按这个样式" },
@@ -35,7 +34,6 @@ window.PAGES["B4.1"].render = function (ctx) {
     xhs: { name: "小红书", dot: "#FF2442", tip: "白底正文 + 话题标签" }
   };
 
-  /* 观众行 */
   const vrow = (u) => `<div class="vrow2" data-go="G3.1" data-label="跟进 ${u.name}">
       <div class="av" style="background:${u.bg}">${u.av}</div>
       <div class="tx">
@@ -46,58 +44,14 @@ window.PAGES["B4.1"].render = function (ctx) {
       <span class="go">跟进 ›</span>
     </div>`;
 
-  /* 动态流水 */
-  const ICON = { view: "◉", share: "↗", comment: "✎" };
+  /* 动态流水：看了 / 点了赞 / 评论了 / 分享了，四种各一个记号，按时间倒序。
+     不合并同类项——"阿梅看了三遍"和"阿梅点了赞"是两条，因为它们指向两件不同的事。 */
+  const ICON = { view: "◉", like: "♥", comment: "✎", share: "↗" };
   const logrow = (l) => `<div class="lg ${l.type}">
       <span class="tm">${l.t}</span>
-      <span class="ic">${ICON[l.type]}</span>
+      <span class="ic">${ICON[l.type] || "·"}</span>
       <span class="tx"><b>${l.who}</b> ${l.act}<i>${l.extra}</i></span>
     </div>`;
-
-  /* 全屏预览：三套平台样式 + 可展开的评论区 + 分享 */
-  const preview = pv ? `<div class="pvf">
-      <div class="pvf-hd">
-        <span class="pfname">${PLAT[pf].name}里的样子</span>
-        <span class="x" data-set="B4.1.pv=&B4.1.cm=">✕</span>
-      </div>
-      <div class="pvf-mid">
-        <div class="pvf-screen ${pf}">
-          <div class="src" style="background:linear-gradient(160deg,#2C5BFF 0%,#0E2A6B 55%,#08142F 100%)"></div>
-          <div class="cvtxt"><b>磷虾油今晚<br>8 点开团</b><i>讲清成分和怎么买</i></div>
-          <div class="pfui ${pf}">
-            <div class="side">
-              <span class="ava">珍</span>
-              <span class="ic2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.5 2.8C20.5 15 12 20.5 12 20.5Z"/></svg><i>${heat.like}</i></span>
-              <span class="ic2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 9 9 0 0 1-3.6-.7L4 20.5l1.4-4.3A8.2 8.2 0 0 1 4 11.5 8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5Z"/></svg><i>${heat.comment}</i></span>
-              <span class="ic2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 15.5V4"/><path d="m8 8 4-4 4 4"/></svg><i>${heat.share}</i></span>
-            </div>
-            <div class="foot">
-              <b>阿珍 · 大健康选品</b>
-              <p>磷虾油今晚 8 点开团，3 步选对不踩坑 <em class="tg">#磷虾油 #开团</em></p>
-              <span class="tags">#磷虾油 #开团</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pvf-cm${cm ? " open" : ""}">
-        <div class="cmbar" data-set="B4.1.cm=${cm ? "" : "1"}">
-          <b>${heat.comment} 条评论</b>
-          <span>${cm ? "收起" : "看看大家在说什么 ›"}</span>
-        </div>
-        ${cm ? `<div class="cmlist">${cms.map((c) => `<div class="cmrow">
-            <span class="av" style="background:${c.bg}">${c.av}</span>
-            <div class="tx"><div class="n">${c.who}${c.tag ? `<i>${c.tag}</i>` : ""}</div>
-              <p>${c.tx}</p><div class="m">${c.at} · ${c.like} 赞</div></div>
-          </div>`).join("")}
-          ${heat.comment > cms.length ? `<div class="cmmore">还有 ${heat.comment - cms.length} 条 · 按台词自动生成</div>` : ""}
-        </div>` : ""}
-      </div>
-
-      <div class="pvf-ft2">
-        <span class="shb" data-set="B4.1.shared=${pf}" data-label="分享这个样式">分享这个样式</span>
-      </div>
-    </div>` : "";
 
   return `<div class="app">
     ${C.sb()}
@@ -107,9 +61,12 @@ window.PAGES["B4.1"].render = function (ctx) {
     </div>
 
     <div class="body">
-      ${saved ? `<div class="savedtip"><span class="ck">✓</span>视频已导出到相册 · 1080×1920</div>` : ""}
+      <!-- 导出是这一页的第一个动作，不是最后一个：发群、发别的平台都从这里走 -->
+      <div class="btn ${saved ? "gray" : "ai"}" ${saved ? "" : `data-set="B4.1.saved=1"`}>
+        ${saved ? "✓ 已导出到相册 · 1080×1920" : "⬇ 导出下载视频"}
+      </div>
 
-      <div class="donecard" data-set="B4.1.pv=1&B4.1.pf=wx&B4.1.cm=">
+      <div class="donecard" style="margin-top:12px" data-go="B4.1.1?pf=wx" data-label="看视频号样式">
         <div class="th">
           <div class="src" style="background:linear-gradient(160deg,#2C5BFF 0%,#0E2A6B 55%,#08142F 100%)"></div>
           <div class="cvtxt"><b>磷虾油今晚<br>8 点开团</b></div>
@@ -118,7 +75,7 @@ window.PAGES["B4.1"].render = function (ctx) {
         </div>
         <div class="tx">
           <b>磷虾油今晚开团，3 步选对不踩坑</b>
-          <span>点一下全屏看 · 默认视频号样式</span>
+          <span>点一下进播放页 · 看互动和评论</span>
           <div class="plats">${Object.keys(PLAT).map((k) =>
             `<i style="background:${PLAT[k].dot}"></i>${PLAT[k].name}`).join("")}</div>
         </div>
@@ -128,31 +85,16 @@ window.PAGES["B4.1"].render = function (ctx) {
       <div class="sec-h" style="margin:16px 2px 9px"><span class="h2">按平台样式看</span>
         <span class="more">同一条，三种长相</span></div>
       <div class="platbtns">${Object.keys(PLAT).map((k) =>
-        `<div class="pb" data-set="B4.1.pf=${k}&B4.1.pv=1&B4.1.cm=" data-label="看${PLAT[k].name}样式">
+        `<div class="pb" data-go="B4.1.1?pf=${k}" data-label="看${PLAT[k].name}样式">
           <span class="dot" style="background:${PLAT[k].dot}"></span>
           <b>${PLAT[k].name}</b>
           <i>${PLAT[k].tip}</i>
         </div>`).join("")}</div>
 
-      <div class="sec-h" style="margin:16px 2px 9px"><span class="h2">互动量</span>
-        <span class="more">这条现在处在哪一档</span></div>
-      <div class="heats">${D.heatLevels().map((h) =>
-        `<div class="ht${heat.id === h.id ? " on" : ""}" data-set="B4.1.heat=${h.id}">
-          <b>${h.name}</b><i>${h.note}</i>
-        </div>`).join("")}</div>
-      <div class="heatnums">
-        <span><b>${heat.like}</b>赞</span>
-        <span><b>${heat.comment}</b>评论</span>
-        <span><b>${heat.share}</b>转发</span>
-        <span><b>${heat.plays}</b>播放</span>
-      </div>
-
-      ${sharedPf ? `<div class="sharedtip">已按「${PLAT[sharedPf].name}」样式分享 · 别人打开看到的就是这个样子</div>` : ""}
-
-      <div class="sharedata">
+      <div class="sharedata" style="margin-top:16px">
         <div class="hd"><b>分享带来的</b><span>已分享 ${st.times} 次</span></div>
         <div class="grid4">
-          <div><b>${heat.plays}</b><span>播放</span></div>
+          <div><b>${heat.plays.toLocaleString()}</b><span>播放</span></div>
           <div><b>${heat.visitors}</b><span>访客</span></div>
           <div><b>${st.stay}</b><span>平均停留</span></div>
           <div><b>${heat.leads}</b><span>潜客</span></div>
@@ -171,11 +113,5 @@ window.PAGES["B4.1"].render = function (ctx) {
           : (tab === "lead" ? leads : all).map(vrow).join("")}
       </div>
     </div>
-
-    <div class="actionbar">
-      <div class="btn" data-set="B4.1.saved=1" data-label="导出视频">导出视频</div>
-    </div>
-
-    ${preview}
   </div>`;
 };

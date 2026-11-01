@@ -742,14 +742,22 @@ window.DATA = {
   logs: [
     { t: "21:02", who: "阿梅", av: "梅", bg: "#2C5BFF", type: "view",
       act: "看了第 3 遍", extra: "停留 1 分 12 秒 · 点了购物车" },
+    { t: "20:58", who: "阿梅", av: "梅", bg: "#2C5BFF", type: "like",
+      act: "点了赞", extra: "第 3 遍看到这儿才点的" },
     { t: "20:56", who: "阿强", av: "强", bg: "#00A8E8", type: "comment",
       act: "评论了", extra: "「多少钱一盒？」" },
     { t: "20:48", who: "阿强", av: "强", bg: "#00A8E8", type: "share",
       act: "分享了这条", extra: "分享到朋友圈" },
+    { t: "20:44", who: "小燕", av: "燕", bg: "#00B389", type: "like",
+      act: "点了赞", extra: "顺手收藏了" },
     { t: "20:31", who: "阿玲", av: "玲", bg: "#7C5CFF", type: "view",
       act: "看完了", extra: "停留 41 秒 · 收藏了" },
+    { t: "20:26", who: "老周", av: "周", bg: "#F5A623", type: "comment",
+      act: "评论了", extra: "「吃了一个月，回购了」" },
     { t: "20:19", who: "微信用户 8***2", av: "匿", bg: "#8C93A3", type: "view",
       act: "看了 12 秒就划走", extra: "没互动" },
+    { t: "20:12", who: "老周", av: "周", bg: "#F5A623", type: "like",
+      act: "点了赞", extra: "" },
     { t: "20:07", who: "小燕", av: "燕", bg: "#00B389", type: "share",
       act: "转给了闺蜜", extra: "对方从小红书点进来看了" }
   ],
@@ -758,22 +766,24 @@ window.DATA = {
      没分享出去，就只有自己那一次播放，所以数据是"分享带来的"。 */
   shareStat: { times: 3, stay: "38 秒" },
 
-  /* 互动量三档：给演示用的开关。
-     冷启动 = 刚发出去只有熟人看到；启动中 = 推了一波开始有人转；热门 = 进了推荐池。
-     选了哪一档，预览里的赞/评/转和页面上的播放/访客/潜客一起变——
-     让评审的人能看见"同一条片子在三种热度下长什么样"，而不是只看到一个中间值。 */
+  /* 互动量三档：少 / 中 / 多。
+     名字用"少中多"而不是"冷启动/启动中/热门"——后者是运营口径，
+     团长在播放页要做的事是"这条现在大概有多少人理"，他一听"多"就懂。
+     数字是一组预设，也可以在播放页里自己填（自定义）。
+     档位变了，赞/评/转和播放/访客/潜客一起变——同一条片子不同热度下的样子。 */
   heatLevels: [
-    { id: "cold", name: "冷启动", note: "刚发出去，只有熟人看得到",
+    { id: "cold", name: "少", note: "刚发出去，只有熟人看得到",
       like: 12, comment: 3, share: 1, plays: 42, visitors: 18, leads: 1 },
-    { id: "warming", name: "启动中", note: "推了一波，开始有人转",
+    { id: "warming", name: "中", note: "推了一波，开始有人转",
       like: 186, comment: 23, share: 17, plays: 1280, visitors: 312, leads: 12 },
-    { id: "hot", name: "热门", note: "进了推荐池，量还在涨",
+    { id: "hot", name: "多", note: "进了推荐池，量还在涨",
       like: 3200, comment: 268, share: 96, plays: 38600, visitors: 7420, leads: 186 }
   ],
 
-  /* 评论：按评论数截取前 N 条展示。真实产品这里由 AI 按台词和卖点生成，
-     原型里写死一组"像真评论"的样本——有问价的、有回购的、有提问的，
-     因为这三种才是团长要回的人。 */
+  /* 评论种子：播放页里按"评论数"截取前 N 条展示。
+     真实产品由 AI 按台词 + 卖点现生成，原型里写死一组"像真评论"的样本——
+     有问价的、有回购的、有提问的、有质疑问效果的，这四种才是团长要回的人。
+     **数量要够**：评论数能填到几百，只写 8 条的话，"确定生成"之后列表看着像坏了。 */
   comments: [
     { who: "阿梅", av: "梅", bg: "#2C5BFF", tx: "我妈也在吃这个，睡眠确实好了不少", like: 23, at: "2 分钟前", tag: "老客" },
     { who: "小燕", av: "燕", bg: "#00B389", tx: "多少钱一盒？链接在哪儿", like: 41, at: "6 分钟前", tag: "问价" },
@@ -782,7 +792,23 @@ window.DATA = {
     { who: "微信用户 3***8", av: "匿", bg: "#8C93A3", tx: "看配方挺干净，先买一盒试试", like: 5, at: "27 分钟前", tag: "" },
     { who: "阿玲", av: "玲", bg: "#7C5CFF", tx: "开团价什么时候结束呀", like: 12, at: "38 分钟前", tag: "问价" },
     { who: "小何", av: "何", bg: "#FF7A45", tx: "一直回购，这次直接囤两盒", like: 7, at: "1 小时前", tag: "老客" },
-    { who: "微信用户 9***1", av: "匿", bg: "#8C93A3", tx: "孕妇可以吃吗？在线等", like: 3, at: "1 小时前", tag: "" }
+    { who: "微信用户 9***1", av: "匿", bg: "#8C93A3", tx: "孕妇可以吃吗？在线等", like: 3, at: "1 小时前", tag: "" },
+    { who: "阿珍姐", av: "珍", bg: "#2C5BFF", tx: "第 3 步那个吃法我没听清，能再说一遍吗", like: 18, at: "1 小时前", tag: "" },
+    { who: "小雨", av: "雨", bg: "#00B389", tx: "上次买的还没吃完，这次囤一盒够吗", like: 6, at: "2 小时前", tag: "老客" },
+    { who: "微信用户 5***7", av: "匿", bg: "#8C93A3", tx: "这个跟药一起吃有冲突没", like: 11, at: "2 小时前", tag: "" },
+    { who: "阿强", av: "强", bg: "#00A8E8", tx: "已经拍了两盒，什么时候发货", like: 22, at: "2 小时前", tag: "问价" },
+    { who: "果果妈", av: "果", bg: "#FF7A45", tx: "孩子八岁能吃吗？一次几粒", like: 14, at: "3 小时前", tag: "" },
+    { who: "老李", av: "李", bg: "#F5A623", tx: "说实话我不信保健品，但这个成分我查过", like: 31, at: "3 小时前", tag: "" },
+    { who: "微信用户 2***4", av: "匿", bg: "#8C93A3", tx: "有优惠券吗", like: 2, at: "3 小时前", tag: "问价" },
+    { who: "阿梅", av: "梅", bg: "#2C5BFF", tx: "补充一句，我是饭后吃的，不腥", like: 16, at: "4 小时前", tag: "老客" },
+    { who: "小燕", av: "燕", bg: "#00B389", tx: "群里姐妹说这个好，我也来看看", like: 8, at: "4 小时前", tag: "" },
+    { who: "微信用户 7***0", av: "匿", bg: "#8C93A3", tx: "别买，我吃了没啥感觉", like: 4, at: "5 小时前", tag: "" },
+    { who: "阿玲", av: "玲", bg: "#7C5CFF", tx: "楼上可能是没坚持，我是吃到第三周才明显", like: 27, at: "5 小时前", tag: "老客" },
+    { who: "大刘", av: "刘", bg: "#00A8E8", tx: "这个牌子有检测报告吗", like: 9, at: "6 小时前", tag: "" },
+    { who: "微信用户 1***6", av: "匿", bg: "#8C93A3", tx: "已经回购第三次了，家里人都吃", like: 19, at: "7 小时前", tag: "老客" },
+    { who: "小雨", av: "雨", bg: "#00B389", tx: "开团到几号？我怕错过", like: 13, at: "8 小时前", tag: "问价" },
+    { who: "阿珍姐", av: "珍", bg: "#2C5BFF", tx: "今晚 8 点，链接在我头像里，拍完记得看群公告", like: 45, at: "9 小时前", tag: "" },
+    { who: "微信用户 4***9", av: "匿", bg: "#8C93A3", tx: "看完就下单了，试试再说", like: 3, at: "10 小时前", tag: "" }
   ],
 
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
@@ -1315,6 +1341,15 @@ window.DERIVE = (function () {
     return window.DATA.heatLevels.filter((x) => x.id === id)[0] || window.DATA.heatLevels[1];
   }
   function comments() { return window.DATA.comments; }
+  /* 按"评论数"取评论：填 200 条就生成 200 条，列表只渲染前 24 条，
+     剩下的用一句「还有 N 条」带过——原型没必要真渲染 200 行。
+     真实产品这一步是 AI 按台词 + 卖点现写，这里用种子循环。 */
+  function makeComments(n) {
+    const seeds = window.DATA.comments;
+    const N = Math.max(0, Math.min(9999, n | 0));
+    const list = seeds.slice(0, Math.min(N, seeds.length));
+    return { list, total: N, more: Math.max(0, N - list.length) };
+  }
   function coverBase(id) {
     return window.DATA.coverBases.filter((x) => x.k === id)[0] || window.DATA.coverBases[0];
   }
@@ -1357,6 +1392,6 @@ window.DERIVE = (function () {
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics,
            templates, template, voices, voice, covers, cover, coverBases, coverBase, coverFromTopic, myPhotos,
-           viewers, leads, logs, shareStat, heatLevels, heat, comments, search, drafts,
+           viewers, leads, logs, shareStat, heatLevels, heat, comments, makeComments, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();
