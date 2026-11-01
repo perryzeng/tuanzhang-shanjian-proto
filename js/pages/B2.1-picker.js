@@ -89,6 +89,12 @@ window.PAGES["B2.1"].render = function (ctx) {
           <div style="margin-top:10px;background:var(--warm-weak);border-radius:9px;padding:8px 10px;font-size:11.5px;color:#D9541F;line-height:1.5">
             <b>画面建议：</b>${seg.hint || "按台词语义挑一段，能盖住这段时长最好"}
           </div>
+          <div class="xs" style="margin-top:8px;display:flex;align-items:center;gap:6px">
+            <span>不想找素材？</span>
+            <span style="color:var(--brand);font-weight:700;cursor:pointer"
+              data-go="B2.3?seg=${seg.id}&kind=${kind}${ctx.src ? "&src=" + ctx.src : ""}${ctx.doc ? "&doc=" + ctx.doc : ""}${isSeries ? "&c=" + cid + "&day=" + day : ""}"
+              data-label="让我的照片出镜">加一层小窗，用我的照片出镜 ›</span>
+          </div>
         </div>
 
         <div class="sheet-b">

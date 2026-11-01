@@ -15,6 +15,7 @@ window.PAGES["D2"].prd = "PRD §6.13 · 系列分集编辑（结构化脚本框�
 window.PAGES["D2"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const mode = ctx.mode || "browse";
+  const editId = ctx.edit || "";
   const voVer = ctx.vo || "self";
   const c = D.campaign(ctx.c);
   const day = +ctx.d || c.day || 1;
@@ -37,38 +38,37 @@ window.PAGES["D2"].render = function (ctx) {
     const isFocus = s.id === focus.id;
     const okShot = s.shots.filter((x) => !x.miss)[0];
     const badShot = s.shots.filter((x) => x.miss)[0];
+    const hasPip = s.shots.some((x) => x.pip);
+    const typed = ctx["vo_" + s.id];
+    const voText = typed != null ? typed : s.vo;
     const slot = badShot
-      ? { miss: true, label: badShot.label || "缺画面", go: pickGo(s.id) }
-      : okShot ? { label: okShot.label, bg: okShot.bg, go: pickGo(s.id) }
-      : { empty: true, label: "加画面", go: pickGo(s.id) };
+      ? { miss: true, label: "缺" + (badShot.label || "画面"), go: pickGo(s.id) }
+      : okShot
+        ? { label: okShot.label, bg: okShot.bg, pvAct: "D2.pv=" + s.id + "&D2.pause=", swGo: pickGo(s.id) }
+        : { empty: true, label: "添加素材", go: pickGo(s.id) };
 
     const tags = [].concat(
       s.fixed ? [["", "每天固定"]] : [["o", "今天要换"]],
-      s.shots.some((x) => x.pip) ? [["p", "画中画"]] : []
+      hasPip ? [["p", "▣ 带小窗", "B2.3"]] : []
     );
 
-    const on = playing === s.id;
-    const p = {
-      no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit",
-      play: { on: on, act: on ? "D2.pv=&D2.pause=" : "D2.pv=" + s.id + "&D2.pause=" }
-    };
+    const editing = editId === s.id;
+    const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && editing };
 
-    if (mode === "edit" && isFocus) {
-      p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : s.vo;
-      p.editOps = [["hot", "✦ 按这天的主题重写", "D2.vo=ai"], ["go", "✓ 用这版", "D2.mode=browse"]];
-    } else if (s.vo) {
-      p.vo = s.vo;
-      p.edit = !s.fixed;
-      if (!s.fixed) p.editSet = "D2.mode=edit&D2.seg=" + s.id;
+    if (editing) {
+      p.bindKey = "D2.vo_" + s.id;
+      p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : voText;
+      p.editOps = [["hot", "✦ 按这天的主题换个说法", "D2.vo=ai&D2.edit=" + s.id], ["go", "✓ 用这版", "D2.vo=self&D2.edit="]];
+    } else if (voText) {
+      p.vo = voText;
+      p.voEditAct = s.fixed ? "" : "D2.edit=" + s.id + "&D2.vo=self";
     } else {
       p.pending = true;
-      p.edit = false;
     }
-    p.meta = pending ? (s.fixed ? "这段每天一样，已备好" : "") : D.slotMeta(s);
+    p.meta = pending ? (s.fixed ? "这段每天一样，已备好" : "")
+      : (badShot || !okShot ? "" : D.slotMeta(s));
     if (mode === "edit" && isFocus && s.fixed) p.note = "这段每天固定，不用每天改；要改一次就全季生效";
-    if (!s.fixed && !pending && s.vo && !on) {
-      p.ops = [{ t: "✦ 换成我的说法", cls: "hot" }, { t: "从昨天抄", go: backGo }];
-    }
+
     return C.part(p);
   }
 
@@ -88,15 +88,17 @@ window.PAGES["D2"].render = function (ctx) {
     ? { t: "✦ 生成这集的话术", go: "B2.4?from=D2&c=" + c.id + "&d=" + day, cls: "ai" }
     : { t: "下一步 · 选模板与声音", go: "B2.4?from=D2&c=" + c.id + "&d=" + day, cls: "ai" };
 
-  const sub = mode === "edit"
+  const sub = editId
     ? "正在改第 " + (focus.idx + 1) + " 段" + (focus.fixed ? "（每天固定，改一次全季生效）" : "")
     : "Day " + day + "/" + d.series.total + " · " + plan.topic;
 
+  const pvShot = pvSeg ? (pvSeg.shots.filter((x) => !x.miss)[0] || {}) : {};
   const player = pvSeg ? C.player({
     no: pvSeg.idx + 1, name: pvSeg.name, dur: pvSeg.dur,
-    bg: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
-    label: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).label || "待补画面",
-    cap: pvSeg.vo || "",
+    bg: pvShot.bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
+    label: pvShot.label || "待补画面",
+    pip: pvSeg.shots.some((x) => x.pip) ? "小窗" : "",
+    cap: ctx["vo_" + pvSeg.id] != null ? ctx["vo_" + pvSeg.id] : pvSeg.vo,
     closeAct: "D2.pv=&D2.pause=",
     pauseAct: paused ? "D2.pause=" : "D2.pause=1",
     paused: paused
@@ -107,7 +109,7 @@ window.PAGES["D2"].render = function (ctx) {
     <div class="ab">
       <span class="back" data-go="${backGo}" data-label="回到单日任务">‹</span>
       <div class="ttl">${d.series.name}<small>${sub}</small></div>
-      <span class="act" data-set="D2.mode=${mode === "browse" ? "edit" : "browse"}">${mode === "browse" ? "编辑" : "完成"}</span>
+      
     </div>
 
     <div class="body">

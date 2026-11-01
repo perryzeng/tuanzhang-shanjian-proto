@@ -161,15 +161,24 @@
 .part-b{display:flex;gap:11px;align-items:flex-start}
 
 /* 画面槽：整块可点，点开就是素材选择器 */
-.slot{width:64px;height:86px;border-radius:12px;flex:0 0 64px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;gap:4px;padding:5px;position:relative;overflow:hidden;
+.slot{width:78px;height:106px;border-radius:14px;flex:0 0 78px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:4px;padding:6px;position:relative;overflow:hidden;
       text-align:center;cursor:pointer;color:#fff}
 .slot b{font-size:9.5px;font-weight:700;line-height:1.3;letter-spacing:0;display:-webkit-box;-webkit-line-clamp:2;
         -webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .slot i{font-size:9px;font-style:normal;font-weight:600;background:rgba(0,0,0,.34);border-radius:5px;padding:1.5px 6px}
 .slot .ic{font-size:17px;font-weight:400;line-height:1;opacity:.55}
-.slot.fill:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,18,40,0) 40%,rgba(10,18,40,.42) 100%)}
-.slot.fill b,.slot.fill i{z-index:1}
+.slot.fill:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,18,40,0) 34%,rgba(10,18,40,.55) 100%)}
+.slot.fill b,.slot.fill .pvbtn,.slot.fill .swbtn{z-index:1}
+.slot.fill b{position:absolute;left:5px;right:5px;bottom:6px;font-size:9px;line-height:1.25;
+             -webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;text-align:center}
+/* 预览按钮：槽正中的大圆，一眼能看见这是"看这一段" */
+.pvbtn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:#12224A;
+       display:flex;align-items:center;justify-content:center;cursor:pointer;
+       box-shadow:0 3px 10px rgba(0,0,0,.3);margin-top:-8px}
+.pvbtn svg{margin-left:2px}
+.swbtn{position:absolute;right:5px;top:5px;font-size:9px;font-weight:700;background:rgba(0,0,0,.4);
+       border-radius:6px;padding:2px 5px;cursor:pointer;backdrop-filter:blur(4px)}
 .slot.empty{background:#F7F9FD;border:1.5px dashed #C9D2E6;color:var(--text-3)}
 .slot.miss{background:#FFF8F8;border:1.5px dashed #FFB4B4;color:var(--danger)}
 .slot.empty b,.slot.miss b{font-size:9.5px}
@@ -200,9 +209,13 @@
 .seg-dur{margin-left:auto;font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
 .vo{font-size:13px;line-height:1.62;color:var(--text);display:flex;gap:8px}
 .vo .edit{margin-left:auto;font-size:11.5px;color:var(--brand);font-weight:600;flex:0 0 auto;align-self:flex-start;padding-top:2px;cursor:pointer}
-.editbox{border:1.5px solid var(--brand);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.62;background:#fff;min-height:64px;color:var(--text)}
+.editbox{border:1.5px solid var(--brand);border-radius:14px;padding:10px 12px;background:#fff;min-height:64px}
+/* 编辑框就是输入框：点「改」当场能打字，不再进一个"编辑态" */
+.editbox textarea{display:block;width:100%;border:0;outline:0;resize:none;background:transparent;
+                  font-family:inherit;font-size:13px;line-height:1.62;color:var(--text);min-height:56px;padding:0}
+.editbox textarea::placeholder{color:var(--text-4)}
 .editops{display:flex;gap:7px;margin-top:8px}
-.editops .op{flex:0 0 auto;padding:0 14px}
+.editops .op{flex:0 0 auto;padding:0 13px;white-space:nowrap}
 .clips{display:flex;gap:8px;margin-top:10px;align-items:center}
 .clip{width:38px;height:66px;border-radius:10px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:9px;font-weight:700;line-height:1.2;padding:4px;position:relative;overflow:hidden}
 .clip.pip::after{content:"珍";position:absolute;right:3px;bottom:3px;width:14px;height:14px;border-radius:50%;background:var(--violet);font-size:8px;display:flex;align-items:center;justify-content:center}
@@ -553,6 +566,11 @@
 .pl-cap{position:absolute;left:14px;right:14px;bottom:40px;text-align:center;font-size:12.5px;font-weight:700;
         line-height:1.5;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,.7);padding:0 4px}
 .pl-tip{font-size:11.5px;color:rgba(255,255,255,.66)}
+/* 预览里的画中画小窗：直接在画面上做出来，比一行文字说明直观 */
+.pl-pip{position:absolute;right:9px;top:9px;width:28%;aspect-ratio:9/13;border-radius:8px;z-index:1;
+        background:rgba(255,255,255,.86);border:1.5px solid rgba(255,255,255,.95);
+        display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#12224A;
+        box-shadow:0 4px 12px rgba(0,0,0,.3)}
 
 /* ========== 创作页：三种取脚本的方式长在同一个输入框上 ========== */
 .composer .cbot{border-top:1px solid var(--line-2);padding-top:11px;display:block}
@@ -585,3 +603,44 @@
 .pubrow .pt b{display:block;font-size:14px;font-weight:600;letter-spacing:-.1px}
 .pubrow .pt span{display:block;font-size:10.5px;color:var(--text-3);margin-top:4px;line-height:1.5}
 .pubrow .pg{font-size:18px;color:var(--text-4);flex:0 0 auto}
+
+/* 没配画面时的一条辅助提示（AI 一键配齐） */
+.assist{display:flex;align-items:center;gap:10px;margin:8px 16px 2px;padding:10px 12px;
+        background:#EFF4FF;border-radius:14px;flex:0 0 auto}
+.assist .at{flex:1;min-width:0;line-height:1.5}
+.assist .at b{font-size:12.5px;color:var(--brand-ink)}
+.assist .at span{display:block;font-size:10.5px;color:#5B7AB8;margin-top:2px}
+.assist .abtn{flex:0 0 auto;height:32px;padding:0 12px;border-radius:999px;background:var(--g-brand);
+              color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;cursor:pointer;
+              box-shadow:0 4px 12px rgba(44,91,255,.24)}
+
+/* ========== 模板货架（选模板与声音） ========== */
+.tshelf{margin:14px 0 10px}
+.ttabs{display:flex;align-items:center;gap:14px;padding:0 16px 10px;overflow-x:auto;scrollbar-width:none}
+.ttabs::-webkit-scrollbar{display:none}
+.ttabs .tf{font-size:12.5px;color:var(--text-4);flex:0 0 auto}
+.ttabs .t1{font-size:13.5px;font-weight:600;color:var(--text-3);flex:0 0 auto;position:relative;padding-bottom:5px;cursor:pointer}
+.ttabs .t1.on{color:var(--text);font-weight:700}
+.ttabs .t1.on:after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+                    width:16px;height:2.5px;border-radius:2px;background:var(--brand)}
+
+.trow{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 6px;scrollbar-width:none}
+.trow::-webkit-scrollbar{display:none}
+.tcard{flex:0 0 118px;cursor:pointer}
+.tcard .tc{position:relative;height:158px;border-radius:12px;overflow:hidden;color:#fff;
+           display:flex;flex-direction:column;justify-content:flex-end;padding:9px 8px;
+           box-shadow:0 0 0 2px transparent}
+.tcard.sel .tc{box-shadow:0 0 0 2.5px var(--brand),0 8px 20px rgba(44,91,255,.24)}
+.tcard .tt{position:absolute;left:7px;top:7px;font-size:8.5px;font-weight:700;background:rgba(0,0,0,.32);
+           border-radius:5px;padding:1.5px 6px}
+.tcard .tx{position:relative}
+.tcard .tx b{display:block;font-size:13px;font-weight:800;line-height:1.2;letter-spacing:-.3px;
+             text-shadow:0 2px 8px rgba(0,0,0,.45);-webkit-line-clamp:2;display:-webkit-box;
+             -webkit-box-orient:vertical;overflow:hidden}
+.tcard .tx span{display:block;font-size:8.5px;opacity:.92;margin-top:4px;line-height:1.3;
+                text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.tcard .tk{position:absolute;right:7px;bottom:7px;width:17px;height:17px;border-radius:50%;
+           background:#fff;color:var(--brand);font-size:10px;font-weight:700;display:flex;
+           align-items:center;justify-content:center}
+.tcard .tn{font-size:12px;font-weight:600;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tcard .tr{font-size:9.5px;color:var(--text-3);margin-top:2px}

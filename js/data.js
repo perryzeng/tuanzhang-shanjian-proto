@@ -523,18 +523,28 @@ window.DATA = {
      内置 6 款，按真实投放效果排；接真接口：GET /templates?scene=script|series
      rate 是同类视频用这个模板后相对基线的提升，来自内容数据后台。 */
   templates: [
-    { id: "tp_fast", name: "快闪卡点", tag: "爆款", rate: "完播 +18%", c1: "#FF7A45", c2: "#FFB020",
-      desc: "每 1.5 秒切一次，适合开箱 / 晒单", bits: ["1.5s 一切", "鼓点卡点", "大字闪出"] },
-    { id: "tp_big", name: "大字口播", tag: "稳妥", rate: "完播 +9%", c1: "#2C5BFF", c2: "#5B8CFF",
-      desc: "台词逐句出大字，不出镜也清楚", bits: ["逐句大字", "描边白字", "缓慢推近"] },
-    { id: "tp_scroll", name: "图文滚动", tag: "省素材", rate: "完播 +4%", c1: "#00A8E8", c2: "#00C2FF",
-      desc: "图片往上滑 + 字幕，缺画面时最好用", bits: ["竖向滚动", "图片优先", "轻音乐"] },
-    { id: "tp_twist", name: "剧情反转", tag: "涨粉", rate: "涨粉 +22%", c1: "#7C5CFF", c2: "#B08CFF",
-      desc: "先抛一句反常识，再解释", bits: ["开头反问", "停顿 1 秒", "字幕放大"] },
-    { id: "tp_compare", name: "对比测评", tag: "带货", rate: "出单 +12%", c1: "#F5A623", c2: "#FFC85B",
-      desc: "左右分屏，讲成分差异最直观", bits: ["左右分屏", "打勾标记", "价格收尾"] },
-    { id: "tp_talk", name: "真人出镜", tag: "信任", rate: "出单 +8%", c1: "#00B389", c2: "#00C2FF",
-      desc: "口播为主，画中画辅助", bits: ["人像抠图", "画中画", "原声优先"] }
+    { id: "tp_fast", cat: "hot", name: "快闪卡点", tag: "爆款", rate: "完播 +18%", c1: "#FF7A45", c2: "#FF3D6E",
+      big: "一天不到 3 块", sub: "今晚 8 点开团", desc: "每 1.5 秒切一次，适合开箱 / 晒单", bits: ["1.5s 一切", "鼓点卡点", "大字闪出"] },
+    { id: "tp_big", cat: "hot", name: "大字口播", tag: "稳妥", rate: "完播 +9%", c1: "#2C5BFF", c2: "#00C2FF",
+      big: "磷虾油怎么选", sub: "3 步不踩坑", desc: "台词逐句出大字，不出镜也清楚", bits: ["逐句大字", "描边白字", "缓慢推近"] },
+    { id: "tp_bi", cat: "bi", name: "双语红", tag: "双语", rate: "完播 +21%", c1: "#C71F37", c2: "#7A1020",
+      big: "双行排版", sub: "中英双语 · 更显专业", desc: "上下双语字幕，适合讲成分", bits: ["双语字幕", "红底白字", "双行排版"] },
+    { id: "tp_bi2", cat: "bi", name: "明快彩彩", tag: "双语", rate: "完播 +14%", c1: "#00B389", c2: "#00C2FF",
+      big: "智能加标题", sub: "自动识别并加字幕", desc: "彩色描边 + 自动字幕", bits: ["自动字幕", "彩色描边", "双行排版"] },
+    { id: "tp_pink", cat: "bi", name: "甜趣桃粉", tag: "双语", rate: "完播 +11%", c1: "#FF7BA9", c2: "#FF4E88",
+      big: "为双屏字幕", sub: "边讲边出字", desc: "粉调柔和，适合讲使用感受", bits: ["柔光", "双行字幕", "轻转场"] },
+    { id: "tp_scroll", cat: "new", name: "图文滚动", tag: "省素材", rate: "完播 +4%", c1: "#00A8E8", c2: "#5B8CFF",
+      big: "5 个细节", sub: "图往上滑着讲", desc: "图片往上滑 + 字幕，缺画面时最好用", bits: ["竖向滚动", "图片优先", "轻音乐"] },
+    { id: "tp_twist", cat: "new", name: "剧情反转", tag: "涨粉", rate: "涨粉 +22%", c1: "#7C5CFF", c2: "#B08CFF",
+      big: "先别急着买", sub: "看完再说", desc: "先抛一句反常识，再解释", bits: ["开头反问", "停顿 1 秒", "字幕放大"] },
+    { id: "tp_compare", cat: "hot", name: "对比测评", tag: "带货", rate: "出单 +12%", c1: "#F5A623", c2: "#FFC85B",
+      big: "鱼油 vs 磷虾油", sub: "差在一个吸收率", desc: "左右分屏，讲成分差异最直观", bits: ["左右分屏", "打勾标记", "价格收尾"] },
+    { id: "tp_talk", cat: "hot", name: "真人出镜", tag: "信任", rate: "出单 +8%", c1: "#0E1B3D", c2: "#2C5BFF",
+      big: "我吃了两个月", sub: "变化就在这", desc: "口播为主，画中画辅助", bits: ["人像抠图", "画中画", "原声优先"] },
+    { id: "tp_sale", cat: "sale", name: "双 11 大促", tag: "促销", rate: "点击 +30%", c1: "#E8262D", c2: "#FF8A00",
+      big: "今晚 8 点开团", sub: "库存 300 组", desc: "红金促销版，价格和倒计时压满屏", bits: ["价格大字", "倒计时", "红金配色"] },
+    { id: "tp_diary", cat: "diary", name: "视频日记", tag: "朴实", rate: "完播 +7%", c1: "#5B6B8C", c2: "#9AA5BD",
+      big: "第 5 天", sub: "记录一下", desc: "手账感字幕，适合日更打卡", bits: ["手写体", "日期角标", "慢节奏"] }
   ],
 
   /* 音色：原音 or AI 配音。
@@ -887,6 +897,19 @@ window.DERIVE = (function () {
           : { ...s, shots: [{ id: "pk_" + a.id, asset: a.id, dur: Math.min(a.dur || 3, s.dur) }] }) };
       }
     }
+    /* AI 写完的脚本，画面先留空——让团长自己挑一遍，比 AI 猜完再逐段否掉快。
+       点"一键配齐"（autoFill）才按语义一次铺满。 */
+    if (k === "script" && opts.src === "ai" && !opts.autoFill) {
+      d = { ...d, segments: d.segments.map((x) => ({ ...x, shots: [] })) };
+    }
+    if (opts.autoFill) {
+      /* 一键配齐 = 把"空的"和"缺的"都配掉。缺的那种（比如结尾花字卡）如果库里
+         其实有可用的，也一并补上——否则按钮写着"配齐"，点完还剩一个红槽，
+         用户会以为功能坏了。 */
+      d = { ...d, segments: d.segments.map((x) => (x.shots && x.shots.some((sh) => sh.asset) ? x
+        : { ...x, shots: fitShots(x.needTags || needTagsOf(x.name), x.dur) })) };
+    }
+
     /* 系列里还没轮到的那一天：结构在，台词和画面都还没生成 */
     const pendDay = (k === "series" && opts.day && +opts.day !== d.series?.day) ? +opts.day : 0;
     let acc = 0;

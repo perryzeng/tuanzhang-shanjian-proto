@@ -1,27 +1,29 @@
 window.PAGES["B2"].states = [
-  { k: "browse", n: "浏览态：整条脚本按 part 铺开，一个 part 一段话 + 一个画面槽" },
-  { k: "edit", n: "编辑态：只当前 part 就地改台词，改完即时重配音" },
-  { k: "fix", n: "修缺口：只留没配画面的 part，出路摊开" }
+  { k: "browse", n: "默认：整条脚本按 part 铺开，每段自己带预览键与编辑入口" },
+  { k: "fix", n: "修缺口：只留没配好画面的 part" }
 ];
 window.PAGES["B2"].prd = "PRD §6 · 结构化脚本框（全产品唯一的脚本编辑面）";
 
-/* 结构化脚本框：不管脚本从哪来（AI 写 / 脚本库引 / 视频抽 / 二创），
-   落到这一页都是同一个结构——**N 个 part，每个 part = 一段台词 + 一个画面槽**。
+/* 结构化脚本框：不管脚本从哪来，落到这一页都是同一个结构——
+   **N 个 part，每个 part = 一个画面槽 + 一段台词**。
 
-   这一版把顶部那条大预览去掉了，原因有两个：
-   ① 它占掉近 1/5 屏，但只显示"当前这一段"，和下面那张 part 卡是同一件事；
-   ② 有了它，用户会以为要在这里"播放整条片子"，而真正的检查方式是逐段看。
-   改成每个 part 自带的 ▶：点哪段预览哪段，条形进度按这段的实际时长走。 */
+   这一版的三条改动：
+   ① 不再有全局"编辑"开关。每段自己带「改」和「▶」——想改哪段改哪段，
+      想预览哪段预览哪段，不用先进入一个模式。
+   ② 画面槽放大到 78×106，正中一个白色 ▶。预览不再是标题行那个小三角，
+      而是槽上最显眼的按钮；点了弹出竖屏播放器，看这一段的词和画。
+   ③ AI 写完的脚本**画面是空的**，每段一个大 ＋「添加素材」；
+      顶上给一条"一键配齐"，AI 按台词语义一次铺满，不想逐个挑就用它。 */
 window.PAGES["B2"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const kind = ctx.kind === "remix" ? "remix" : "script";
-  const mode = ctx.mode || "browse";
-  const voVer = ctx.vo || "self";
+  const mode = ctx.mode === "fix" ? "fix" : "browse";
   const src = ctx.src || "";
+  const editId = ctx.edit || "";
   const d = D.draft(kind, {
     doc: ctx.doc, day: ctx.day, src: src,
-    /* only=1 表示"只导入文案"：台词照搬，画面留空 */
     fill: ctx.only ? false : true,
+    autoFill: ctx.auto === "1",
     pick: (ctx.seg && ctx.asset) ? { seg: ctx.seg, asset: ctx.asset } : null
   });
   const miss = d.missSegs[0];
@@ -32,14 +34,13 @@ window.PAGES["B2"].render = function (ctx) {
   const pvSeg = playing ? byId(playing) : null;
 
   /* 每个槽都带着"这一段 + 从哪来"，否则换完就掉回默认草稿 */
-  const pickGo = (id) => "B2.1?seg=" + id + "&kind=" + kind + "&src=" + src
+  const pickGo = (id) => "B2.1?seg=" + id + "&kind=" + kind + (src ? "&src=" + src : "")
     + (ctx.doc ? "&doc=" + ctx.doc : "");
+  const cfgQ = "?from=B2&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
 
-  /* 来源只说一句话，数字交给下面的小标题——两处都在说"5 段 46 秒"就是重复 */
+  /* 来源只说一句话，数字交给下面的小标题 */
   const srcLine = (function () {
     if (kind === "remix")
-      /* 本地视频二创：来源说"这是你自己上传的"，并交代怎么切的段——
-         用户刚在上一页选过切段方式，这里不呼应一下会以为白选了 */
       return ctx.local
         ? "本地视频「IMG_2043.MOV」· 52 秒 · " + (+ctx.sec > 0 ? "每 " + ctx.sec + " 秒切一段" : "AI 自动分段")
         : "二创自 " + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放";
@@ -54,72 +55,69 @@ window.PAGES["B2"].render = function (ctx) {
     return d.product + " · 素材库 " + window.DATA.assets.length + " 段";
   })();
 
-  /* 一个 part = 一段台词 + 一个画面槽 + 一个 ▶。
-     点 ▶ 只预览这一段：条形按这段的真实时长走完，不用看整条。 */
   function partHtml(s) {
     const isFocus = s.id === focus.id;
     const editable = s.lock !== "brand";
     const okShot = s.shots.filter((x) => !x.miss)[0];
     const badShot = s.shots.filter((x) => x.miss)[0];
-    const on = playing === s.id;
+    const hasPip = s.shots.some((x) => x.pip) || ctx.pip === s.id;
+    /* 用户改了哪一段就存在哪一段上；没改过就用草稿里的原文 */
+    const typed = ctx["vo_" + s.id];
+    const voText = typed != null ? typed : s.vo;
+
     const slot = badShot
-      ? { miss: true, label: badShot.label || "缺画面", go: pickGo(s.id) }
+      ? { miss: true, label: "缺" + badShot.label, go: pickGo(s.id) }
       : okShot
-        ? { label: okShot.label, bg: okShot.bg, go: pickGo(s.id) }
-        : { empty: true, label: "加画面", go: pickGo(s.id) };
+        ? { label: okShot.label, bg: okShot.bg, pvAct: "B2.pv=" + s.id + "&B2.pause=", swGo: pickGo(s.id) }
+        : { empty: true, label: "添加素材", go: pickGo(s.id) };
 
     const tags = [].concat(
       s.fixed ? [["", "固定"]] : [],
       s.lock === "brand" ? [["", "品牌锁定"]] : [],
       s.suggest ? [[s.suggest === "务必改" ? "r" : "o", s.suggest]] : [],
-      s.shots.some((x) => x.pip) ? [["p", "画中画"]] : []
+      /* 「画中画」是剪辑软件的叫法，团长听不懂。说人话：这段画面上还压着一个小窗。 */
+      hasPip ? [["p", "▣ 带小窗", "B2.3"]] : []
     );
 
-    const p = {
-      no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit",
-      play: { on: on, act: on ? "B2.pv=&B2.pause=" : "B2.pv=" + s.id + "&B2.pause=" }
-    };
+    const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && editId === s.id };
     if (s.orig) p.orig = s.orig;
 
-    if (mode === "edit" && isFocus && editable) {
-      p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : s.vo;
-      p.editOps = voVer === "ai"
-        ? [["", "用回原话", "B2.vo=self"], ["go", "✓ 用这版", "B2.mode=browse"]]
-        : [["hot", "✦ AI 帮我写", "B2.vo=ai"], ["go", "完成", "B2.mode=browse"]];
-    } else if (s.vo) {
-      p.vo = s.vo;
-      p.edit = editable;
-      if (editable) p.editSet = "B2.mode=edit&B2.seg=" + s.id;
+    if (editId === s.id && editable) {
+      p.bindKey = "B2.vo_" + s.id;
+      p.editbox = ctx.vo === "ai" && s.voAlt ? s.voAlt : voText;
+      p.editOps = [
+        ["hot", "✦ 换个说法", "B2.vo=ai&B2.edit=" + s.id],
+        ["go", "✓ 用这版", "B2.vo=self&B2.edit="]
+      ];
+    } else if (voText) {
+      p.vo = voText;
+      p.voEditAct = editable ? "B2.edit=" + s.id + "&B2.vo=self" : "";
+    } else {
+      p.pending = true;
     }
-    /* 缺口段的槽上已经写着缺什么，就不再多一行"画面还缺" */
-    p.meta = badShot ? "" : D.slotMeta(s);
-    if (mode === "edit" && isFocus && !editable) p.note = "品牌方锁定的必播口播，台词不可改，只能调顺序";
-
-    if (s.missN) {
-      p.ops = D.resolveFix(s).filter((o) => o.ok).slice(0, 3)
-        .map((o) => ({ t: o.tx, go: o.go, cls: o.key === "aigen" ? "hot" : "" }))
-        .concat([{ t: "＋ 现拍", go: "B2.2", cls: "" }]);
-    } else if (isFocus && mode !== "edit" && s.vo && !on) {
-      p.ops = [{ t: "✦ AI 重写这段", cls: "hot" }, { t: "＋ 画中画", go: "B2.3" }];
-    }
+    /* 槽是空的时候不再补一句"还没配画面"——槽上已经写着"＋ 添加素材"了，
+       五段各来一句只会变成噪声。 */
+    p.meta = (badShot || !okShot) ? "" : D.slotMeta(s);
+    if (editId === s.id && !editable) p.note = "品牌方锁定的必播口播，台词不可改，只能调顺序";
     return C.part(p);
   }
 
-  /* 编辑态下不动的 part 折成一行：一次只改一段，其余别挡路 */
   const body = d.segments
-    .filter((s) => (mode === "fix" ? s.missN > 0 : true))
-    .map((s) => (mode === "edit" && s.id !== focus.id
-      ? C.fold({
-          no: s.no,
-          tag: s.fixed ? ["", "固定"] : (s.lock === "brand" ? ["", "品牌锁定"] : null),
-          text: s.name + " · " + s.dur + "s · " + (s.vo ? "台词已就绪" : "台词待生成"),
-          cover: (s.shots.filter((x) => !x.miss)[0] || {}).bg,
-          set: "B2.mode=edit&B2.seg=" + s.id
-        })
-      : partHtml(s))).join("");
+    .filter((s) => (mode === "fix" ? (s.missN > 0 || !s.shots.length) : true))
+    .map(partHtml).join("");
 
   const blocker = mode === "fix" && miss
     ? `<div class="blk"><span class="ic">!</span><span><b>发布卡在第 ${miss.idx + 1} 段</b> · 缺 ${miss.missN} 段画面，补齐才能发布；先出预览不受影响</span></div>`
+    : "";
+
+  /* 没配画面的辅助条：一句话说清"AI 能帮你配"，一个按钮点完。
+     这是"怎么帮用户把内容填进去"的答案——不是逐段找素材，而是给他一次搞定。 */
+  const assist = (mode !== "fix" && d.emptyCount > 0)
+    ? `<div class="assist">
+        <div class="at"><b>${d.emptyCount} 个 part 还没配画面</b>
+          <span>可以每段自己挑，也可以让 AI 按台词一次配齐，再逐段换</span></div>
+        <span class="abtn" data-set="B2.auto=1">✦ 一键配齐</span>
+      </div>`
     : "";
 
   const head = `<div class="listhead"><b>脚本</b>${d.segCount} 个 part · 约 ${d.durTotal} 秒 ·
@@ -127,44 +125,28 @@ window.PAGES["B2"].render = function (ctx) {
         ? `<span style="color:var(--warn);font-weight:700">安全度 ${d.safety}</span>`
         : `<span style="color:var(--success);font-weight:700">合规 ✓</span>`}
       <span style="flex:1"></span>${d.missCount
-        ? `<span class="tag r">缺 ${d.missCount} 段画面</span>`
-        : d.emptyCount
-          ? `<span class="tag o">${d.emptyCount} 段没配</span>`
-          : `<span class="tag g">可以发</span>`}</div>`;
+        ? `<span class="tag r">缺 ${d.missCount} 段</span>`
+        : d.emptyCount ? `<span class="tag o">${d.emptyCount} 段没配</span>`
+        : `<span class="tag g">可以发</span>`}</div>`;
 
-  /* 下一步不再是"直接生成"：先选模板和声音，再生成。
-     模板决定节奏与字幕，声音决定谁在说——这两件事必须在生成前定，
-     生成后再改就是重剪。 */
-  const cfgQ = "?from=B2&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
   const primary = (function () {
     if (mode === "fix" && miss) return { t: "✦ 补上第 " + (miss.idx + 1) + " 段", go: pickGo(miss.id) };
     if (kind === "remix") return { t: "下一步 · 查安全度", go: "C3" };
-    /* 缺画面也照样往下走——下一步只是选模板，缺口留到生成前那一步再看，
-       不要在这里用两个不同的按钮文案制造"现在不能走"的错觉 */
     return { t: "下一步 · 选模板与声音", go: "B2.4" + cfgQ, cls: "ai" };
   })();
 
-  const bar = `<div class="actionbar">
-    <div class="btn ${primary.cls || ""}" data-go="${primary.go}" data-label="${primary.t}">${primary.t}</div>
-  </div>`;
-
-  /* 返回回到来路：走哪条路来的就回哪，不能回错地方 */
   const backGo = kind === "remix" ? (ctx.local ? "C1?for=remix" : "C1.2")
     : src === "import" || src === "struct" ? "B1.2"
     : src === "extract" ? "C1.2"
     : "B1";
 
-  const sub = mode === "edit"
-    ? "正在改第 " + (focus.idx + 1) + " 段台词" + (voVer === "ai" ? " · AI 建议版" : "")
-    : mode === "fix"
-      ? "缺 " + d.missCount + " 段画面 · 补齐才能发布"
-      : srcLine;
-
+  const pvShot = pvSeg ? (pvSeg.shots.filter((x) => !x.miss)[0] || {}) : {};
   const player = pvSeg ? C.player({
     no: pvSeg.idx + 1, name: pvSeg.name, dur: pvSeg.dur,
-    bg: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
-    label: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).label || "待补画面",
-    cap: pvSeg.vo || "",
+    bg: pvShot.bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
+    label: pvShot.label || "待补画面",
+    pip: (pvSeg.shots.some((x) => x.pip) || ctx.pip === pvSeg.id) ? "小窗" : "",
+    cap: ctx["vo_" + pvSeg.id] != null ? ctx["vo_" + pvSeg.id] : pvSeg.vo,
     closeAct: "B2.pv=&B2.pause=",
     pauseAct: paused ? "B2.pause=" : "B2.pause=1",
     paused: paused
@@ -174,19 +156,22 @@ window.PAGES["B2"].render = function (ctx) {
     ${C.sb()}
     <div class="ab">
       <span class="back" data-go="${backGo}" data-label="返回来路">‹</span>
-      <div class="ttl">${kind === "remix" && ctx.local ? "本地视频 · 二创" : d.title}<small>${sub}</small></div>
-      <span class="act" data-set="B2.mode=${mode === "browse" ? "edit" : "browse"}&B2.vo=self">${mode === "browse" ? "编辑" : "完成"}</span>
+      <div class="ttl">${kind === "remix" && ctx.local ? "本地视频 · 二创" : d.title}
+        <small>${mode === "fix" ? "缺 " + d.needCount + " 段画面 · 补齐才能发布" : srcLine}</small></div>
     </div>
 
     ${blocker}
     ${head}
+    ${assist}
 
-    ${mode === "browse" ? `<div class="fade" style="bottom:74px"></div>` : ""}
-    <div class="body" style="padding:${mode === "browse" ? "0 16px 24px" : "10px 16px 24px"}">
+    <div class="body" style="padding:12px 16px 24px">
       ${body}
     </div>
 
-    ${bar}
+    <div class="actionbar">
+      <div class="btn ${primary.cls || ""}" data-go="${primary.go}" data-label="${primary.t}">${primary.t}</div>
+    </div>
+
     ${player}
   </div>`;
 };

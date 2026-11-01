@@ -136,15 +136,30 @@
      这是全产品唯一的「脚本长什么样」——AI 写的、导入的、视频抽的、系列的，
      落到这里都是同一个样子：一段话 + 一个槽。所以发布链路能统一。 */
   C.part = (p) => {
-    const tags = (p.tags || []).map(([c, t]) => `<span class="tag ${c}">${t}</span>`).join("");
+    const tags = (p.tags || []).map(([c, t, go]) =>
+      `<span class="tag ${c}"${go ? ` data-go="${go}" data-label="${t}"` : ""}${go ? ' style="cursor:pointer"' : ""}>${t}</span>`).join("");
     const sl = p.slot || {};
-    const slot = `<div class="slot ${sl.miss ? "miss" : sl.empty ? "empty" : "fill"}"${sl.bg ? ` style="background:${sl.bg}"` : ""}${sl.go ? ` data-go="${sl.go}" data-label="${sl.label || "换画面"}"` : ""}>
-        ${sl.empty ? `<span class="ic">＋</span>` : sl.miss ? `<span class="ic">＋</span><b>${sl.label}</b>` : `<b>${sl.label}</b><i>替换</i>`}
-      </div>`;
+
+    /* 画面槽：有素材时槽上直接给一个大 ▶（预览这一段），角上一个"换"；
+       没素材时整块就是"添加素材"，点开选择器。 */
+    const slot = sl.empty || sl.miss
+      ? `<div class="slot ${sl.miss ? "miss" : "empty"}"${sl.go ? ` data-go="${sl.go}" data-label="${sl.label}"` : ""}>
+          <span class="ic">＋</span><b>${sl.label}</b>
+        </div>`
+      : `<div class="slot fill" style="background:${sl.bg || ""}">
+          <b>${sl.label}</b>
+          <span class="pvbtn" data-set="${sl.pvAct || ""}" title="预览这一段">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+          </span>
+          ${sl.swGo ? `<span class="swbtn" data-go="${sl.swGo}" data-label="换素材">换</span>` : ""}
+        </div>`;
 
     let vo = "";
     if (p.editbox != null) {
-      vo = `<div class="editbox">${p.editbox}</div>`;
+      /* 直接就是输入框：点「改」当场就能打字，不用再点一次进某个编辑态。
+         用 data-bind 只写状态、不重渲染，否则每敲一个字光标就跳走。 */
+      vo = `<div class="editbox"><textarea data-bind="${p.bindKey || ""}" rows="3"
+              placeholder="写下这一段要说的第一句话…">${p.editbox}</textarea></div>`;
       if (p.editOps) {
         vo += `<div class="editops">${p.editOps.map(([cls, tx, act]) => {
           const attr = !act ? "" : (/=/.test(act) ? ` data-set="${act}"` : ` data-go="${act}" data-label="${tx}"`);
@@ -152,54 +167,47 @@
         }).join("")}</div>`;
       }
     } else if (p.vo) {
-      vo = `<div class="vo"><span>${p.vo}</span>${p.edit === false ? "" :
-        `<span class="edit"${p.editSet ? ` data-set="${p.editSet}"` : ""}>改</span>`}</div>`;
+      vo = `<div class="vo"><span>${p.vo}</span><span class="edit"${p.voEditAct ? ` data-set="${p.voEditAct}"` : ""}>改</span></div>`;
     } else if (p.pending) {
       vo = `<div class="vo"><span style="color:var(--text-4)">台词待生成</span></div>`;
     }
     const orig = p.orig ? `<div class="orig"><b>原文案</b><span>${p.orig}</span></div>` : "";
-    const ops = (p.ops && p.ops.length)
-      ? `<div class="ops">${p.ops.map((o) =>
-          `<span class="op ${o.cls || ""}"${o.go ? ` data-go="${o.go}" data-label="${o.t}"` : ""}>${o.t}</span>`).join("")}</div>`
-      : "";
     const meta = p.meta ? `<div class="pmeta">${p.meta}</div>` : "";
     const note = p.note ? `<div class="note">${p.note}</div>` : "";
-    /* 预览中：一条按这段真实时长走完的进度条，播完就停，不循环 */
-    const playing = p.playing
-      ? `<div class="pvline"><span class="bar2"><i style="animation-duration:${p.playing}s"></i></span><span>预览中 · ${p.playing}s</span></div>`
-      : "";
-    const playBtn = p.play
-      ? `<span class="pp${p.play.on ? " on" : ""}" data-set="${p.play.act}" title="预览这一段">${p.play.on ? "⏸" : "▶"}</span>`
-      : "";
 
-    return `<div class="part${p.on ? " on" : ""}${p.play && p.play.on ? " playing" : ""}">
-      <div class="part-h"><span class="pn">${p.no}</span><span class="pt">${p.name}</span>${tags}<span class="pd">${p.dur}</span>${playBtn}</div>
-      <div class="part-b">${slot}<div class="pvo">${orig}${vo}${playing}${ops}${note}${meta}</div></div>
+    return `<div class="part${p.on ? " on" : ""}">
+      <div class="part-h"><span class="pn">${p.no}</span><span class="pt">${p.name}</span>${tags}<span class="pd">${p.dur}</span></div>
+      <div class="part-b">${slot}<div class="pvo">${orig}${vo}${note}${meta}</div></div>
     </div>`;
   };
 
-  /* 分片播放器：点 ▶ 直接在这一段上播，不占常驻空间。
-     为什么是弹层而不是顶部长驻预览：常驻那块占 1/5 屏却只显示一段，
-     和下面的 part 卡重复；弹层只在"要看"的时候出现，看完就收。
-     o = { no, name, bg, label, dur, closeAct, pauseAct, paused } */
-  C.player = (o) => `<div class="pl">
+  /* 分片播放器：点某段的 ▶ 打开，只播这一段——大竖屏画面 + 这一段的台词。
+     为什么要占满整屏而不是角落里的小窗：团长判断的是"这段词配这个画面对不对"，
+     小窗里既看不清画面，也感受不到口播的节奏。放大了才判断得了。
+     播放器只管"看"，不管"改"——想改就关掉，回脚本框里那一句上直接改。 */
+  C.player = (o) => {
+    const dur = Math.max(1, Math.round(+o.dur || 3));
+    const mm = (s) => "0:" + String(s).padStart(2, "0");
+    return `<div class="pl">
       <div class="pl-hd">
         <span>第 ${o.no} 段 · ${o.name}</span>
-        <span class="plx" data-set="${o.closeAct}">×</span>
+        <span class="plx" data-set="${o.closeAct}">✕</span>
       </div>
       <div class="pl-mid">
         <div class="pl-screen" style="background:${o.bg}">
-          ${o.label ? `<span class="pl-lab">${o.label}</span>` : ""}
-          ${o.cap ? `<div class="pl-cap">${o.cap}</div>` : ""}
-          <div class="pl-bar"><i style="animation-duration:${o.dur}s;animation-play-state:${o.paused ? "paused" : "running"}"></i></div>
-          <div class="pl-tc"><span>00:00</span><span>00:${(o.dur < 10 ? "0" : "") + o.dur}</span></div>
+          <span class="pl-lab">${o.label || "待补画面"}</span>
+          ${o.pip ? `<span class="pl-pip">${o.pip}</span>` : ""}
+          <div class="pl-cap">${o.cap || "（这一段还没有台词）"}</div>
+          <div class="pl-bar"><i style="animation-duration:${dur}s;animation-play-state:${o.paused ? "paused" : "running"}"></i></div>
+          <div class="pl-tc"><span>${o.paused ? "已暂停" : mm(0)}</span><span>${dur}"</span></div>
         </div>
       </div>
       <div class="pl-ft">
-        <span class="pl-btn" data-set="${o.pauseAct}">${o.paused ? "▶" : "❚❚"}</span>
-        <span class="pl-tip">台词配音 + 画面 · ${o.dur} 秒</span>
+        <span class="pl-btn"${o.pauseAct ? ` data-set="${o.pauseAct}"` : ""}>${o.paused ? "▶" : "❙❙"}</span>
+        <span class="pl-tip">只播这一段 · 共 ${dur} 秒<br>关掉回脚本框，点那句词上的「改」就能改</span>
       </div>
     </div>`;
+  };
 
   C.fold = (o) =>
     `<div class="fold"${o.set ? ` data-set="${o.set}"` : (o.go ? ` data-go="${o.go}" data-label="${o.name || "展开"}"` : "")}>
