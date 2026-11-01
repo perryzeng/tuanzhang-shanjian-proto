@@ -111,20 +111,31 @@ window.PAGES["E2"].render = function (ctx) {
   const CNT = { script: cntOf("script"), asset: cntOf("asset"), work: cntOf("work") };
   const recentN = KINDS.reduce((s, [k]) => s + D.lib(side, k, {}).items.filter((x) => x.at === 1 && !delSet[x.id]).length, 0);
 
-  const statNums = `<div class="stg">
+  const pstats = `<div class="pstats">
       <div data-set="${qs()}&${pid}.open=script&${pid}.tab=log&${pid}.q="><b>${CNT.script}</b><span>脚本</span></div>
       <div data-set="${qs()}&${pid}.open=asset&${pid}.tab=log&${pid}.q="><b>${CNT.asset}</b><span>素材</span></div>
       <div data-set="${qs()}&${pid}.open=work&${pid}.tab=log&${pid}.q="><b>${CNT.work}</b><span>作品</span></div>
       <div class="rc"><b>${recentN}</b><span>今日更新</span></div>
     </div>`;
-  const statCard = side === "team"
-    ? `<div class="statc">
-        <div class="sth"><span class="sav">${(team.name || "团").slice(0, 1)}</span>
-          <div class="stt" data-go="E3.1" data-label="团队信息"><b>${team.name}<span class="tin">›</span></b>
-            <span>${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"} · 通讯录</span></div>
-          ${teams.length > 1 ? `<span class="chg" data-set="${qs()}&${pid}.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : ""}</div>
-        ${statNums}</div>`
-    : `<div class="statc plain">${statNums}</div>`;
+
+  /* 团队 Banner 轮播（只团队页有）：Banner 卡里同时放四个数，portal 一点 */
+  const banners = LIB.teamBanners || [];
+  const bn = Math.max(0, Math.min(banners.length - 1, parseInt(ctx.bn || "0", 10) || 0));
+  const bannerCard = side === "team" && banners.length
+    ? `<div class="tbnr-card">
+        <div class="tbnr" data-bnr-auto data-bnr-pid="${pid}">
+          <div class="tbnr-track" style="transform:translateX(-${bn * 100}%)">
+            ${banners.map((b) => `<div class="tbnr-slide" style="background:${b.bg}" data-go="${b.go}" data-label="${b.t}">
+              ${b.tag ? `<span class="tbnr-tag">${b.tag}</span>` : ""}
+              <div class="tbnr-tx"><b>${b.t}</b><span>${b.sub}</span></div>
+              <span class="tbnr-go">去看看 ›</span>
+            </div>`).join("")}
+          </div>
+          <div class="tbnr-dots">${banners.map((b, i) => `<i class="${i === bn ? "on" : ""}" data-bnr-dot data-set="${pid}.bn=${i}"></i>`).join("")}</div>
+        </div>
+        ${pstats}
+      </div>`
+    : "";
 
   const teamSw = tsw && teams.length > 1 && side === "team" ? `<div class="teamsw">
       ${teams.map((t) => `<b class="${t.id === tid ? "on" : ""}" data-set="${qs()}&${pid}.tid=${t.id}&${pid}.tsw=&${pid}.tab=log">
@@ -301,21 +312,18 @@ window.PAGES["E2"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <div class="ttl" style="margin-left:2px">${side === "team" ? "团队" : "素材库"}
-        <small>${side === "team" ? team.name : "我的"}</small></div>
-      ${canOrganize ? `<span class="act" data-set="${sel ? pid + ".sel=&" + pid + ".pick=&" + pid + ".mv=" : pid + ".sel=1"}">${sel ? "完成" : "整理"}</span>` : ""}
+      <div class="ttl" style="margin-left:2px"${side === "team" ? ` data-go="E3.1" data-label="团队信息"` : ""}>${side === "team" ? team.name : "素材库"}
+        <small>${side === "team" ? `${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"} · 通讯录 ›` : "我的"}</small></div>
+      ${canOrganize
+        ? `<span class="act" data-set="${sel ? pid + ".sel=&" + pid + ".pick=&" + pid + ".mv=" : pid + ".sel=1"}">${sel ? "完成" : "整理"}</span>`
+        : (side === "team" && teams.length > 1 ? `<span class="act" data-set="${qs()}&${pid}.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : "")}
     </div>
 
     <div class="body" style="padding-bottom:110px">
-      ${open ? openBody : `
-        ${statCard}
-        ${teamSw}
-        ${side === "team" ? noticeCard + taskList : ""}
-        ${mods}
-        ${side === "team"
-          ? `<div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
-          : friendSection}
-      `}
+      ${open ? openBody : (side === "team"
+        ? `${teamSw}${bannerCard}${noticeCard}${taskList}${mods}
+           <div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
+        : `<div class="pcard">${pstats}</div>${mods}${friendSection}`)}
     </div>
 
     ${sel && canOrganize ? `<div class="selbar">

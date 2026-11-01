@@ -338,6 +338,24 @@
   if (window.ResizeObserver) new ResizeObserver(fit).observe(stageEl);
   window.addEventListener("hashchange", () => { renderAll(); fit(); });
 
+  /* Banner 轮播：每 4.2s 把轨道推一格并同步圆点；顺手写回 STATE，
+     这样之后任何一次重渲染都不会跳回第一张。 */
+  setInterval(() => {
+    if (document.hidden) return;
+    const box = document.querySelector("[data-bnr-auto]");
+    if (!box) return;
+    const dots = box.querySelectorAll("[data-bnr-dot]");
+    if (dots.length < 2) return;
+    let i = -1;
+    dots.forEach((d, j) => { if (d.classList.contains("on")) i = j; });
+    const n = (i + 1) % dots.length;
+    const track = box.querySelector(".tbnr-track");
+    if (track) track.style.transform = "translateX(-" + (n * 100) + "%)";
+    dots.forEach((d, j) => d.classList.toggle("on", j === n));
+    const pid = box.getAttribute("data-bnr-pid");
+    if (pid) { STATE[pid] = STATE[pid] || {}; STATE[pid].bn = String(n); }
+  }, 4200);
+
   buildIndex();
   if (!location.hash) location.replace("#/A1");
   renderAll();

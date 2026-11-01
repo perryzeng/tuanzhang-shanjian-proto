@@ -1743,6 +1743,28 @@
 .tmr .tmt span{display:block;font-size:10px;color:var(--text-4);margin-top:3px}
 .tmr .tmp{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
 
+/* 团队页 portal：Banner 轮播卡（卡里带四个数） */
+.pcard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);margin-top:12px}
+.tbnr-card{background:#fff;border-radius:18px;box-shadow:var(--sh-1);margin-top:12px;overflow:hidden}
+.tbnr{position:relative;overflow:hidden}
+.tbnr-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.tbnr-slide{flex:0 0 100%;min-width:0;position:relative;aspect-ratio:16/8.4;color:#fff;padding:16px;box-sizing:border-box;
+  display:flex;flex-direction:column;justify-content:flex-end}
+.tbnr-slide .tbnr-tag{align-self:flex-start;font-size:9.5px;font-weight:800;background:rgba(0,0,0,.28);border-radius:999px;padding:2px 8px;margin-bottom:8px}
+.tbnr-slide .tbnr-tx b{display:block;font-size:18px;font-weight:900;line-height:1.3;letter-spacing:-.2px;text-shadow:0 2px 10px rgba(0,0,0,.28)}
+.tbnr-slide .tbnr-tx span{display:block;font-size:11px;opacity:.9;margin-top:5px}
+.tbnr-slide .tbnr-go{position:absolute;right:14px;bottom:14px;font-size:10.5px;font-weight:800;background:rgba(255,255,255,.22);border-radius:999px;padding:5px 11px}
+.tbnr-dots{position:absolute;right:14px;top:14px;display:flex;gap:5px}
+.tbnr-dots i{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.5);cursor:pointer;transition:.2s}
+.tbnr-dots i.on{width:16px;background:#fff}
+.pstats{display:grid;grid-template-columns:repeat(4,1fr);padding:12px 8px 13px}
+.pstats>div{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;cursor:pointer}
+.pstats>div.rc{cursor:default}
+.pstats>div+div::before{content:"";position:absolute;left:0;top:12%;height:76%;width:1px;background:var(--line-2)}
+.pstats b{font-size:18px;font-weight:800;color:var(--text);line-height:1}
+.pstats span{font-size:9.5px;color:var(--text-4);font-weight:600}
+.pstats>div.rc b{color:var(--brand)}
+
 /* 公告：紧凑两行，点进通知中心 */
 .ncard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:8px 13px 4px;margin-top:10px}
 .ncard .nh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);padding:5px 0 3px}
