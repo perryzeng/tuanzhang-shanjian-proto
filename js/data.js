@@ -845,12 +845,12 @@ window.DATA = {
        每条都有"谁派的 / 派给谁 / 还差几个人 / 什么时候截止"——
        团长要的是"催谁"，团员要的是"我还有没有没交的"。 */
     teamTasks: [
-      { id: "tk_1", t: "信任背书口播 · 每人 1 条", by: "暴富者 · 团长", to: "全员 12 人",
-        due: "今天 18:00", done: 8, total: 12, state: "doing", go: "E4" },
-      { id: "tk_2", t: "开箱合集 · 每人各发 1 条", by: "暴富者 · 团长", to: "全员 12 人",
-        due: "本周日", done: 4, total: 12, state: "doing", go: "E4" },
-      { id: "tk_3", t: "9 月复盘 · 填一张表", by: "总部", to: "全员",
-        due: "已结束", done: 12, total: 12, state: "done", go: "E4" }
+      { id: "tk_1", kind: "cut", src: "脚本 · 信任背书口播", t: "信任背书口播 · 每人 1 条", by: "暴富者 · 团长", to: "全员 12 人",
+        due: "今天 18:00", done: 6, total: 12, state: "doing", go: "E4.1?id=tk_1" },
+      { id: "tk_2", kind: "cut", src: "剪同款 · 开箱第一句就说价格", t: "开箱合集 · 每人各发 1 条", by: "暴富者 · 团长", to: "全员 12 人",
+        due: "本周日", done: 4, total: 12, state: "doing", go: "E4.1?id=tk_2" },
+      { id: "tk_3", kind: "series", src: "系列主题 · 9 月复盘", t: "9 月复盘 · 填一张表", by: "总部", to: "全员",
+        due: "已结束", done: 12, total: 12, state: "done", go: "E4.1?id=tk_3" }
     ],
     /* 团队：一个人可以加入多个团。只有一个的时候不显示切换器，直接就是它的首页。 */
     teams: [

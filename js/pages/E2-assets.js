@@ -357,7 +357,7 @@ window.PAGES["E2"].render = function (ctx) {
     </div>
 
     ${sel && canOrganize ? `<div class="selbar">
-      <b>已选 ${picked.length} 个</b>
+      <b>已选<i>${picked.length}</i>个</b>
       <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="${pid}.mv=1"` : ""}>移动到</span>
       <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs(pid + ".pick=&" + pid + ".sel=")}&${pid}.toast=已设为精选"` : ""}>设为精选</span>
       <span class="sb warn${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs(pid + ".del=" + (delStr ? delStr + "," : "") + picked.join(",") + "&" + pid + ".pick=&" + pid + ".sel=")}&${pid}.toast=已删除 ${picked.length} 项"` : ""}>删除</span>
