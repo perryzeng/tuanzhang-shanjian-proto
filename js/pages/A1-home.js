@@ -60,12 +60,21 @@ window.PAGES["A1"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.hrow({
-      av: me.name.slice(-1),
-      hi: "下午好，" + me.name,
-      hs: me.city + " · " + me.teamName + " " + me.teamSize + " 人",
-      unread: String(me.unread)
-    })}
+    <div class="asstrow">
+      <div class="asst" data-go="A2" data-label="小剪助理">
+        <span class="asst-av">剪</span>
+        <div style="flex:1;min-width:0">
+          <div class="asst-n">小剪助理<span class="asst-on">在线</span></div>
+          <div class="asst-m">${tasksAll.length ? `今天 ${tasksAll.length} 项要做 · 先做「${tasksAll[0].title}」` : "今天没有硬任务，想发点什么？"}</div>
+        </div>
+        <span class="asst-go">›</span>
+      </div>
+      <div class="bell" data-go="E5" data-label="通知">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6H4c.5-.5 2-2 2-6z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+        <i>${me.unread}</i>
+      </div>
+    </div>
 
     <div class="body">
       ${banner}
