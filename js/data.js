@@ -844,6 +844,38 @@ window.DATA = {
     teamTasks: [
       { id: "tk_1", t: "本周 3 条待发", sub: "2 条今天到期（开团 / 晒单）", at: "今天 18:00 截止", go: "E4" }
     ],
+    /* 团队：一个人可以加入多个团。只有一个的时候不显示切换器，直接就是它的首页。 */
+    teams: [
+      { id: "tm_1", name: "阿珍的团", members: 12, role: "团长", brief: "本周目标 · 3 条开团片", day: "第 3 周" },
+      { id: "tm_2", name: "深圳健康选品联盟", members: 86, role: "团员", brief: "总部直管 · 每周 5 条", day: "第 8 周" }
+    ],
+    /* 团队首页是一条**混排信息流**：公告置顶、任务插在中间、动态按时间排。
+       分三个区块摆（公告一摞、任务一摞、动态一摞）看着整齐，但没人会挨个区块看完——
+       团长打开团队是想知道"今天有什么动静"，那就该像论坛一样按时间往下刷。 */
+    teamFeed: {
+      tm_1: [
+        { t: "今天 09:20", type: "notice", who: "总部", act: "改了团价口径", extra: "磷虾油团价下调 8 元，脚本里的价格要改", pin: true, go: "E5" },
+        { t: "今天 08:05", type: "task", who: "系统", act: "派了一个任务", extra: "本周 3 条待发 · 2 条今天到期", go: "E4" },
+        { t: "昨天 21:10", type: "work", who: "阿玲", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3" },
+        { t: "昨天 16:32", type: "asset", who: "阿强", act: "上传了 3 条素材", extra: "仓库实拍 / 打包现场", go: "" },
+        { t: "前天 10:00", type: "script", who: "总部", act: "更新了脚本", extra: "总部 10 月口径（必用）", go: "" }
+      ],
+      tm_2: [
+        { t: "今天 10:40", type: "notice", who: "联盟运营", act: "发了公告", extra: "12 月排期开始报名", pin: true, go: "E5" },
+        { t: "昨天 19:20", type: "work", who: "小雨", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3" },
+        { t: "昨天 14:05", type: "task", who: "系统", act: "派了一个任务", extra: "本月 5 条 · 还差 2 条", go: "E4" }
+      ]
+    },
+    /* 我的动态：只记"我自己干了什么"，不掺别人的事。
+       放它的理由是——素材库不只是仓库，它也是"我最近在忙什么"的镜子：
+       昨天传了三条素颜视频、今天用了开团话术，这些比"共 12 个"更能帮人找回上下文。 */
+    mineFeed: [
+      { t: "今天", type: "asset", act: "上传了 3 条素材", extra: "素颜出镜 · 早上", go: "" },
+      { t: "今天", type: "script", act: "用了「开团话术 3 连问」", extra: "生成了一条片子", go: "B2?kind=script&src=import" },
+      { t: "昨天", type: "folder", act: "新建了文件夹", extra: "素颜视频", go: "" },
+      { t: "昨天", type: "work", act: "收藏了一个作品", extra: "阿玲的复购实录", go: "F3" }
+    ],
+
     /* 团队 tab 顶上的四宫格：公告 / 动态 / 任务 / 成员。
        素材库解决的是"东西在哪"，这四格解决的是"团队有什么动向"——
        团长进团队库，一半是来找素材，一半是来看有没有新通知和新爆款。 */
@@ -1542,9 +1574,11 @@ window.DERIVE = (function () {
     if (opt.fd) items = items.filter((x) => x.fd === opt.fd);
     const q = String(opt.q || "").trim();
     if (q) items = items.filter((x) => (x.name + " " + x.sub).indexOf(q) >= 0);
-    if (opt.sort === "hot") items.sort((a, b) => b.hot - a.hot);
-    else if (opt.sort === "pick") items = items.filter((x) => x.pick).sort((a, b) => b.hot - a.hot);
-    else items.sort((a, b) => a.at - b.at);
+    /* 三个视图，不是三个排序：
+       最近用的 = 按时间倒序；我精选的 = 只留精选；按文件夹 = 分组（分组在页面里做）。
+       "最热"去掉了——素材库的常态是"我记得上周用过一条"，不是"哪条最火"。 */
+    if (opt.view === "pick") items = items.filter((x) => x.pick);
+    items.sort((a, b) => a.at - b.at);
     const cnt = (k) => (L.items[sd + "." + k] || []).length;
     return {
       items,

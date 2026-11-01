@@ -1393,17 +1393,8 @@
   -webkit-box-orient:vertical;overflow:hidden;line-height:1.45}
 .tmore{font-size:11px;font-weight:600;color:var(--brand);padding:2px 4px 1px;cursor:pointer}
 
-/* ========== 素材库 v2：文件夹分组展开 ==========
-   上一版文件夹是横滑胶囊，只能看到名字、看不到里面装了什么。
-   这一版改成"组头 + 组内前三个"，一眼就知道这摞是什么。 */
-.gblock{margin-top:16px}
-.ghead{display:flex;align-items:center;gap:7px;margin:0 2px 8px;cursor:pointer}
-.ghead .fi{width:22px;height:22px;border-radius:7px;background:var(--brand-weak);color:var(--brand-ink);
-  display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex:0 0 22px}
-.ghead b{font-size:12.5px;font-weight:700;letter-spacing:-.2px}
-.ghead i{font-style:normal;font-size:10px;color:var(--text-4)}
-.ghead .more{margin-left:auto;font-size:10.5px;color:var(--text-3);font-weight:600}
-.gmore{margin-top:7px;font-size:10.5px;color:var(--text-3);text-align:center;cursor:pointer}
+/* 阵地内的"还有 N 个"，跟着 .fdz 走 */
+.gmore{margin-top:6px;font-size:10.5px;color:var(--text-3);text-align:center;cursor:pointer}
 
 /* 团队四宫格 */
 .quad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
@@ -1464,3 +1455,60 @@
 .voseg .vb p{font-size:14px;line-height:1.78;color:var(--text);margin-top:5px;letter-spacing:-.1px}
 .gempty{font-size:10.5px;color:var(--text-4);background:var(--bg-2);border-radius:11px;
   padding:14px 12px;text-align:center}
+
+/* ========== 素材库 v3：Portal 感 ==========
+   我的：一条横滑的"我最近"，团队：一条混排的时间流。
+   两处都在回答同一个问题——"最近有什么动静"，而不是"总共有多少"。 */
+.mfeed{display:flex;gap:8px;overflow-x:auto;padding-bottom:3px}
+.mf{flex:0 0 152px;background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:11px 12px;cursor:pointer}
+.mf .mt{font-size:9.5px;color:var(--text-4);font-weight:600}
+.mf b{display:block;font-size:12px;font-weight:600;margin-top:5px;line-height:1.35}
+.mf .me{display:block;font-size:9.5px;color:var(--text-4);margin-top:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.teamsw{display:flex;align-items:center;gap:10px;margin-top:13px;background:#fff;
+  border-radius:14px;box-shadow:var(--sh-1);padding:11px 13px}
+.teamsw .ava{width:34px;height:34px;border-radius:11px;background:var(--g-brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:0 0 34px}
+.teamsw .tx{flex:1;min-width:0}
+.teamsw .tx b{display:block;font-size:13px;font-weight:700}
+.teamsw .tx span{display:block;font-size:10px;color:var(--text-4);margin-top:3px}
+.teamsw .chg{font-size:11px;font-weight:700;color:var(--brand);cursor:pointer;flex:0 0 auto}
+
+.teamlist{margin-top:8px;background:#fff;border-radius:14px;box-shadow:var(--sh-1);
+  padding:6px;display:flex;flex-direction:column;gap:3px}
+.teamlist b{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;
+  font-size:12.5px;font-weight:600;cursor:pointer}
+.teamlist b.on{background:var(--brand-weak);color:var(--brand-ink)}
+.teamlist b i{width:24px;height:24px;border-radius:8px;background:var(--bg-2);font-style:normal;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 24px}
+.teamlist b em{font-style:normal;margin-left:auto;font-size:10px;color:var(--text-4)}
+
+/* 团队动态：一条混排的流。公告置顶、任务、发作品、传素材都在这条线上，
+   按时间往下刷——这才是"首页"，三个区块各摆一摞那叫目录。 */
+.tfeed{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:2px 13px 4px}
+.frow{display:flex;align-items:flex-start;gap:9px;padding:10px 0;cursor:pointer}
+.frow+.frow{box-shadow:inset 0 1px 0 var(--line-2)}
+.frow .fi{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;flex:0 0 26px;margin-top:1px}
+.frow .tx{flex:1;min-width:0}
+.frow .tx b{display:block;font-size:12px;font-weight:600;line-height:1.4}
+.frow .tx span{display:block;font-size:10px;color:var(--text-4);margin-top:3px;line-height:1.45}
+.frow .tx .pin{font-style:normal;font-size:8px;font-weight:700;color:var(--brand-ink);
+  background:var(--brand-weak);border-radius:4px;padding:1px 4px;margin-left:5px}
+.frow .tm{flex:0 0 auto;font-size:9.5px;color:var(--text-4);padding-top:2px;font-variant-numeric:tabular-nums}
+
+/* 文件夹"阵地"：整块卡 + 彩色头。团队的头更重一点——
+   团队的文件夹是"我们这摊的东西"，它该比"我自己的夹子"更有存在感。 */
+.fdz{background:#fff;border-radius:16px;box-shadow:var(--sh-1);overflow:hidden;margin-top:12px}
+.fdz .fdh{display:flex;align-items:center;gap:8px;padding:10px 13px;cursor:pointer;
+  background:linear-gradient(90deg,rgba(44,91,255,.06),rgba(44,91,255,.01))}
+.fdz.tm .fdh{background:linear-gradient(90deg,rgba(44,91,255,.15),rgba(124,92,255,.06))}
+.fdz .fdh .fi{width:22px;height:22px;border-radius:7px;background:#fff;color:var(--brand-ink);
+  display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex:0 0 22px;
+  box-shadow:0 1px 3px rgba(20,40,110,.12)}
+.fdz .fdh b{font-size:12.5px;font-weight:700;letter-spacing:-.2px}
+.fdz .fdh i{font-style:normal;font-size:10px;color:var(--text-4)}
+.fdz .fdh .more{margin-left:auto;font-size:10.5px;color:var(--brand);font-weight:600}
+.fdz .fdb{padding:9px 13px 11px}
+.fdz .fdb>.card{box-shadow:none;background:transparent;padding:0}

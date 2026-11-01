@@ -1,36 +1,40 @@
-window.PAGES["E2"].prd = "PRD §6.21 · 素材库（我的 / 团队 × 脚本 / 视频素材 / 作品 × 文件夹分组）";
+window.PAGES["E2"].prd = "PRD §6.21 · 素材库（我的 / 团队 · 首页动态 + 三类 + 三视图 + 文件夹阵地）";
 window.PAGES["E2"].states = [
-  { k: "", n: "默认：我的 · 脚本 · 最新，按文件夹分组展开" },
-  { k: "kind=asset&sort=pick", n: "视频素材 · 精选" },
-  { k: "sel=1", n: "整理模式：每条前面出勾选圈，底部出「移动到 / 删除」" },
-  { k: "side=team", n: "团队：四宫格（公告/动态/任务/成员）+ 三类素材" },
+  { k: "", n: "我的：头条是我的最近动态，下面才是三类" },
+  { k: "view=folder", n: "按文件夹看：每摞一块阵地" },
+  { k: "side=team", n: "团队首页：公告 / 任务 / 动态混排成一条流" },
+  { k: "side=team&tsw=1", n: "加入多个团时，顶部可以切团" },
+  { k: "sel=1", n: "整理模式：勾选后批量移动" },
   { k: "team=0", n: "没加入团队：只有「我的」" }
 ];
 
-/* 素材库。上一次做成了"三层 tab + 横滑文件夹"，用户说还不够——整理和查看都不顺手。
-   这一版改三件事：
+/* 素材库。第三版，用户提了三个新要求，每个都把这一页往上抬了一层：
 
-   ① **文件夹直接展开，不做横滑胶囊**。横滑条只能看到五六个名字，看不到里面装了什么；
-      展开成"分组 + 组内前三个"，一眼就知道这摞是什么。类别仍是 tab（只有三个、永不变化，
-      适合放顶部）；文件夹是会长的，不适合占 tab 位。
-   ② **点脚本先进阅读页，不是直接进发布器**（E2.2）。看是看，用是用：
-      先看清这份稿子写了什么，再决定要不要拿它去生成。列表里点一下就被拽进编辑器，
-      是最让人不敢点的一次误触。
-   ③ **整理模式**：右上角「整理」一按，每条前面出勾选圈，底部出「移动到 / 删除」。
-      整理是这一页的另一半职责，不能只靠"点进去再改归属"。
+   ① **"我的"也要有 Portal 感**：进来第一眼不是"共 12 个素材"，而是"我最近干了什么"——
+      昨天传了三条素颜视频、今天用了开团话术。这比一个总数更能帮人找回上下文。
+   ② **每个类下面换成三个视图**：`最近用的 / 我精选的 / 文件夹`。
+      它们不是排序（上一版是"最新/最热/精选"），而是三种"我想怎么找"：
+      找刚才用过的那条、找我挑出来的那几条、找我整理进某个夹子的那几条。
+   ③ **团队要像个首页，不像个文件夹**：公告、任务、动态**混排成一条时间流**（论坛感），
+      而不是三个区块各摆一摞——分区块看着整齐，但没人会挨个区块看完。
+      团队的素材文件夹做成"阵地"（整块卡 + 彩色头），不是一个行内小标题。
 
-   上传从页面右上角挪到右下角 ＋：它不是这一页的主动作，
-   主动作是"找到并整理"，上传只是偶尔发生的一件事。 */
+   一个人可以加入多个团：多团时顶部给切换器，只有一个团就不显示切换器，直接是它的首页。 */
 window.PAGES["E2"].render = function (ctx) {
   const C = window.C;
   const D = window.DERIVE;
+  const LIB = window.DATA.library;
 
-  const teamOn = window.DATA.library.teamOn && ctx.team !== "0";
+  const teams = LIB.teams || [];
+  const teamOn = LIB.teamOn && ctx.team !== "0" && teams.length > 0;
   const side = (ctx.side === "team" && teamOn) ? "team" : "mine";
+  const tid = teams.some((t) => t.id === ctx.tid) ? ctx.tid : (teams[0] || {}).id;
+  const team = teams.filter((t) => t.id === tid)[0] || {};
+
   const KINDS = [["script", "脚本"], ["asset", "视频素材"], ["work", "作品"]];
   const kind = KINDS.some((k) => k[0] === ctx.kind) ? ctx.kind : "script";
-  const SORTS = [["new", "最新"], ["hot", "最热"], ["pick", "精选"]];
-  const sort = SORTS.some((s) => s[0] === ctx.sort) ? ctx.sort : "new";
+  const VIEWS = [["recent", "最近用的"], ["pick", "我精选的"], ["folder", "文件夹"]];
+  const view = VIEWS.some((v) => v[0] === ctx.view) ? ctx.view : "recent";
   const fd = ctx.fd || "";
   const q = ctx.q || "";
   const sel = ctx.sel === "1";
@@ -38,9 +42,8 @@ window.PAGES["E2"].render = function (ctx) {
   const mvOpen = ctx.mv === "1";
   const toast = ctx.toast || "";
   const fabOpen = ctx.new === "1";
+  const tsw = ctx.tsw === "1";
 
-  /* 这一页自己改过的两样东西：移动到哪、新建了哪些文件夹。
-     原型改不了后端，但整理必须当场看得见——移完还留在原处，等于没移。 */
   const movStr = ctx.moved || "";
   const moved = {};
   movStr.split(";").forEach((pair) => {
@@ -50,18 +53,17 @@ window.PAGES["E2"].render = function (ctx) {
   const nfdStr = ctx.nfd || "";
   const extraFd = nfdStr.split(",").filter(Boolean).map((n, i) => ({ id: "nf" + i, name: n, n: 0, fresh: true }));
 
-  const L = D.lib(side, kind, { sort, fd, q, moved });
+  const L = D.lib(side, kind, { view, fd, q, moved });
   const folders = L.folders.concat(extraFd);
   const curFd = folders.filter((f) => f.on)[0];
 
-  /* 每一串参数都从这里出，省得某个动作把 moved / nfd 弄丢 */
-  const qs = (kv) => "E2.side=" + side + "&E2.kind=" + kind + "&E2.sort=" + sort
+  const qs = (kv) => "E2.side=" + side + "&E2.tid=" + tid + "&E2.kind=" + kind + "&E2.view=" + view
     + "&E2.q=" + q + "&E2.moved=" + movStr + "&E2.nfd=" + nfdStr + "&" + (kv || "");
 
   const FICON = { script: "文", asset: "图", work: "作" };
 
-  /* 分组：有文件夹筛选或搜索时不分（那时用户只想看那几条） */
-  const grouped = !fd && !q;
+  /* 点了某个阵地的"全部"就退出分组、只显示这一摞——否则还是分组视图，看着像没反应 */
+  const grouped = view === "folder" && !fd && !q;
   const groups = folders.map((f) => ({ ...f, list: L.items.filter((x) => x.fd === f.id) }));
   const loose = L.items.filter((x) => !folders.some((f) => f.id === x.fd));
   if (loose.length) groups.push({ id: "", name: "未分类", n: loose.length, list: loose });
@@ -93,37 +95,62 @@ window.PAGES["E2"].render = function (ctx) {
     ? `<div class="card" style="padding:2px 14px;border-radius:14px">${arr.map(rowScript).join("")}</div>`
     : `<div class="g3">${arr.map(tile).join("")}</div>`;
 
-  const groupHead = (g) => `<div class="ghead" ${g.id ? `data-set="${qs()}&E2.fd=${fd === g.id ? "" : g.id}"` : ""}>
-      <span class="fi">${g.id ? FICON[kind] : "·"}</span>
-      <b>${g.name}</b><i>${g.list.length}</i>
-      ${g.id && g.list.length > 3 ? `<span class="more">全部 ${g.list.length} 个 ›</span>` : ""}
-    </div>`;
-
-  const quad = (x) => `<div class="q" data-go="${x.go}" data-label="${x.tx}">
-      <b>${x.n}</b><span>${x.tx}</span>
+  /* 阵地：整块卡 + 彩色头，不是一个行内小标题。
+     团队的文件夹要有"这是我的一块地盘"的感觉，才愿意往里放东西。 */
+  const fort = (g) => `<div class="fdz${side === "team" ? " tm" : ""}">
+      <div class="fdh" ${g.id ? `data-set="${qs()}&E2.fd=${fd === g.id ? "" : g.id}"` : ""}>
+        <span class="fi">${g.id ? FICON[kind] : "·"}</span>
+        <b>${g.name}</b><i>${g.list.length}</i>
+        ${g.id ? `<span class="more">${fd === g.id ? "收起" : "全部"} ›</span>` : ""}
+      </div>
+      <div class="fdb">
+        ${g.list.length ? listOf(g.list.slice(0, 3))
+          : `<div class="gempty">这一摞还空着 · 用「整理 → 移动到」把东西挪进来</div>`}
+        ${g.list.length > 3 ? `<div class="gmore" data-set="${qs()}&E2.fd=${g.id}">这一摞还有 ${g.list.length - 3} 个 ›</div>` : ""}
+      </div>
     </div>`;
 
   const empty = `<div class="emptybox">
       <span class="ei">${q ? "⌕" : "▦"}</span>
-      <b>${q ? "没找到「" + q + "」" : "这一摞还是空的"}</b>
-      <span>${q ? "换个词试试，或者清掉搜索看全部" : "上传素材、或者新建一个文件夹开始整理"}</span>
+      <b>${q ? "没找到「" + q + "」" : view === "pick" ? "还没挑过精选" : "这一摞还是空的"}</b>
+      <span>${q ? "换个词试试，或者清掉搜索看全部"
+        : view === "pick" ? "看到好用的，在整理模式里点「设为精选」" : "上传素材、或者新建一个文件夹开始整理"}</span>
       ${q ? `<em data-set="E2.q=">清掉搜索</em>` : ""}
     </div>`;
 
-  /* 空分组也要显示：刚建完的文件夹如果立刻消失，用户会以为没建成 */
-  const block = (g) => `<div class="gblock">
-      ${groupHead(g)}
-      ${g.list.length
-        ? listOf(g.list.slice(0, 3))
-        : `<div class="gempty">这一摞还空着 · 用「整理 → 移动到」把东西挪进来</div>`}
-      ${g.list.length > 3 ? `<div class="gmore" data-set="${qs()}&E2.fd=${g.id}">这一摞还有 ${g.list.length - 3} 个 ›</div>` : ""}
+  /* 我的动态：横着排的几张卡，不占竖空间。
+     这是"Portal 感"的来源——进来先看到自己最近在忙什么。 */
+  const mineCard = (f) => `<div class="mf" ${f.go ? `data-go="${f.go}" data-label="${f.act}"` : ""}>
+      <span class="mt">${f.t}</span>
+      <b>${f.act}</b>
+      <span class="me">${f.extra}</span>
     </div>`;
+
+  const TYPE = {
+    notice: { ic: "📢", bg: "var(--brand-weak)", fg: "var(--brand)" },
+    task: { ic: "✓", bg: "var(--warm-weak)", fg: "#C2410C" },
+    work: { ic: "▶", bg: "var(--violet-weak)", fg: "var(--violet)" },
+    asset: { ic: "▦", bg: "var(--success-weak)", fg: "#0B8C68" },
+    script: { ic: "≡", bg: "#EEF1F8", fg: "#5B6B8C" }
+  };
+
+  const feedRow = (f) => {
+    const t = TYPE[f.type] || TYPE.script;
+    return `<div class="frow" ${f.go ? `data-go="${f.go}" data-label="${f.extra.replace(/"/g, "")}"` : ""}>
+      <span class="fi" style="background:${t.bg};color:${t.fg}">${t.ic}</span>
+      <div class="tx"><b>${f.who} ${f.act}${f.pin ? `<i class="pin">置顶</i>` : ""}</b><span>${f.extra}</span></div>
+      <span class="tm">${f.t.replace("今天 ", "").replace("昨天 ", "昨 ").replace("前天 ", "前 ")}</span>
+    </div>`;
+  };
+
+  const feed = (LIB.teamFeed && LIB.teamFeed[tid]) || [];
 
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
       <div class="ttl" style="margin-left:2px">素材库
-        <small>${side === "team" ? "团队共享" : "我的东西"} · ${L.counts[kind]} 个${kind === "script" ? "脚本" : kind === "asset" ? "素材" : "作品"}</small></div>
+        <small>${side === "team" ? (team.name || "") + " · " + team.members + " 人"
+          : "我的东西 · " + L.counts[kind] + " 个" + (kind === "script" ? "脚本" : kind === "asset" ? "素材" : "作品")}</small></div>
       <span class="act" data-set="${sel ? "E2.sel=&E2.pick=&E2.mv=" : "E2.sel=1"}">${sel ? "完成" : "整理"}</span>
     </div>
 
@@ -140,30 +167,41 @@ window.PAGES["E2"].render = function (ctx) {
         ${q ? `<span class="clr" data-set="E2.q=">清空</span>` : ""}
       </div>
 
-      ${side === "team" ? `
-        <div class="quad">${window.DATA.library.teamQuad.map(quad).join("")}</div>
-        ${window.DATA.library.notices.slice(0, 1).map((n) => `<div class="tcard" style="margin-top:9px" data-go="${n.go}" data-label="${n.t}">
-          <span class="ti" style="background:var(--brand-weak);color:var(--brand)">📢</span>
-          <div class="tx"><b>${n.t}${n.unread ? `<i class="dot">${n.unread}</i>` : ""}</b><span>${n.sub}</span></div>
-          <span class="go">›</span>
-        </div>`).join("")}` : ""}
+      ${side === "mine" ? `
+        <div class="sec-h" style="margin:14px 2px 8px"><span class="h2">我最近</span></div>
+        <div class="mfeed">${LIB.mineFeed.map(mineCard).join("")}</div>
+      ` : `
+        <!-- 多个团才出切换器；只有一个团时它就是个纯标题，不该给"切换"的假入口 -->
+        <div class="teamsw">
+          <span class="ava">${(team.name || "团").slice(0, 1)}</span>
+          <div class="tx"><b>${team.name || ""}</b>
+            <span>${team.role} · ${team.members} 人 · ${team.day}</span></div>
+          ${teams.length > 1 ? `<span class="chg" data-set="${qs()}&E2.tsw=${tsw ? "" : "1"}">切换 ${tsw ? "▴" : "▾"}</span>` : ""}
+        </div>
+        ${tsw && teams.length > 1 ? `<div class="teamlist">
+          ${teams.map((t) => `<b class="${t.id === tid ? "on" : ""}" data-set="${qs()}&E2.tid=${t.id}&E2.tsw=&E2.fd=">
+            <i>${t.name.slice(0, 1)}</i>${t.name}<em>${t.members} 人</em>${t.id === tid ? "✓" : ""}</b>`).join("")}
+        </div>` : ""}
+        <div class="sec-h" style="margin:14px 2px 8px"><span class="h2">团队动态</span>
+          <span class="more" data-go="E1" data-label="全部动态">全部 ›</span></div>
+        <div class="tfeed">${feed.map(feedRow).join("")}</div>
+      `}
 
       <div class="kindtabs">
         ${KINDS.map(([k, tx]) =>
-          `<b class="${kind === k ? "on" : ""}" data-set="${qs()}&E2.kind=${k}&E2.fd=&E2.pick=">${tx}<i>${L.counts[k]}</i></b>`).join("")}
+          `<b class="${kind === k ? "on" : ""}" data-set="${qs()}&E2.kind=${k}&E2.view=recent&E2.fd=&E2.pick=">${tx}<i>${L.counts[k]}</i></b>`).join("")}
       </div>
 
       <div class="sortrow">
-        ${SORTS.map(([k, tx]) =>
-          `<span class="s${sort === k ? " on" : ""}" data-set="${qs()}&E2.sort=${k}">${tx}</span>`).join("")}
+        ${VIEWS.map(([k, tx]) =>
+          `<span class="s${view === k ? " on" : ""}" data-set="${qs()}&E2.view=${k}&E2.fd=">${tx}</span>`).join("")}
         <span class="add" style="color:var(--text-4);font-weight:500">${sel ? "勾选要整理的" : "共 " + L.items.length + " 个"}</span>
       </div>
 
       ${toast ? `<div class="toast"><span>${toast}</span><b data-set="E2.toast=">×</b></div>` : ""}
 
       ${grouped
-        ? (L.items.length === 0 ? empty
-          : groups.filter((g) => g.list.length || g.fresh).map(block).join(""))
+        ? (L.items.length === 0 ? empty : groups.filter((g) => g.list.length || g.fresh).map(fort).join(""))
         : (L.items.length === 0 ? empty : `
             ${curFd ? `<div class="fdfilter">只看「${curFd.name}」 · ${L.items.length} 个
               <b data-set="${qs()}&E2.fd=">取消</b></div>` : ""}
@@ -174,6 +212,7 @@ window.PAGES["E2"].render = function (ctx) {
     ${sel ? `<div class="selbar">
       <b>已选 ${picked.length} 个</b>
       <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="E2.mv=1"` : ""}>移动到</span>
+      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-label="设为精选"` : ""}>设为精选</span>
       <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-label="删除"` : ""}>删除</span>
     </div>
     ${mvOpen && picked.length ? `<div class="mvpanel">
@@ -185,9 +224,6 @@ window.PAGES["E2"].render = function (ctx) {
       </div>
     </div>` : ""}` : ""}
 
-    <!-- 上传、新建脚本、新建文件夹都收到右下角这个 ＋ 里：
-         它们都不是这一页的主动作，主动作是"找到并整理"。 -->
-    <!-- 整理模式下不出 ＋：这会儿的动作是"选中然后移动"，再给一个新建入口只会挡路 -->
     ${sel ? "" : `${fabOpen ? `<div class="fabmask" data-set="E2.new="></div>
       <div class="fabmenu">
         <b data-set="E2.new=&E2.toast=已打开相册，选好就上传">↑ 上传素材</b>
