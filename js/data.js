@@ -518,6 +518,48 @@ window.DATA = {
               "老带新怎么开口", "售后怎么处理", "年度复盘", "下一轮预告"]
   },
 
+  /* ---------- 生成设置：网感模板 ----------
+     模板决定"这条片子长什么样"：切得多快、字幕什么样式、什么转场、BGM 什么调性。
+     内置 6 款，按真实投放效果排；接真接口：GET /templates?scene=script|series
+     rate 是同类视频用这个模板后相对基线的提升，来自内容数据后台。 */
+  templates: [
+    { id: "tp_fast", name: "快闪卡点", tag: "爆款", rate: "完播 +18%", c1: "#FF7A45", c2: "#FFB020",
+      desc: "每 1.5 秒切一次，适合开箱 / 晒单", bits: ["1.5s 一切", "鼓点卡点", "大字闪出"] },
+    { id: "tp_big", name: "大字口播", tag: "稳妥", rate: "完播 +9%", c1: "#2C5BFF", c2: "#5B8CFF",
+      desc: "台词逐句出大字，不出镜也清楚", bits: ["逐句大字", "描边白字", "缓慢推近"] },
+    { id: "tp_scroll", name: "图文滚动", tag: "省素材", rate: "完播 +4%", c1: "#00A8E8", c2: "#00C2FF",
+      desc: "图片往上滑 + 字幕，缺画面时最好用", bits: ["竖向滚动", "图片优先", "轻音乐"] },
+    { id: "tp_twist", name: "剧情反转", tag: "涨粉", rate: "涨粉 +22%", c1: "#7C5CFF", c2: "#B08CFF",
+      desc: "先抛一句反常识，再解释", bits: ["开头反问", "停顿 1 秒", "字幕放大"] },
+    { id: "tp_compare", name: "对比测评", tag: "带货", rate: "出单 +12%", c1: "#F5A623", c2: "#FFC85B",
+      desc: "左右分屏，讲成分差异最直观", bits: ["左右分屏", "打勾标记", "价格收尾"] },
+    { id: "tp_talk", name: "真人出镜", tag: "信任", rate: "出单 +8%", c1: "#00B389", c2: "#00C2FF",
+      desc: "口播为主，画中画辅助", bits: ["人像抠图", "画中画", "原声优先"] }
+  ],
+
+  /* 音色：原音 or AI 配音。
+     团长的人设决定选哪个——宝妈选亲和女声，讲成分选沉稳男声，讲养生选长辈音。
+     接真接口：GET /voices，AI 部分走 TTS 音色库。 */
+  voices: [
+    { id: "v_self", k: "self", name: "我的原音", sub: "用你录的声音 · 信任最高", tag: "" },
+    { id: "v_f1", k: "ai", name: "亲和女声", sub: "30 岁 · 邻居姐姐感", tag: "推荐" },
+    { id: "v_f2", k: "ai", name: "干脆女声", sub: "25 岁 · 节奏快，适合带货", tag: "" },
+    { id: "v_m1", k: "ai", name: "沉稳男声", sub: "40 岁 · 讲成分可信", tag: "" },
+    { id: "v_m2", k: "ai", name: "长辈音", sub: "50+ · 讲养生更可信", tag: "" }
+  ],
+
+  /* AI 网感封面：按这条的台词生成 6 张，风格各不同，选一张发。
+     为什么不是"从视频帧里截一张"：竖屏信息流里封面图决定点击，
+     截帧永远是糊的、字也压不住，网感封面是投手做出来的。 */
+  coverStyles: [
+    { k: "price", name: "大字价格", big: "一天不到 3 块", small: "今晚 8 点开团", c1: "#FF7A45", c2: "#FFB020" },
+    { k: "ask", name: "疑问钩子", big: "孩子能吃吗？", small: "一次讲清楚", c1: "#2C5BFF", c2: "#00C2FF" },
+    { k: "vs", name: "左右对比", big: "鱼油 vs 磷虾油", small: "差在一个吸收率", c1: "#5B3FD1", c2: "#7C8CFF" },
+    { k: "face", name: "真人大字", big: "我吃了两个月", small: "变化就在这", c1: "#0E1B3D", c2: "#2C5BFF" },
+    { k: "ing", name: "成分特写", big: "磷脂型更好吸收", small: "每粒 500mg", c1: "#00A8E8", c2: "#5B8CFF" },
+    { k: "proof", name: "晒单背书", big: "37 个老客回购", small: "原话都在评论区", c1: "#00B389", c2: "#00C2FF" }
+  ],
+
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
   teamVideos: [
     { id: "v_901", who: "阿玲", whoBg: "rgba(44,91,255,.92)", plays: 124000, title: "磷虾油开箱 · 我妈也在吃", ago: "2 小时前", bg: "linear-gradient(135deg,#2C5BFF,#00C2FF)", go: "F3" },
@@ -913,6 +955,23 @@ window.DERIVE = (function () {
     return "素材 " + sh.dur + "s · 台词 " + s.dur + "s · " + tail;
   }
 
+  /* ---------- 生成设置 / 封面 ---------- */
+  function templates() { return window.DATA.templates; }
+  function template(id) { return window.DATA.templates.filter((x) => x.id === id)[0] || window.DATA.templates[0]; }
+  function voices() { return window.DATA.voices; }
+  function voice(id) { return window.DATA.voices.filter((x) => x.id === id)[0] || window.DATA.voices[0]; }
+  function covers() { return window.DATA.coverStyles; }
+
+  /* 搜索：脚本库和素材库都要能搜。
+     只搜"用户会用来描述的字段"（名字、标签、来源），不搜 id——
+     没人会记得 as_501。空关键词返回原列表，不清空。 */
+  function search(list, q, fields) {
+    const k = (q || "").trim().toLowerCase();
+    if (!k) return list;
+    return list.filter((a) => fields.some((f) => String(a[f] || "").toLowerCase().indexOf(k) >= 0
+      || (Array.isArray(a[f]) && a[f].join(" ").toLowerCase().indexOf(k) >= 0)));
+  }
+
   /* 数字口径统一在这里格式化，页面不再各写一套 */
   function plays(n) {
     return n >= 10000 ? (n / 10000).toFixed(1).replace(/\.0$/, "") + "万" : String(n);
@@ -939,5 +998,6 @@ window.DERIVE = (function () {
            draft, recommend, resolveFix, mmss, pool,
            scripts, script, scriptTabs, extract,
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
-           planTopics, partSkeleton };
+           planTopics, partSkeleton,
+           templates, template, voices, voice, covers, search };
 })();

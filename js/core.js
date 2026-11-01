@@ -168,6 +168,17 @@
     const pid = path.slice(0, i), key = path.slice(i + 1);
     STATE[pid] = STATE[pid] || {};
     STATE[pid][key] = el.value;
+    /* data-live：边打字边筛（搜索框用）。整页会重渲染，所以要把焦点和光标位置还回去，
+       否则每敲一个字就跳出输入框——这是最容易踩的一个坑。 */
+    if (el.hasAttribute("data-live")) {
+      const caret = el.selectionStart;
+      renderAll();
+      const again = phone.querySelector('[data-bind="' + path + '"]');
+      if (again) {
+        again.focus();
+        try { again.setSelectionRange(caret, caret); } catch (_) {}
+      }
+    }
   });
 
   document.addEventListener("click", (e) => {

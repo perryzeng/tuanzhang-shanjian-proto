@@ -82,9 +82,10 @@ window.PAGES["D2"].render = function (ctx) {
       </div>
     </div>`;
 
+  /* 和单条脚本一样：生成前先过「选模板与声音」，不直接进 B3 */
   const primary = pending
-    ? { t: "✦ 生成这集的话术", go: "B3?from=D2&c=" + c.id + "&d=" + day, cls: "ai" }
-    : { t: "① 生成这集 · Day " + day, go: "B3?from=D2&c=" + c.id + "&d=" + day, cls: "ai" };
+    ? { t: "✦ 生成这集的话术", go: "B2.4?from=D2&c=" + c.id + "&d=" + day, cls: "ai" }
+    : { t: "下一步 · 选模板与声音", go: "B2.4?from=D2&c=" + c.id + "&d=" + day, cls: "ai" };
 
   const sub = mode === "edit"
     ? "正在改第 " + (focus.idx + 1) + " 段" + (focus.fixed ? "（每天固定，改一次全季生效）" : "")
@@ -129,7 +130,6 @@ window.PAGES["D2"].render = function (ctx) {
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 120px" data-go="${backGo}" data-label="从昨天抄">从昨天抄</div>
       <div class="btn ${primary.cls}" data-go="${primary.go}" data-label="${primary.t}">${primary.t}</div>
     </div>
   </div>`;

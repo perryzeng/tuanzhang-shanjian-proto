@@ -1,7 +1,11 @@
 window.PAGES["B3"].render = function (ctx) {
   const C = window.C;
-  /* 从系列进来就回系列，别把用户扔到另一个编辑器 */
-  const backGo = ctx.from === "D2" ? "D2?c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5) : "B2";
+  /* 从系列进来回系列，其余回"选模板与声音"那一步（不是脚本框——
+     用户刚在这里点了生成，返回应该是改模板，不是回到逐段改词） */
+  const backGo = ctx.from === "D2"
+    ? "D2?c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5)
+    : "B2.4?from=B2&kind=" + (ctx.kind || "script") + "&src=" + (ctx.src || "")
+      + (ctx.doc ? "&doc=" + ctx.doc : "") + (ctx.tpl ? "&tpl=" + ctx.tpl : "") + (ctx.voice ? "&voice=" + ctx.voice : "");
   const step = (cls, ic, tx, side) =>
     `<div class="gstep ${cls}"><span class="dot">${ic}</span><span style="flex:1">${tx}</span><span>${side || ""}</span></div>`;
 
@@ -34,7 +38,7 @@ window.PAGES["B3"].render = function (ctx) {
     </div>
 
     <div style="padding:0 16px 26px;display:flex;flex-direction:column;gap:9px">
-      <div class="btn" data-go="B4" data-label="好了，看成品">好了，看成品</div>
+      <div class="btn" data-go="B4" data-label="生成完成 · 选封面">生成完成 · 选封面</div>
       <div class="btn gray" data-go="A1" data-label="先去忙">先去忙，好了推送到首页</div>
     </div>
   </div>`;

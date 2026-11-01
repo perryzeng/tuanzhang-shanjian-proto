@@ -120,18 +120,19 @@ window.PAGES["B2"].render = function (ctx) {
         : `<span style="color:var(--success);font-weight:700">合规 ✓</span>`}
       <span style="flex:1"></span>${d.missCount ? `<span class="tag r">缺 ${d.missCount} 段画面</span>` : `<span class="tag g">可以发</span>`}</div>`;
 
+  /* 下一步不再是"直接生成"：先选模板和声音，再生成。
+     模板决定节奏与字幕，声音决定谁在说——这两件事必须在生成前定，
+     生成后再改就是重剪。 */
+  const cfgQ = "?from=B2&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
   const primary = (function () {
     if (mode === "fix" && miss) return { t: "✦ 补上第 " + (miss.idx + 1) + " 段", go: pickGo(miss.id) };
     if (kind === "remix") return { t: "下一步 · 查安全度", go: "C3" };
-    return { t: d.canPublish ? "① 生成 · 混剪" : "① 生成 · 先看预览", go: "B3", cls: "ai" };
+    /* 缺画面也照样往下走——下一步只是选模板，缺口留到生成前那一步再看，
+       不要在这里用两个不同的按钮文案制造"现在不能走"的错觉 */
+    return { t: "下一步 · 选模板与声音", go: "B2.4" + cfgQ, cls: "ai" };
   })();
 
   const bar = `<div class="actionbar">
-    <div class="etools">
-      <div class="eto" data-set="B2.mode=edit&B2.seg=${focus.id}"><span style="font-size:13px">♪</span><b>声音</b></div>
-      <div class="eto" data-set="B2.mode=edit&B2.seg=${focus.id}"><span style="font-size:13px">♫</span><b>音乐</b></div>
-      <div class="eto" data-set="B2.mode=edit&B2.seg=${focus.id}"><span style="font-size:13px">▭</span><b>字幕</b></div>
-    </div>
     <div class="btn ${primary.cls || ""}" data-go="${primary.go}" data-label="${primary.t}">${primary.t}</div>
   </div>`;
 

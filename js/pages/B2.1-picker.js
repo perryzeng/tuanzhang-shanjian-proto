@@ -1,6 +1,8 @@
-window.PAGES["B2.1"].prd = "PRD §6.7～6.9 · 素材选择与语义匹配";
+window.PAGES["B2.1"].prd = "PRD §6.7～6.9 · 素材选择（语义推荐 + 搜索）";
 
-/* 素材选择器：从"给哪一段配画面"进入，推荐顺序由素材标签与该段画面的语义重合度决定 */
+/* 素材选择器：从"给哪一段配画面"进入。顶部是搜索——
+   团长常常已经知道自己要什么（"仓库发货那条"），直接搜比在推荐里翻快得多。
+   打了字就跨全库搜（不受来源 tab 限制），没打字才走推荐。 */
 window.PAGES["B2.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const kind = ctx.kind || "script";
@@ -10,16 +12,22 @@ window.PAGES["B2.1"].render = function (ctx) {
   const d = D.draft(kind, { doc: ctx.doc, day: day, src: ctx.src });
   const seg = d.segments.filter((s) => s.id === ctx.seg)[0] || d.missSegs[0] || d.cur;
   const tab = ctx.tab || "rec";
-  const list = D.recommend(seg, tab);
+  const q = ctx.q || "";
+  const SRC_TX = { my: "我的", team: "团队", brand: "品牌", stock: "图库", ai: "AI" };
+
+  const list = q
+    ? D.search(window.DATA.assets, q, ["label", "tags"]).map((a) => ({ ...a, srcTx: SRC_TX[a.from] || "" }))
+    : D.recommend(seg, tab);
+
   const sel = ctx.pick || (seg.shots[0] || {}).asset || (list[0] && list[0].id);
-  /* 回哪去要说准：系列的槽属于 D2，其余都属于结构化脚本框 B2。
-     而且回去时带上「换成哪个素材」，换完看到的就是换完的样子。 */
-  const backQ = isSeries
-    ? "D2?c=" + cid + "&d=" + day
-    : "B2?kind=" + kind + "&src=" + (ctx.src || "") + (ctx.doc ? "&doc=" + ctx.doc : "");
-  const useQ = backQ + "&seg=" + seg.id + "&asset=" + sel;
   const selItem = list.filter((a) => a.id === sel)[0] ||
     window.DATA.assets.filter((a) => a.id === sel)[0] || null;
+
+  /* 回哪去要说准：系列的槽属于 D2，其余都属于结构化脚本框 B2 */
+  const backQ = isSeries
+    ? "D2?c=" + cid + "&d=" + day
+    : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
+  const useQ = backQ + "&seg=" + seg.id + "&asset=" + sel;
 
   const TABS = [
     ["rec", "推荐 " + D.recommend(seg, "rec").length],
@@ -28,9 +36,7 @@ window.PAGES["B2.1"].render = function (ctx) {
     ["stock", "图库 " + D.pool("stock").length]
   ];
 
-  const meta = (a) => a.kind === "pip"
-    ? a.srcTx + " · 画中画"
-    : a.srcTx + " · " + a.dur + "s";
+  const meta = (a) => a.kind === "pip" ? a.srcTx + " · 画中画" : a.srcTx + " · " + a.dur + "s";
 
   const mat = (a) => {
     const on = a.id === sel;
@@ -43,10 +49,10 @@ window.PAGES["B2.1"].render = function (ctx) {
     </div>`;
   };
 
-  const empty = `<div style="padding:34px 10px;text-align:center;color:var(--text-3);font-size:12px;line-height:1.7">
-      这一栏还没有素材<br><span style="font-size:11.5px">拍一段只要 3 秒，也可以在团队库里要</span></div>`;
+  const empty = `<div style="padding:28px 10px;text-align:center;color:var(--text-3);font-size:12px;line-height:1.7">
+      ${q ? "没搜到「" + q + "」<br><span style=\"font-size:11.5px\">试试「产品」「仓库」「截图」这种词</span>"
+        : "这一栏还没有素材<br><span style=\"font-size:11.5px\">拍一段只要 3 秒，也可以在团队库里要</span>"}</div>`;
 
-  /* 上方段落列表：只露出进入点之前的段，让人知道自己在整条片子的哪儿 */
   /* 背后那层只做"我在整条脚本的哪儿"的定位，用和脚本框一样的 part 卡片（压暗） */
   const above = d.segments
     .filter((s) => s.idx <= seg.idx)
@@ -62,26 +68,11 @@ window.PAGES["B2.1"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <span class="back" data-go="${backQ}" data-label="返回发布器">‹</span>
+      <span class="back" data-go="${backQ}" data-label="返回脚本框">‹</span>
       <div class="ttl">${d.title}<small>给第 ${seg.idx + 1} 段配画面</small></div>
     </div>
 
-    ${C.estage({
-      preview: {
-        bg: (seg.shots.filter((s) => !s.miss)[0] || {}).bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
-        no: seg.idx + 1 + "/" + d.segCount,
-        cap: seg.vo.slice(0, 12),
-        pip: seg.shots.some((s) => s.pip)
-      },
-      code: seg.code,
-      track: d.track.map(([f], i) => [f, i === seg.idx ? "cur" : (i < seg.idx ? "done" : "")]),
-      now: `<b>第 ${seg.idx + 1} 段 · ${seg.name}</b><br>${seg.missN
-        ? "还缺 " + seg.missN + " 段画面"
-        : "已配 " + seg.shots.length + " 个画面 · 共 " + seg.shotTotal + "s"}`,
-      paused: true
-    })}
-
-    <div class="body" style="padding-top:0;opacity:.16;pointer-events:none">
+    <div class="body" style="padding-top:0;opacity:.14;pointer-events:none">
       ${above}
     </div>
 
@@ -91,22 +82,28 @@ window.PAGES["B2.1"].render = function (ctx) {
           <div class="row">
             <div style="flex:1">
               <div class="t1">给「第 ${seg.idx + 1} 段 · ${seg.name}」配画面</div>
-              <div class="t2">台词：${seg.vo}</div>
+              <div class="t2">台词：${seg.vo || "（待生成）"}</div>
             </div>
             <span style="font-size:12px;font-weight:700;color:var(--brand);cursor:pointer" data-go="${backQ}" data-label="关闭选择器">关闭</span>
           </div>
           <div style="margin-top:10px;background:var(--warm-weak);border-radius:9px;padding:8px 10px;font-size:11.5px;color:#D9541F;line-height:1.5">
-            <b>画面建议：</b>${seg.hint}
+            <b>画面建议：</b>${seg.hint || "按台词语义挑一段，能盖住这段时长最好"}
           </div>
         </div>
 
         <div class="sheet-b">
-          <div class="tabs2">
-            ${TABS.map(([k, tx]) => `<b class="${tab === k ? "on" : ""}" data-set="B2.1.tab=${k}">${tx}</b>`).join("")}
+          <div class="gsearch" style="margin-bottom:10px">
+            <span class="mag">⌕</span>
+            <input data-bind="B2.1.q" data-live value="${q}" placeholder="搜素材：产品、仓库、截图…" />
+            ${q ? `<span class="xs" style="color:var(--brand);font-weight:600" data-set="B2.1.q=">清空</span>` : ""}
           </div>
+
+          ${q ? `<div class="xs" style="margin:-2px 2px 10px">全库搜到 ${list.length} 段</div>` : `<div class="tabs2">
+            ${TABS.map(([k, tx]) => `<b class="${tab === k ? "on" : ""}" data-set="B2.1.tab=${k}">${tx}</b>`).join("")}
+          </div>`}
+
           ${list.length ? `<div class="mgrid">${list.map(mat).join("")}</div>` : empty}
-          <div class="xs" style="margin-top:12px;text-align:center">找不到？可以直接拍一段，或粘链接抓取</div>
-          <div class="row" style="gap:8px;margin-top:10px">
+          <div class="row" style="gap:8px;margin-top:12px">
             <div class="btn line" style="height:38px;font-size:13px" data-go="B2.2" data-label="去随手拍">＋ 随手拍 3 秒</div>
             <div class="btn line" style="height:38px;font-size:13px" data-go="B2.3" data-label="画中画配置">▣ 画中画</div>
           </div>

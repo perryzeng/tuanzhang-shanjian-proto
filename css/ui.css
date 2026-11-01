@@ -464,3 +464,68 @@
 .pvline .bar2 i{display:block;height:100%;width:0;border-radius:2px;background:var(--g-brand);animation:pvgo linear forwards}
 .pvline span:last-child{flex:0 0 auto;font-size:10px;font-weight:600;color:var(--brand);font-variant-numeric:tabular-nums}
 @keyframes pvgo{from{width:0}to{width:100%}}
+
+/* ========== 导入视频：二选一 ========== */
+.pick2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.opt{position:relative;background:var(--surface);border-radius:16px;padding:13px 12px 14px;box-shadow:var(--sh-1);
+     cursor:pointer;border:1.5px solid transparent}
+.opt .oi{width:30px;height:30px;border-radius:10px;background:#F1F3F9;color:var(--text-2);display:flex;
+         align-items:center;justify-content:center;font-size:14px;margin-bottom:9px}
+.opt b{display:block;font-size:13px;font-weight:600}
+.opt span{display:block;font-size:10.5px;color:var(--text-3);margin-top:3px;line-height:1.45}
+.opt.on{border-color:var(--brand);background:var(--brand-weak)}
+.opt.on .oi{background:var(--g-brand);color:#fff}
+.opt.on b{color:var(--brand-ink)}
+.opt .ck{position:absolute;right:10px;top:10px;width:17px;height:17px;border-radius:50%;background:var(--brand);
+         color:#fff;font-size:10px;font-style:normal;display:flex;align-items:center;justify-content:center}
+
+/* 本地视频拖放区 */
+.drop{margin-top:2px;background:var(--surface);border:1.5px dashed #C9D2E6;border-radius:18px;
+      padding:30px 16px 26px;text-align:center;cursor:pointer}
+.drop .di{width:46px;height:46px;margin:0 auto 11px;border-radius:50%;background:var(--brand-weak);color:var(--brand);
+          display:flex;align-items:center;justify-content:center;font-size:20px}
+.drop b{display:block;font-size:14px;font-weight:600}
+.drop span{display:block;font-size:11px;color:var(--text-3);margin-top:5px}
+
+/* ========== 生成设置：模板卡 ========== */
+.tpl{border-radius:16px;padding:12px;cursor:pointer;position:relative;color:#fff;overflow:hidden;min-height:104px;
+     display:flex;flex-direction:column;justify-content:flex-end}
+.tpl:after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(8,14,32,0) 34%,rgba(8,14,32,.7) 100%)}
+.tpl b{position:relative;z-index:1;font-size:13.5px;font-weight:700;letter-spacing:-.2px;text-shadow:0 1px 6px rgba(0,0,0,.3)}
+.tpl span{position:relative;z-index:1;display:block;font-size:10px;opacity:.9;margin-top:3px;line-height:1.4}
+.tpl .tg{position:absolute;left:12px;top:12px;font-size:9px;font-weight:700;background:rgba(255,255,255,.22);
+         border-radius:999px;padding:2.5px 8px;z-index:1;backdrop-filter:blur(4px)}
+.tpl .rt{position:absolute;right:12px;top:12px;font-size:9px;font-weight:700;background:rgba(255,255,255,.92);
+         color:#1B2A55;border-radius:999px;padding:2.5px 8px;z-index:1}
+.tpl.sel{box-shadow:0 0 0 2.5px var(--brand),0 10px 24px rgba(44,91,255,.26)}
+
+/* 音色选择行 */
+.vrow{display:flex;align-items:center;gap:11px;padding:11px 0;cursor:pointer}
+.vrow+.vrow{box-shadow:inset 0 1px 0 var(--line-2)}
+.vrow>*{flex:0 0 auto}
+.vrow .rd{width:17px;height:17px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line)}
+.vrow.on .rd{box-shadow:inset 0 0 0 5px var(--brand)}
+.vrow .vw{flex:1 1 auto;min-width:0}
+.vrow .vw b{display:block;font-size:13px;font-weight:600}
+.vrow .vw i{display:block;font-style:normal;font-size:10.5px;color:var(--text-3);margin-top:2px}
+/* 注意：类名不能叫 .pv —— 那个是视频预览框（width:100%/display:flex），会把这行撑开 */
+.vrow .vact{margin-left:auto;font-size:11px;font-weight:600;color:var(--brand);flex:0 0 auto}
+
+/* ========== 选封面 ========== */
+.cgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.cv2{border-radius:14px;overflow:hidden;cursor:pointer;position:relative;aspect-ratio:3/4;color:#fff;
+     display:flex;flex-direction:column;justify-content:flex-end;padding:9px 8px;box-shadow:0 0 0 2px transparent}
+.cv2.sel{box-shadow:0 0 0 2.5px var(--brand),0 10px 24px rgba(44,91,255,.24)}
+.cv2 .bg{position:absolute;inset:0}
+.cv2 .bd{position:absolute;left:8px;top:8px;font-size:8.5px;font-weight:700;background:rgba(0,0,0,.42);
+         border-radius:5px;padding:2px 5px;z-index:1}
+.cv2 .bt{position:relative;z-index:1}
+.cv2 .bt b{display:block;font-size:12px;font-weight:800;line-height:1.22;letter-spacing:-.2px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+.cv2 .bt span{display:block;font-size:9px;opacity:.9;margin-top:3px;line-height:1.3}
+.cv2 .ck2{position:absolute;right:7px;bottom:7px;width:18px;height:18px;border-radius:50%;background:#fff;
+          color:var(--brand);font-size:10px;display:flex;align-items:center;justify-content:center;z-index:2;font-weight:700}
+
+/* 搜索框里的输入框（.gsearch 容器里） */
+.gsearch input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:inherit;
+               font-size:13px;color:var(--text)}
+.gsearch input::placeholder{color:var(--text-4)}
