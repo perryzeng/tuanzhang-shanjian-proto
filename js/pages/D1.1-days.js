@@ -5,7 +5,18 @@ window.PAGES["D1.1"].prd = "PRD §6.13 · 战役日程（一天一个主题）";
    点任意一天进单日详情——未来的天也能点，让人提前准备，但不能装作已经发过。 */
 window.PAGES["D1.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
-  const c = D.campaign(ctx.c);
+  const base = D.campaign(ctx.c);
+  /* 从「新建主题系列」带过来的条数：日程要跟着用户选的那个数走，
+     否则选 14 条进来还是 10 天，等于刚才那个选择没生效。
+     条数变了，名字里的"10 天"和"今天第几天"也得跟着挪。 */
+  const nd = +(ctx.days || 0) || base.total;
+  const c = nd === base.total ? base : {
+    ...base,
+    total: nd,
+    day: Math.min(base.day, nd),
+    name: base.name.replace(/\d+\s*天/, nd + " 天"),
+    topics: D.planTopics(base.product, nd)
+  };
   const days = D.campaignDays(c);
   const doneN = days.filter((d) => d.state === "done").length;
   const cur = days.filter((d) => d.state === "today")[0] || days[0];
