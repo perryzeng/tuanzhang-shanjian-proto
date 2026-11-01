@@ -39,14 +39,35 @@ window.PAGES["E3.1"].render = function (ctx) {
       <div class="tx"><b style="margin-bottom:2px">${t}</b><span>${sub}</span></div>
       <span style="color:var(--text-4);font-size:16px">›</span></div>`;
 
+  const canEdit = view !== "member";
+  const edit = ctx.edit === "1";
+  const tname = ctx.name != null && ctx.name !== "" ? ctx.name : (team.name || "");
+  const tbrief = ctx.brief != null && ctx.brief !== "" ? ctx.brief : (team.brief || "");
+  const logo = ctx.logo != null && ctx.logo !== "" ? ctx.logo : (tname || "团").slice(0, 1);
+
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "团队资料", sub: team.name, back: "E3" })}
+    ${C.ab({ title: edit ? "编辑团队资料" : "团队资料", sub: tname, back: "E3" })}
 
     <div class="body">
+      ${edit ? `
+      <div class="card" style="padding:14px">
+        <div class="s" style="margin-bottom:7px">团队名称</div>
+        <input data-bind="E3.1.name" data-live value="${tname.replace(/"/g, "&quot;")}"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:13px;font-weight:600" />
+        <div class="s" style="margin:14px 0 7px">团队简介</div>
+        <input data-bind="E3.1.brief" data-live value="${tbrief.replace(/"/g, "&quot;")}"
+          style="width:100%;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 12px;font-size:12.5px" />
+        <div class="s" style="margin:14px 0 7px">团队 Logo</div>
+        <input data-bind="E3.1.logo" data-live maxlength="1" value="${logo}"
+          style="width:64px;text-align:center;border:0;outline:0;background:var(--bg-2);border-radius:10px;padding:11px 0;font-size:18px;font-weight:800;color:var(--brand)" />
+        <div class="xs" style="margin-top:8px">先用一个字代替；真机上支持上传图片。</div>
+      </div>
+      <div class="note" style="margin:12px 2px 0;line-height:1.7">团队名称、简介、Logo 会展示在成员端首页与邀请卡片上，改完即生效。</div>
+      ` : `
       <div class="tinfo" style="background:linear-gradient(135deg,#2C5BFF,#7C5CFF)">
-        <span class="tiav">${(team.name || "团").slice(0, 1)}</span>
-        <div><b>${team.name}</b><span>${team.brief || ""}</span></div>
+        <span class="tiav">${logo}</span>
+        <div><b>${tname}</b><span>${tbrief}</span></div>
       </div>
 
       <div class="tstat">
@@ -55,10 +76,18 @@ window.PAGES["E3.1"].render = function (ctx) {
         <div><b>${team.role}</b><span>我的身份</span></div>
       </div>
 
-      <div class="card" style="margin-top:12px;padding:0 14px">
-        ${linkRow("◎", "席位", `已用 ${s.used}/${s.total} · 剩余 ${s.total - s.used} · ¥${s.price}/席`, "E3.2")}
-        ${view !== "member" ? linkRow("⚙", "团队管理", "发公告 / 任务 · 成员 · 素材 · Banner", "E3.4?view=" + view) : ""}
+      ${canEdit ? `<div class="card" style="margin-top:12px;padding:0 14px">
+        ${linkRow("✎", "编辑团队资料", "名称、简介、Logo，改完即生效", "E3.1?view=" + view + "&edit=1")}
+        ${linkRow("⚙", "团队管理", "发公告 / 任务 · 成员 · 素材 · Banner", "E3.4?view=" + view)}
+      </div>` : ""}
+
+      <div class="seatcard">
+        <div class="seatcard-l"><b>席位</b><span>已用 ${s.used}/${s.total} · 剩余 ${s.total - s.used} · ¥${s.price}/席</span></div>
+        ${view === "owner"
+          ? `<span class="btn-pill" data-go="E3.2" data-label="购买席位">购买席位</span>`
+          : `<span class="xs">${s.total - s.used} 席可用</span>`}
       </div>
+      ${view === "owner" ? `<div class="xs" style="margin:8px 2px 0;line-height:1.6">席位不足会导致邀请失败；1 人占 1 席，可随时加购。</div>` : ""}
 
       <div class="feedhd">团队成员<span>${team.members}</span></div>
       <div class="card" style="padding:2px 14px;border-radius:16px">
@@ -66,7 +95,10 @@ window.PAGES["E3.1"].render = function (ctx) {
         ${more ? `<div class="tmr" data-label="更多成员"><span class="tav" style="background:var(--bg-2);color:var(--text-3)">+${more}</span>
           <div class="tmt"><b>还有 ${more} 位成员</b><span>通讯录里可搜索全部</span></div></div>` : ""}
       </div>
+      `}
     </div>
+
+    ${edit ? `<div class="actionbar"><div class="btn ai" data-set="E3.1.edit=&E3.1.toast=已保存" data-label="保存">保存修改</div></div>` : ""}
   </div>`;
 };
 
@@ -232,7 +264,7 @@ window.PAGES["E3.4"].render = function (ctx) {
       ].filter(Boolean))}
 
       ${grp("团队素材", [
-        row("◫", "素材整理", "移动 / 删除 / 设精选，按文件夹归置", "E3?open=asset&tab=dir")
+        row("◫", "素材整理", "点开任意一条，直接改名 / 换文件夹 / 设精选 / 删除", "E3?open=asset&tab=latest&mng=1")
       ])}
 
       ${grp("团队设置", [

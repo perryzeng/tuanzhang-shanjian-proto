@@ -19,6 +19,7 @@ window.PAGES["E2"].render = function (ctx) {
   const forcedSide = ctx.__side || "";    // E3 传 team、E2.4 传 friend
   const side = forcedSide || "mine";
   const tview = side === "team" ? (["owner", "admin", "member"].indexOf(ctx.view) >= 0 ? ctx.view : "owner") : "";
+  const mng = ctx.mng === "1";
   const friendName = ctx.__friend || "";
   const friend = (LIB.friends || []).filter((f) => f.name === friendName)[0] || {};
 
@@ -48,7 +49,7 @@ window.PAGES["E2"].render = function (ctx) {
   const qs = (kv) => pid + ".side=" + side + "&" + pid + ".tid=" + tid + "&" + pid + ".open=" + open
     + "&" + pid + ".tab=" + (ctx.tab || "log") + "&" + pid + ".q=" + q + "&" + pid + ".moved=" + movStr
     + "&" + pid + ".del=" + delStr + "&" + pid + ".nfd=" + nfdStr + "&" + pid + ".tsw=" + tsw
-    + "&" + pid + ".pick=" + picked.join(",") + "&" + (kv || "");
+    + "&" + pid + ".mng=" + (mng ? "1" : "") + "&" + pid + ".pick=" + picked.join(",") + "&" + (kv || "");
 
   const FICON = { script: "文", asset: "图", work: "作" };
   const KBG = {
@@ -234,7 +235,7 @@ window.PAGES["E2"].render = function (ctx) {
 
   const rowScript = (x) => `<div class="srow" ${sel
       ? `data-set="${qs(toggle(x.id))}"`
-      : `data-go="E2.2?id=${x.id}" data-label="${x.name}"`}>
+      : `data-go="E2.2?id=${x.id}${mng ? "&mng=1" : ""}" data-label="${x.name}"`}>
       ${sel ? `<span class="ck${picked.indexOf(x.id) >= 0 ? " on" : ""}"></span>` : ""}
       <span class="ic">≡</span>
       <div class="tx"><b>${x.name}</b>
@@ -254,7 +255,7 @@ window.PAGES["E2"].render = function (ctx) {
       <div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span><span style="display:block;font-size:8.5px;color:var(--text-4);margin-top:1px">用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>
     </div>`;
 
-  const tileGo = (x) => (kind === "asset" ? "E2.3?id=" + x.id : (x.go || "B4.1?id=" + x.id));
+  const tileGo = (x) => (kind === "asset" ? "E2.3?id=" + x.id + (mng ? "&mng=1" : "") : (x.go || "B4.1?id=" + x.id));
   const arrOf = (arr, flat) => kind === "script"
     ? (flat ? arr.map(rowScript).join("")
       : `<div class="card" style="padding:2px 14px;border-radius:14px;margin-top:10px">${arr.map(rowScript).join("")}</div>`)
@@ -321,6 +322,7 @@ window.PAGES["E2"].render = function (ctx) {
       <b>${KINDNAME[kind]} · ${allItems.length} 个</b>
     </div>
     ${otabs}
+    ${mng ? `<div class="note" style="margin:10px 2px 0;line-height:1.6">整理模式 · 点开任意一条，可直接改名、换文件夹、设精选、删除</div>` : ""}
     ${curTab === "log" ? "" : searchBar}
     ${tabBody}`;
 

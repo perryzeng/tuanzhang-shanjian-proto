@@ -1786,6 +1786,31 @@
 .seatbar .sbt b{font-size:12px;font-weight:800;color:#7A3B06}
 .seatbar .sbt span{font-size:10.5px;color:#A9703A;margin-left:6px}
 .seatbar .sbgo{margin-left:auto;font-size:11px;font-weight:800;color:#C2410C;white-space:nowrap}
+.seatcard{display:flex;align-items:center;gap:10px;background:#FFF7EC;border:1px solid #FFE2B8;border-radius:14px;padding:12px 14px;margin-top:12px}
+.seatcard .seatcard-l b{font-size:12.5px;font-weight:800;color:#7A3B06}
+.seatcard .seatcard-l span{display:block;font-size:10.5px;color:#A9703A;margin-top:3px}
+.seatcard .btn-pill{margin-left:auto}
+
+/* 发布任务 */
+.tgrp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.topt{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:14px;border:1.5px solid transparent;cursor:pointer}
+.topt.on{border-color:var(--brand);background:var(--brand-weak)}
+.topt b{display:block;font-size:14px;font-weight:800;color:var(--text)}
+.topt span{display:block;font-size:10.5px;color:var(--text-4);margin-top:4px}
+.prow{display:flex;align-items:center;gap:10px;padding:11px 0;box-shadow:inset 0 1px 0 var(--line-2);cursor:pointer}
+.prow:first-child{box-shadow:none}
+.prow .prd{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line);flex:0 0 18px}
+.prow .prd.on{box-shadow:inset 0 0 0 5px var(--brand)}
+.prow .tx{flex:1;min-width:0}
+.prow .tx b{display:block;font-size:12.5px;font-weight:700;color:var(--text)}
+.prow .tx span{display:block;font-size:9.5px;color:var(--text-4);margin-top:3px}
+.pavs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pav{position:relative;width:28px;height:28px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;opacity:.42}
+.pav.done{opacity:1}
+.pav i{position:absolute;right:-2px;bottom:-2px;width:12px;height:12px;border-radius:50%;background:#0B8D6A;color:#fff;
+  font-size:8px;font-style:normal;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff}
+.pav:not(.done) i{display:none}
 
 /* 套餐卡（席位 / 积分） */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
