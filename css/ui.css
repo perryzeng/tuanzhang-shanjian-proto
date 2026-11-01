@@ -565,6 +565,85 @@
                font-size:13px;color:var(--text)}
 .gsearch input::placeholder{color:var(--text-4)}
 
+/* ========== 封面：底图 + 版式 ==========
+   字号全部用 em、容器只改 font-size，所以大预览和缩略卡共用同一套版式，
+   不会出现"小图看着挺好、大图就不对"。 */
+.cv{position:relative;overflow:hidden;border-radius:12px;color:#fff;background:#0A1226}
+.cv .src{position:absolute;inset:0}
+/* 底图只是渐变的话太"设计稿"，加一层很淡的光斑，看起来像一张有明暗的画面。
+   原型里没有真图，这一点点质感决定用户能不能"看懂这是照片不是色块"。 */
+.cv .src:after,.phcell .im:after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(58% 38% at 32% 16%,rgba(255,255,255,.24),transparent 72%),
+             radial-gradient(46% 30% at 78% 84%,rgba(255,255,255,.13),transparent 72%)}
+.cv .lay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;line-height:1.2}
+/* balance 很关键：不加的话长标题会断在词中间（"一天不 / 到 3 块"），
+   加了之后两行长度自动拉匀（"一天不到 / 3 块"）——中文封面尤其明显。 */
+/* keep-all：中文默认逐字折行，宽一点窄一点就断在词中间。
+   封面标题的断句由文案用 `|` 指定（渲染成 <br>），所以这里禁止浏览器自作主张。 */
+.cv .lay b{display:block;font-size:1.95em;font-weight:800;letter-spacing:-.02em;line-height:1.14;
+           word-break:keep-all;overflow-wrap:normal}
+.cv .lay i{display:block;font-style:normal;font-size:.92em;opacity:.92;margin-top:.34em}
+
+.cv .lay.bottom{padding:1em .85em;background:linear-gradient(0deg,rgba(5,10,24,.86),rgba(5,10,24,.16) 56%,transparent)}
+.cv .lay.top{justify-content:flex-start;padding:1em .85em;background:linear-gradient(180deg,rgba(5,10,24,.86),rgba(5,10,24,.12) 56%,transparent)}
+.cv .lay.center{justify-content:center;align-items:center;text-align:center;padding:1.2em;background:rgba(5,10,24,.26)}
+.cv .lay.center b{text-shadow:0 .05em .16em rgba(0,0,0,.95),0 0 .3em rgba(0,0,0,.75)}
+.cv .lay.split{justify-content:space-between;padding:0}
+.cv .lay.split .ss{padding:.95em 1.05em;font-size:.9em;opacity:.95;background:linear-gradient(180deg,rgba(5,10,24,.82),transparent)}
+.cv .lay.split .bb{padding:1.05em;background:rgba(5,10,24,.88);min-height:44%;display:flex;flex-direction:column;justify-content:flex-end}
+.cv .lay.split .bb b{font-size:1.9em}
+.cv .lay.bar{justify-content:flex-end;padding:0}
+.cv .lay.bar .bb{width:100%;padding:.9em 1.05em;background:rgba(5,10,24,.9);border-top:.18em solid #2C5BFF}
+.cv .lay.bar .bb b{font-size:1.7em}
+.cv .lay.left{justify-content:flex-end;align-items:flex-start;text-align:left;padding:1em .85em;
+              background:linear-gradient(90deg,rgba(5,10,24,.88),rgba(5,10,24,.08) 74%)}
+.cv .lay.left b{font-size:1.72em}
+
+.cvpreview{display:flex;flex-direction:column;align-items:center}
+.cvpreview .cv{width:146px;height:260px;border-radius:18px;box-shadow:0 14px 34px rgba(20,40,110,.22)}
+.cvpreview .cap{margin-top:8px;font-size:10px;color:var(--text-4)}
+
+/* 版式横滑：六张缩略卡共用同一张底图，用户才看得出"变的只是排法" */
+.ctray{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.ctray::-webkit-scrollbar{display:none}
+.cvt{flex:0 0 72px;cursor:pointer;position:relative}
+.cvt .cv{width:72px;height:128px}
+.cvt .nm{display:block;text-align:center;font-size:9.5px;color:var(--text-3);margin-top:5px;
+         white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cvt.sel .cv{box-shadow:0 0 0 2.5px var(--brand)}
+.cvt.sel .nm{color:var(--brand);font-weight:700}
+.cvt .ck{position:absolute;right:6px;top:6px;width:17px;height:17px;border-radius:50%;
+         background:#fff;color:var(--brand);font-size:10px;font-weight:700;
+         display:flex;align-items:center;justify-content:center}
+
+/* 底图来源卡 */
+.bsets{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.bsets::-webkit-scrollbar{display:none}
+.bset{flex:0 0 146px;display:flex;align-items:center;gap:9px;background:var(--surface);
+      border-radius:14px;padding:8px;box-shadow:var(--sh-1);cursor:pointer;position:relative}
+.bset .th{width:38px;height:52px;border-radius:8px;flex:0 0 38px}
+.bset .tx{flex:1;min-width:0}
+.bset .tx b{display:block;font-size:11.5px;font-weight:700}
+.bset .tx span{display:block;font-size:9.5px;color:var(--text-4);margin-top:3px;
+               white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bset.sel{box-shadow:0 0 0 2px var(--brand),var(--sh-1)}
+.bset .tick{position:absolute;right:6px;top:6px;width:15px;height:15px;border-radius:50%;
+            background:var(--brand);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center}
+.bset.add .th{background:#F7F9FD;border:1.5px dashed #C9D2E6;color:var(--text-4);
+              display:flex;align-items:center;justify-content:center;font-size:15px}
+
+/* 相册网格 */
+.phgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.phcell{position:relative;cursor:pointer}
+.phcell .im{aspect-ratio:3/4;border-radius:12px;position:relative;overflow:hidden}
+.phcell .tx{margin-top:5px}
+.phcell .tx b{display:block;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phcell .tx span{display:block;font-size:9px;color:var(--text-4);margin-top:2px}
+.phcell.sel .im{box-shadow:0 0 0 2.5px var(--brand)}
+.phcell .ck{position:absolute;right:6px;top:6px;width:17px;height:17px;border-radius:50%;
+            background:#fff;color:var(--brand);font-size:10px;font-weight:700;
+            display:flex;align-items:center;justify-content:center}
+
 /* ========== 分片播放器（点 part 的 ▶） ========== */
 .pl{position:absolute;inset:0;z-index:30;background:#070B18;display:flex;flex-direction:column;
     padding:14px 16px 22px;color:#fff}

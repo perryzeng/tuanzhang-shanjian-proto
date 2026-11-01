@@ -626,13 +626,45 @@ window.DATA = {
   /* AI 网感封面：按这条的台词生成 6 张，风格各不同，选一张发。
      为什么不是"从视频帧里截一张"：竖屏信息流里封面图决定点击，
      截帧永远是糊的、字也压不住，网感封面是投手做出来的。 */
+  /* 封面 = **底图 + 版式**，不是"AI 画 6 张新图"。
+     底图来自视频首帧或团长自己上传的照片，版式只负责把字压在哪儿。
+     为什么不整张交给 AI：团长认的是自己那张脸、那盘货，换成本人画面的封面
+     点击率本来就更高；AI 只该负责排字，不该负责编画面。
+     上一版给的是 6 张各自独立的渐变图，用户反馈也是这个意思——
+     "用上传的图或首帧，结合模板生成"。 */
+  coverBases: [
+    { k: "frame", name: "视频首帧", at: "00:00", from: "第 3 段 · 手拿产品特写",
+      bg: "linear-gradient(160deg,#2C5BFF 0%,#0E2A6B 55%,#08142F 100%)" },
+    { k: "photo", name: "我上传的照片", at: "", from: "IMG_2088 · 1080×1920",
+      bg: "linear-gradient(160deg,#8C6BFF 0%,#4A3AA8 55%,#1B1740 100%)" }
+  ],
+
+  /* 我的相册：封面底图/画中画的来源。竖版为主，因为竖屏封面用不上横图 */
+  myPhotos: [
+    { id: "ph_01", label: "手拿瓶身 · 客厅", at: "11-01", bg: "linear-gradient(160deg,#8C6BFF,#2C1E63)" },
+    { id: "ph_02", label: "产品摆台", at: "10-28", bg: "linear-gradient(160deg,#2C5BFF,#0B1F52)" },
+    { id: "ph_03", label: "自拍 · 素颜", at: "10-26", bg: "linear-gradient(160deg,#FF7BA9,#7A2A55)" },
+    { id: "ph_04", label: "仓库实拍", at: "10-22", bg: "linear-gradient(160deg,#00B389,#0A4A3C)" },
+    { id: "ph_05", label: "孩子吃饭", at: "10-19", bg: "linear-gradient(160deg,#F5A623,#7A4A0C)" },
+    { id: "ph_06", label: "开箱合照", at: "10-15", bg: "linear-gradient(160deg,#00A8E8,#0B3A52)" }
+  ],
+
+  /* big 里的 `|` 是**手动断行**。
+     中文没有空格，交给浏览器自动折行会断在词中间（"一天不 / 到 3 块"），
+     而封面标题的断句本来就是排版的一部分——所以由文案自己定哪里换行。 */
   coverStyles: [
-    { k: "price", name: "大字价格", big: "一天不到 3 块", small: "今晚 8 点开团", c1: "#FF7A45", c2: "#FFB020" },
-    { k: "ask", name: "疑问钩子", big: "孩子能吃吗？", small: "一次讲清楚", c1: "#2C5BFF", c2: "#00C2FF" },
-    { k: "vs", name: "左右对比", big: "鱼油 vs 磷虾油", small: "差在一个吸收率", c1: "#5B3FD1", c2: "#7C8CFF" },
-    { k: "face", name: "真人大字", big: "我吃了两个月", small: "变化就在这", c1: "#0E1B3D", c2: "#2C5BFF" },
-    { k: "ing", name: "成分特写", big: "磷脂型更好吸收", small: "每粒 500mg", c1: "#00A8E8", c2: "#5B8CFF" },
-    { k: "proof", name: "晒单背书", big: "37 个老客回购", small: "原话都在评论区", c1: "#00B389", c2: "#00C2FF" }
+    { k: "bottom", name: "大字压底", big: "一天不到|3 块", small: "今晚 8 点开团",
+      note: "最常用：画面留给你，字收在下方 1/3" },
+    { k: "top", name: "顶部标题", big: "磷虾油|怎么选", small: "3 步不踩坑",
+      note: "画面主体在中间时用，字压顶部不挡脸" },
+    { k: "center", name: "居中描边", big: "孩子|能吃吗？", small: "一次讲清楚",
+      note: "疑问句最搭；白字加黑边，什么背景都看得清" },
+    { k: "split", name: "上下分栏", big: "鱼油 vs|磷虾油", small: "差在一个吸收率",
+      note: "对比内容专用：上留画面，下留结论" },
+    { k: "bar", name: "底部色条", big: "37 个|老客回购", small: "原话都在评论区",
+      note: "压一条实色带，字最稳，也最像广告" },
+    { k: "left", name: "左侧三行", big: "每粒 500mg", small: "磷脂型更好吸收",
+      note: "信息量大时用，左下三行放得下三个卖点" }
   ],
 
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
@@ -1101,6 +1133,14 @@ window.DERIVE = (function () {
   function voices() { return window.DATA.voices; }
   function voice(id) { return window.DATA.voices.filter((x) => x.id === id)[0] || window.DATA.voices[0]; }
   function covers() { return window.DATA.coverStyles; }
+  function cover(id) {
+    return window.DATA.coverStyles.filter((x) => x.k === id)[0] || window.DATA.coverStyles[0];
+  }
+  function coverBases() { return window.DATA.coverBases; }
+  function myPhotos() { return window.DATA.myPhotos; }
+  function coverBase(id) {
+    return window.DATA.coverBases.filter((x) => x.k === id)[0] || window.DATA.coverBases[0];
+  }
 
   /* 搜索：脚本库和素材库都要能搜。
      只搜"用户会用来描述的字段"（名字、标签、来源），不搜 id——
@@ -1139,6 +1179,6 @@ window.DERIVE = (function () {
            scripts, script, scriptTabs, extract,
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics, partSkeleton,
-           templates, template, voices, voice, covers, search, drafts,
+           templates, template, voices, voice, covers, cover, coverBases, coverBase, myPhotos, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();

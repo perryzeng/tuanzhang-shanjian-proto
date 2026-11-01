@@ -1,54 +1,94 @@
-window.PAGES["B4"].prd = "PRD §6.15 · 选封面（AI 网感封面，6 选 1）";
+window.PAGES["B4"].prd = "PRD §6.15 · 选封面（底图 + 版式配一张）";
+window.PAGES["B4"].states = [
+  { k: "", n: "默认：先用视频首帧当底图，选版式看效果；也可以换成自己上传的照片" }
+];
 
 /* 生成完只剩一件事：选封面。
-   为什么单独一页、为什么是 AI 生成而不是从视频帧里截：
-   竖屏信息流里用户只看到一张图，这张图决定点不点开。截帧永远是糊的、字也压不住，
-   真正能打的封面是投手做出来的——所以这里给 6 张风格不同的，选一张就走。 */
+
+   这一页的结构是 **底图 × 版式**，不是"AI 画 6 张给你挑"：
+   · 底图 —— 视频首帧，或团长自己上传的一张照片；
+   · 版式 —— 决定字压在哪儿（压底 / 顶部 / 居中 / 分栏 / 色条 / 左侧）。
+
+   为什么不让 AI 整张画：团长认的是自己那张脸、那盘货。换成本人画面的封面
+   点击率本来就更高，AI 只该负责排字，不该负责编画面——编出来的图他一眼就知道"这不是我"。
+   所以 6 张缩略卡必须**共用同一张底图**，否则用户看不出"变的是版式、不变的是画面"。
+
+   竖屏信息流里用户只看到一张图，这张图决定点不点开，所以这一页值得单独占一屏。 */
 window.PAGES["B4"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
-  const covers = D.covers();
-  const sel = ctx.cv || covers[0].k;
-  const selItem = covers.filter((c) => c.k === sel)[0] || covers[0];
+  const tpls = D.covers();
+  let base = D.coverBase(ctx.base);
+  /* 从相册挑过照片的话，底图要用那一张的样子，不能还停在默认那张——
+     否则用户从相册回来会觉得"我选的那张没生效"。 */
+  if (base.k === "photo" && ctx.ph) {
+    const ph = D.myPhotos().filter((x) => x.id === ctx.ph)[0];
+    if (ph) base = { ...base, bg: ph.bg, from: ph.label + " · " + ph.at };
+  }
+  const tpl = D.cover(ctx.tpl || ctx.cv);
 
-  const cv = (c) => `<div class="cv2${c.k === sel ? " sel" : ""}" data-set="B4.cv=${c.k}">
-      <div class="bg" style="background:linear-gradient(155deg,${c.c1},${c.c2})"></div>
-      <span class="bd">${c.name}</span>
-      <div class="bt"><b>${c.big}</b><span>${c.small}</span></div>
-      ${c.k === sel ? `<span class="ck2">✓</span>` : ""}
+  /* 一个封面 = 底图 + 一层字。字号用 em，外面改 font-size 就能整块缩放——
+     大预览和缩略卡因此共用同一套版式 CSS，不会出现"小图和大图长得不一样"。 */
+  const brk = (x) => String(x).replace(/\|/g, "<br>");
+  const cover = (t, b, fs, cls) => {
+    const inner = t.k === "split"
+      ? `<span class="ss">${t.small}</span><div class="bb"><b>${brk(t.big)}</b></div>`
+      : t.k === "bar"
+        ? `<div class="bb"><b>${brk(t.big)}</b><i>${t.small}</i></div>`
+        : `<b>${brk(t.big)}</b><i>${t.small}</i>`;
+    return `<div class="cv ${cls || ""}" style="font-size:${fs}px">
+      <div class="src" style="background:${b.bg}"></div>
+      <div class="lay ${t.k}">${inner}</div>
+    </div>`;
+  };
+
+  const tile = (t) => `<div class="cvt${t.k === tpl.k ? " sel" : ""}" data-set="B4.tpl=${t.k}">
+      ${cover(t, base, 5.8)}
+      <span class="nm">${t.name}</span>
+      ${t.k === tpl.k ? `<span class="ck">✓</span>` : ""}
+    </div>`;
+
+  const baseCard = (b) => `<div class="bset${b.k === base.k ? " sel" : ""}" data-set="B4.base=${b.k}">
+      <div class="th" style="background:${b.bg}"></div>
+      <div class="tx"><b>${b.name}</b><span>${b.from}</span></div>
+      ${b.k === base.k ? `<span class="tick">✓</span>` : ""}
     </div>`;
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "选封面", sub: "AI 按这条的台词出了 6 张", back: "B3", act: "换一批" })}
+    ${C.ab({ title: "选封面", sub: "挑张底图，再挑个字压在哪儿", back: "B3" })}
 
     <div class="body">
-      <div class="cgrid">${covers.map(cv).join("")}</div>
+      <div class="cvpreview">${cover(tpl, base, 13, "big")}
+        <div class="cap">${base.name}${base.at ? " · " + base.at : ""} · ${tpl.name}</div>
+      </div>
 
-      <div class="card plain" style="margin-top:12px">
-        <div class="xs" style="line-height:1.7">
-          <b style="color:var(--text)">为什么是这 6 种：</b>大字价格、疑问钩子、左右对比、真人大字、成分特写、晒单背书——
-          竖屏带货最吃得开的六个方向。同一句话换个封面，点击能差两三倍。
+      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">底图</span>
+        <span class="more">用你自己的画面</span></div>
+      <div class="bsets">
+        ${D.coverBases().map(baseCard).join("")}
+        <div class="bset add" data-go="B4.2" data-label="再传一张照片">
+          <div class="th add">＋</div>
+          <div class="tx"><b>再传一张</b><span>从相册选</span></div>
         </div>
       </div>
 
-      <div class="card" style="margin-top:11px;display:flex;align-items:center;gap:10px;background:var(--success-weak);box-shadow:none">
+      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">版式</span>
+        <span class="more">同一张底图，六种排法</span></div>
+      <div class="ctray">${tpls.map(tile).join("")}</div>
+      <div class="note" style="margin:8px 2px 0">${tpl.note}</div>
+
+      <div class="card" style="margin-top:12px;display:flex;align-items:center;gap:10px;background:var(--success-weak);box-shadow:none">
         <span style="width:20px;height:20px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex:0 0 20px">✓</span>
         <div style="flex:1">
-          <div style="font-size:12.5px;font-weight:600;color:#0B8C68">封面已过合规</div>
-          <div class="xs" style="margin-top:2px;color:#2F7F68">「${selItem.big}」无「最 / 第一 / 治疗」等禁用表述；AI 生成图已自动标注</div>
-        </div>
-      </div>
-
-      <div class="card plain" style="margin-top:11px">
-        <div class="xs" style="line-height:1.7">
-          封面上的价格和开团时间必须与本期团价一致，改了团价记得换封面——这是最常被判「虚假宣传」的一处。
+          <div style="font-size:12.5px;font-weight:600;color:#0B8C68">封面字已过合规</div>
+          <div class="xs" style="margin-top:2px;color:#2F7F68">「${tpl.big.replace("|", " ")}」无「最 / 第一 / 治疗」等禁用表述</div>
         </div>
       </div>
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 108px" data-go="B4.1" data-label="用视频首帧">用首帧</div>
-      <div class="btn" data-go="B4.1" data-label="用这张发布">✓ 用「${selItem.name}」发布</div>
+      <div class="btn line" style="flex:0 0 112px" data-go="B4.1" data-label="不加字直接用这张画面">不加字，直接发</div>
+      <div class="btn" data-go="B4.1" data-label="用这张封面发布">✓ 用「${tpl.name}」发布</div>
     </div>
   </div>`;
 };
