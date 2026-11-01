@@ -1512,3 +1512,61 @@
 .fdz .fdh .more{margin-left:auto;font-size:10.5px;color:var(--brand);font-weight:600}
 .fdz .fdb{padding:9px 13px 11px}
 .fdz .fdb>.card{box-shadow:none;background:transparent;padding:0}
+
+/* ========== 团队首页的三个方案 ==========
+   A · 四个 tab；B · 动态为主；C · 四宫格。共用同一批数据，只换摆法。 */
+.vswitch{display:flex;gap:5px;margin-top:12px;padding:3px;background:var(--bg-2);border-radius:11px}
+.vswitch b{flex:1;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:600;color:var(--text-3);cursor:pointer}
+.vswitch b.on{background:#fff;color:var(--brand-ink);box-shadow:var(--sh-1)}
+
+/* A 方案：四个主 tab（动态 / 任务 / 公告 / 资料） */
+.vtabs{display:flex;gap:0;margin-top:13px;box-shadow:inset 0 -1px 0 var(--line-2)}
+.vtabs b{flex:1;padding:0 0 10px;font-size:13px;font-weight:600;color:var(--text-3);cursor:pointer;
+  text-align:center;position:relative;display:flex;align-items:center;justify-content:center;gap:4px}
+.vtabs b i{font-style:normal;font-size:9px;font-weight:700;color:#fff;background:var(--warm);
+  border-radius:7px;padding:1px 5px;line-height:1.4}
+.vtabs b.on{color:var(--text);font-weight:700}
+.vtabs b.on::after{content:"";position:absolute;left:22%;right:22%;bottom:0;height:2px;
+  background:var(--brand);border-radius:2px}
+
+/* 动态按天分组：流水账要有日期的分节，否则一屏十几条读不出节奏 */
+.dayhd{font-size:10.5px;font-weight:700;color:var(--text-3);margin:14px 2px 7px;letter-spacing:.2px}
+.dayhd:first-child{margin-top:11px}
+
+/* 任务卡：谁派的 / 派给谁 / 交了几个人 */
+.tasks{display:flex;flex-direction:column;gap:9px;margin-top:11px}
+.taskcard{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:12px 13px;cursor:pointer}
+.taskcard .th{display:flex;align-items:flex-start;gap:8px}
+.taskcard .th b{flex:1;min-width:0;font-size:12.5px;font-weight:700;line-height:1.4}
+.taskcard .meta{font-size:10px;color:var(--text-4);margin-top:6px}
+.taskcard .bar{height:5px;border-radius:3px;background:var(--bg-2);overflow:hidden;margin-top:9px}
+.taskcard .bar i{display:block;height:100%;border-radius:3px;background:var(--g-brand)}
+.taskcard .ft{display:flex;align-items:center;margin-top:7px;font-size:10.5px;color:var(--text-3)}
+.taskcard .ft b{margin-left:auto;font-size:11px;font-weight:700;color:var(--brand)}
+
+/* B 方案：三个入口条 */
+.quick3{display:flex;gap:8px;margin-top:11px}
+.quick3 b{flex:1;background:#fff;border-radius:12px;box-shadow:var(--sh-1);padding:9px 6px;
+  text-align:center;font-size:10px;font-weight:500;color:var(--text-3);cursor:pointer}
+.quick3 b em{display:block;font-style:normal;font-size:17px;font-weight:800;color:var(--text);
+  letter-spacing:-.5px;line-height:1.15;margin-bottom:2px}
+
+/* C 方案：四宫格入口 */
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.qcard{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:12px 13px;cursor:pointer;
+  display:flex;flex-direction:column;gap:2px}
+.qcard .qi{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;margin-bottom:6px}
+.qcard b{font-size:12.5px;font-weight:700}
+.qcard .qs{font-size:10px;color:var(--text-4);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:28px}
+
+/* 最近进库：横滑小卡，四张一屏 */
+.lrow{display:flex;gap:8px;overflow-x:auto;padding-bottom:3px}
+.lt{flex:0 0 96px;cursor:pointer}
+.lt .im{height:74px;border-radius:10px;color:rgba(255,255,255,.9);font-size:22px;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.lt b{display:block;font-size:10px;font-weight:600;margin-top:5px;line-height:1.3;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.lt span{display:block;font-size:9px;color:var(--text-4);margin-top:2px}
