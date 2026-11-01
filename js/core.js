@@ -40,7 +40,8 @@
       try { box.innerHTML = P[id].render(STATE[id] || {}); } catch (e) { console.warn("render fail", id, e); }
       const outs = [];
       box.querySelectorAll("[data-go]").forEach((el) => {
-        const to = el.dataset.go;
+        /* 带查询串的（如 B2.1?seg=sg05）按页面 id 归并，面板里不重复列同一页 */
+        const to = (el.dataset.go || "").split("?")[0];
         if (!to || to === "back") return;
         const label = (el.dataset.label || el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 16);
         outs.push({ to, label });
@@ -136,10 +137,14 @@
 
   /* ---------- 交互 ---------- */
   function applySet(expr) {
-    const [path, val] = expr.split("=");
-    const [pid, key] = path.split(".");
-    STATE[pid] = STATE[pid] || {};
-    STATE[pid][key] = val;
+    /* 支持一次设多个：B2.mode=edit&B2.seg=sg03 */
+    expr.split("&").forEach((pair) => {
+      const [path, val] = pair.split("=");
+      if (!path || val === undefined) return;
+      const [pid, key] = path.split(".");
+      STATE[pid] = STATE[pid] || {};
+      STATE[pid][key] = val;
+    });
     renderAll();
   }
 

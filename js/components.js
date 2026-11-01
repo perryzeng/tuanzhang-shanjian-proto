@@ -101,8 +101,11 @@
     if (s.editbox) {
       vo = `<div class="editbox">${s.editbox}</div>`;
       if (s.editOps) {
-        vo += `<div class="editops">${s.editOps.map(([cls, tx]) =>
-          `<span class="op ${cls}">${tx}</span>`).join("")}</div>`;
+        /* 第三位是动作：带 = 的是同页状态，其余是跳转 */
+        vo += `<div class="editops">${s.editOps.map(([cls, tx, act]) => {
+          const attr = !act ? "" : (/=/.test(act) ? ` data-set="${act}"` : ` data-go="${act}" data-label="${tx}"`);
+          return `<span class="op ${cls}"${attr}>${tx}</span>`;
+        }).join("")}</div>`;
       }
     } else if (s.vo) {
       vo = `<div class="vo"><span>${s.vo}</span>${s.edit === false ? "" :
@@ -128,7 +131,7 @@
   };
 
   C.fold = (o) =>
-    `<div class="fold"${o.go ? ` data-go="${o.go}" data-label="${o.name || "展开"}"` : ""}>
+    `<div class="fold"${o.set ? ` data-set="${o.set}"` : (o.go ? ` data-go="${o.go}" data-label="${o.name || "展开"}"` : "")}>
       <span class="seg-no">${o.no}</span>
       ${o.tag ? `<span class="tag ${o.tag[0]}">${o.tag[1]}</span>` : ""}
       <span class="fx">${o.text}</span>

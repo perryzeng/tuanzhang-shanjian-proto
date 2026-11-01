@@ -74,11 +74,11 @@ window.DATA = {
   tasks: [
     {
       id: "tk_2041", sys: "素材缺口", sysCode: "asset_gap", weight: 50,
-      title: "补 3 秒手部特写，磷虾油开团才能发",
-      reason: "发布器里第 2 段标了「缺画面」，不补这条发不出去",
+      title: "补 1 段花字卡，磷虾油开团才能发",
+      reason: "发布器里第 5 段标了「缺画面」，不补这条发不出去",
       deadline: "2026-11-01T23:59:59+08:00",
-      owner: "运营 · 阿强",
-      cta: { tx: "去拍", go: "B2.2" }
+      owner: "发布器草稿",
+      cta: { tx: "去补", go: "B2?mode=fix" }
     },
     {
       id: "tk_1987", sys: "团队派发", sysCode: "team_assign", weight: 30,
@@ -155,6 +155,97 @@ window.DATA = {
       cta: { tx: "生成", go: "B1" }
     }
   ],
+
+  /* ---------- 素材库 ----------
+     接真接口：GET /assets?tags=&scope=
+     tags 是语义标签，入库时由打标服务自动生成（人工可修正），
+     配画面时就是靠它做「语义匹配」——不是靠文件名、不是靠用户自己找。
+     from：my 我的 / team 团队共享 / brand 品牌方 / stock 平台图库 / ai AI 生成 */
+  assets: [
+    { id: "as_501", label: "手拿产品特写", from: "my", dur: 3, tags: ["product", "hand"], bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)" },
+    { id: "as_510", label: "我讲成分（口播）", from: "my", dur: 6, tags: ["ingredient", "person"], bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
+    { id: "as_511", label: "我的照片", from: "my", dur: 0, kind: "pip", tags: ["person"], bg: "linear-gradient(150deg,#7C5CFF,#2C5BFF)" },
+    { id: "as_518", label: "工作台空镜", from: "my", dur: 8, tags: ["person", "broll"], bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
+
+    { id: "as_502", label: "产品摆台", from: "team", dur: 4, tags: ["product", "still"], bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" },
+    { id: "as_503", label: "开箱空镜", from: "team", dur: 7, tags: ["unbox", "product"], bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
+    { id: "as_506", label: "成交截图", from: "team", dur: 2, tags: ["proof"], bg: "linear-gradient(150deg,#2C5BFF,#00A8E8)" },
+    { id: "as_512", label: "顾客反馈聊天", from: "team", dur: 3, tags: ["proof"], bg: "linear-gradient(150deg,#00C2FF,#5B8CFF)" },
+    { id: "as_513", label: "仓库发货", from: "team", dur: 5, tags: ["product", "unbox"], bg: "linear-gradient(150deg,#5B8CFF,#2C5BFF)" },
+
+    { id: "as_508", label: "团价对比图", from: "stock", dur: 4, tags: ["cta", "price"], bg: "linear-gradient(150deg,#F5A623,#FFC85B)" },
+    { id: "as_514", label: "海洋实拍空镜", from: "stock", dur: 5, tags: ["nature", "broll"], bg: "linear-gradient(150deg,#00A8E8,#5B8CFF)" },
+    { id: "as_515", label: "手写字幕背景", from: "stock", dur: 3, tags: ["textcard"], bg: "linear-gradient(150deg,#2C5BFF,#7C5CFF)" },
+
+    { id: "as_504", label: "成分特写（AI）", from: "ai", dur: 3, tags: ["ingredient"], bg: "linear-gradient(150deg,#7C5CFF,#2C5BFF)" },
+    { id: "as_507", label: "花字卡 · 今晚开团", from: "ai", dur: 3, kind: "textcard", tags: ["cta", "textcard"], bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)" },
+    { id: "as_516", label: "血管示意动画", from: "ai", dur: 4, tags: ["ingredient", "explain"], bg: "linear-gradient(150deg,#00C2FF,#00A8E8)" },
+
+    { id: "as_509", label: "品牌官片 · 卖点", from: "brand", dur: 10, tags: ["brand", "product"], bg: "linear-gradient(150deg,#5B3FD1,#7C5CFF)" }
+  ],
+
+  /* ---------- 草稿：段落模型 ----------
+     一条视频 = N 个段落。每个段落 = 1 条台词（脚本段，vo） + 0..n 个画面（素材段，shots）
+     · 段落时长由台词配音时长决定（dur），素材只负责铺满，不改变时长
+     · 素材总长 ≠ 台词时长时：不足循环末段、超出截尾，差 ≥2s 提示「素材偏短/偏长」
+     · lock="brand" 的段台词不可改、画面不可删，只能调顺序
+     · 台词有版本（vo / voAlt），可回滚，改台词与换画面互不影响 */
+  draft: {
+    id: "df_3021",
+    title: "磷虾油今晚开团",
+    productId: "p_krill",
+    product: "磷虾油",
+    status: "draft",              // draft | generating | ready | published
+    updatedAt: "2026-11-01T14:02:00+08:00",
+    curSeg: "sg02",               // 预览停在哪一段
+    compliance: { ok: true, hits: [], checkedAt: "2026-11-01T14:02:00+08:00" },
+    segments: [
+      {
+        id: "sg01", role: "hook", name: "我是谁 · 立信任", dur: 8,
+        vo: "我是阿珍，做大健康选品 5 年。", voSrc: "self",
+        needTags: ["person", "broll"], lock: null,
+        hint: "用你自己的空镜或照片打底，人先出现在画面上，后面说什么才有人听",
+        shots: [{ id: "sh_101", asset: "as_518", dur: 8, pip: true }]
+      },
+      {
+        id: "sg02", role: "explain", name: "磷虾油是什么", dur: 14,
+        vo: "今晚开团磷虾油，选购门道一次讲清楚。", voSrc: "self",
+        voAlt: "今晚开团磷虾油，选购门道一次讲清楚——从原料、含量到认准标志，三步教你不踩坑。",
+        voAltSrc: "ai",
+        needTags: ["product", "hand"], lock: null,
+        hint: "拍你手拿产品的特写（顺手 3 秒即可），再配一个团队库特写",
+        shots: [
+          { id: "sh_201", asset: "as_501", dur: 3 },
+          { id: "sh_202", asset: "as_502", dur: 4 },
+          { id: "sh_203", asset: "as_503", dur: 7 }
+        ]
+      },
+      {
+        id: "sg03", role: "explain", name: "血管知识示意", dur: 8,
+        vo: "每粒含磷脂型 Omega-3，吸收比普通鱼油更好。", voSrc: "self",
+        needTags: ["ingredient", "explain"], lock: null,
+        hint: "这段讲原理，用示意动画比真人讲更清楚，也更容易过审",
+        shots: [
+          { id: "sh_301", asset: "as_516", dur: 4 },
+          { id: "sh_302", asset: "as_504", dur: 3 }
+        ]
+      },
+      {
+        id: "sg04", role: "brand", name: "产品落卖点", dur: 10,
+        vo: "品牌方提供的卖点口播，锁定不可改。", voSrc: "brand",
+        needTags: ["brand"], lock: "brand",
+        hint: "品牌方锁定的必播片段，只能调顺序",
+        shots: [{ id: "sh_401", asset: "as_509", dur: 10 }]
+      },
+      {
+        id: "sg05", role: "cta", name: "CTA · 开团", dur: 6,
+        vo: "点我头像参团，只有 500 单。", voSrc: "self",
+        needTags: ["cta", "textcard"], lock: null,
+        hint: "结尾要有花字卡写清价格和开团时间，观众才知道怎么买",
+        shots: [{ id: "sh_501", asset: null, label: "花字卡", state: "miss", dur: 0 }]
+      }
+    ]
+  },
 
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
   teamVideos: [
@@ -241,6 +332,106 @@ window.DERIVE = (function () {
       .slice(0, limit || 3);
   }
 
+  /* ================= 段落模型（B2 发布器 / B2.1 素材选择器） =================
+     一条视频 = N 个段落；段落 = 台词（脚本段） + 画面（素材段）。
+     页面只拿这里的结果渲染，不自己算段落状态。 */
+
+  const SRC_W = { my: 4, team: 3, brand: 3, stock: 2, ai: 1 };   // 来源可信度权重
+  const SRC_TX = { my: "我的", team: "团队", brand: "品牌", stock: "图库", ai: "AI" };
+
+  function mmss(sec) {
+    sec = Math.max(0, Math.round(sec));
+    const m = Math.floor(sec / 60), s = sec % 60;
+    return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  /* 按素材范围取池子：rec = 推荐（按语义匹配），其余按来源过滤 */
+  function pool(scope) {
+    const A = window.DATA.assets;
+    return !scope || scope === "rec" ? A : A.filter((a) => a.from === scope);
+  }
+
+  /* 语义匹配：重合标签数 × 10 + 来源权重；同分取时长更短的（更好铺满段落）
+     scope="rec" 时只保留有语义重合的，其余 tab 不过滤 */
+  function recommend(seg, scope) {
+    const need = seg.needTags || [];
+    return pool(scope)
+      .map((a) => {
+        const overlap = a.tags.filter((t) => need.includes(t)).length;
+        return { ...a, overlap, score: overlap * 10 + (SRC_W[a.from] || 0), srcTx: SRC_TX[a.from] || "" };
+      })
+      .filter((a) => (scope && scope !== "rec" ? true : a.overlap > 0))
+      .sort((a, b) => b.score - a.score || a.dur - b.dur);
+  }
+
+  /* 缺素材的四条出路：按「一次点击能解决」的先后排，P1 最省事、P4 质量最好
+     ok=false 表示这条路对这个段不可用（品牌锁定段改不了台词 / 库里没有相近片段） */
+  function resolveFix(seg) {
+    const hits = recommend(seg, "rec");
+    const locked = seg.lock === "brand";
+    return [
+      { key: "reuse", p: 1, tx: "从库里选", go: "B2.1?seg=" + seg.id, ok: hits.length > 0,
+        note: hits.length ? "库里有 " + hits.length + " 段语义相近的，最像的是「" + hits[0].label + "」" : "库里没有语义相近的片段" },
+      { key: "reword", p: 2, tx: "换说法免素材", ok: !locked,
+        note: locked ? "品牌锁定段不能改台词" : "AI 重写这段台词，去掉对画面的依赖；会重新过一遍合规" },
+      { key: "aigen", p: 3, tx: "✦ AI 补画面", ok: !locked,
+        note: "按台词生成一段画面；健康品类涉及功效暗示的画面必须人工确认后才能用" },
+      { key: "shoot", p: 4, tx: "＋ 现拍 3 秒", go: "B2.2", ok: true,
+        note: "质量最好，但要自己动手，是四条路里最慢的一条" }
+    ];
+  }
+
+  function draft() {
+    const d = window.DATA.draft;
+    let acc = 0;
+    const segs = d.segments.map((s, i) => {
+      const start = acc;
+      acc += s.dur;
+      let shotTotal = 0, missN = 0;
+      const shots = s.shots.map((sh) => {
+        const a = sh.asset ? window.DATA.assets.filter((x) => x.id === sh.asset)[0] : null;
+        const miss = sh.state === "miss";
+        const dur = sh.dur != null ? sh.dur : (a ? a.dur : 0);
+        if (miss) missN++; else shotTotal += dur;
+        return {
+          ...sh, dur, miss,
+          label: sh.label || (a ? a.label : "待补画面"),
+          bg: a ? a.bg : "",
+          from: a ? a.from : "",
+          pip: sh.pip || (!!a && a.kind === "pip")
+        };
+      });
+      /* 标签只标「用户需要知道」的：来源不是他自己拍的，或者有缺口 */
+      const tags = [];
+      if (shots.some((x) => x.pip)) tags.push(["p", "画中画"]);
+      if (s.lock === "brand") tags.push(["", "品牌锁定"]);
+      if (shots.some((x) => x.from === "ai")) tags.push(["a", "AI 生成"]);
+      if (missN) tags.push(["r", "缺素材"]);
+      return {
+        ...s, no: (i + 1 < 10 ? "0" : "") + (i + 1), idx: i,
+        start, shots, shotTotal, missN, tags,
+        fit: Math.round((s.dur - shotTotal) * 10) / 10,
+        state: missN ? "miss" : ""
+      };
+    });
+    const total = segs.reduce((n, s) => n + s.dur, 0);
+    segs.forEach((s) => { s.code = mmss(s.start + 4) + " / " + mmss(total); });
+    const missSegs = segs.filter((s) => s.missN > 0);
+    const curIdx = Math.max(0, segs.map((s) => s.id).indexOf(d.curSeg));
+    const cur = segs[curIdx];
+    return {
+      ...d, segments: segs, cur, curIdx,
+      segCount: segs.length, durTotal: total,
+      missCount: missSegs.reduce((n, s) => n + s.missN, 0),
+      missSegs,
+      code: mmss(cur.start + 4) + " / " + mmss(total),
+      track: segs.map((s) => [s.dur, ""]),
+      /* 缺素材不阻断「生成预览」，但阻断「发布」——预览/发布是两道门 */
+      canPreview: true,
+      canPublish: missSegs.length === 0
+    };
+  }
+
   /* 数字口径统一在这里格式化，页面不再各写一套 */
   function plays(n) {
     return n >= 10000 ? (n / 10000).toFixed(1).replace(/\.0$/, "") + "万" : String(n);
@@ -263,5 +454,6 @@ window.DERIVE = (function () {
     return s.duration + " 秒 · " + s.segs + " 段 · " + stock;
   }
 
-  return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now };
+  return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now,
+           draft, recommend, resolveFix, mmss, pool };
 })();
