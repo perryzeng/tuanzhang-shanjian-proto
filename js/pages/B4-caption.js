@@ -25,10 +25,13 @@ window.PAGES["B4"].render = function (ctx) {
     if (ph) base = { ...base, bg: ph.bg, from: ph.label + " · " + ph.at };
   }
   const tpl0 = D.cover(ctx.tpl || ctx.cv);
-  /* 封面上的字归用户改：AI 给的只是初稿，价格、时间、卖点都得他自己核。
-     改过的存在 state 里，切版式时保留——他改的是这句话，不是这个版式。 */
-  const bigTx = (ctx.big != null && ctx.big !== "") ? ctx.big : tpl0.big;
-  const smallTx = (ctx.small != null && ctx.small !== "") ? ctx.small : tpl0.small;
+  /* 默认文案取自**主题**（这次要讲的那句话），不是模板里那几句示例——
+     模板只决定字压在哪，不该替他决定说什么。
+     用户改过就以他改的为准；切版式时保留，因为他改的是这句话，不是这个版式。 */
+  const topic = ctx.topic || ((window.STATE || {}).B1 || {}).topic || "";
+  const auto = D.coverFromTopic(topic);
+  const bigTx = (ctx.big != null && ctx.big !== "") ? ctx.big : auto.big;
+  const smallTx = (ctx.small != null && ctx.small !== "") ? ctx.small : auto.small;
   const tpl = { ...tpl0, big: bigTx, small: smallTx };
 
   /* 一个封面 = 底图 + 一层字。字号用 em，外面改 font-size 就能整块缩放——
@@ -46,8 +49,11 @@ window.PAGES["B4"].render = function (ctx) {
     </div>`;
   };
 
+  /* 六张缩略卡用的是**同一句话**，只有排法不同——否则用户看到的还是"六个不同的封面"，
+     而不是"我的这张封面，六种排法"。文案统一取自上面那两个框。 */
+  const sameTx = (t) => ({ ...t, big: bigTx, small: smallTx });
   const tile = (t) => `<div class="cvt${t.k === tpl.k ? " sel" : ""}" data-set="B4.tpl=${t.k}">
-      ${cover(t, base, 5.4)}
+      ${cover(sameTx(t), base, 5.4)}
       <span class="nm">${t.name}</span>
       ${t.k === tpl.k ? `<span class="ck">✓</span>` : ""}
     </div>`;
@@ -93,8 +99,8 @@ window.PAGES["B4"].render = function (ctx) {
         </div>
       </div>
 
-      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">版式</span>
-        <span class="more">同一张底图，六种排法</span></div>
+      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">爆款封面</span>
+        <span class="more">同一张底图，六种爆款排法</span></div>
       <div class="ctray">${tpls.map(tile).join("")}</div>
       <div class="note" style="margin:8px 2px 0">${tpl.note}</div>
 
@@ -108,7 +114,6 @@ window.PAGES["B4"].render = function (ctx) {
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 112px" data-go="B4.1" data-label="不加字直接用这张画面">不加字</div>
       <div class="btn" data-go="B4.1" data-label="用这张封面发布">✓ 用「${tpl.name}」发布</div>
     </div>
   </div>`;

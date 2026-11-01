@@ -105,7 +105,7 @@ window.PAGES["B2"].render = function (ctx) {
         : [{ tx: "选素材", go: pickGo(s.id) }];
 
       p.editOps = [[ctx.vo === "ai" ? "cold" : "hot",
-        ctx.vo === "ai" ? "↺ 用原来的" : "✦ AI 换个说法",
+        ctx.vo === "ai" ? "↺ 用原来的" : "✦ AI 润色",
         ctx.vo === "ai" ? "B2.vo=self&B2.edit=" + s.id + "&B2.vo_" + s.id + "="
           : "B2.vo=ai&B2.edit=" + s.id]];
 

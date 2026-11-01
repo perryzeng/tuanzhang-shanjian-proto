@@ -63,7 +63,7 @@ window.PAGES["D2"].render = function (ctx) {
         ? [{ tx: "换一段", go: pickGo(s.id) }]
         : [{ tx: "选素材", go: pickGo(s.id) }];
       p.editOps = [[voVer === "ai" ? "cold" : "hot",
-        voVer === "ai" ? "↺ 用原来的" : "✦ 按这天的主题换个说法",
+        voVer === "ai" ? "↺ 用原来的" : "✦ AI 润色",
         voVer === "ai" ? "D2.vo=self&D2.edit=" + s.id + "&D2.vo_" + s.id + "="
           : "D2.vo=ai&D2.edit=" + s.id]];
       p.confirm = { tx: "✓ 确定这一段", act: "D2.edit=&D2.vo=self" };

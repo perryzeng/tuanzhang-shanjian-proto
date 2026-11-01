@@ -156,9 +156,7 @@
           ${sl.swGo && !p.slotOps ? `<span class="swbtn" data-go="${sl.swGo}" data-label="换素材">换</span>` : ""}
         </div>`;
 
-    /* 画面这一列：槽 + 槽下面的两个动作。
-       「修改」是调这一条（从哪开始、怎么铺满、要不要原声），
-       「替换」是换一条。这是两件事，所以给两个键，不合并成一个"编辑"。 */
+    /* 画面这一列：槽 + 槽下面的动作（现在只有一个「换一段」） */
     const slotOps = p.slotOps
       ? `<div class="slotops">${p.slotOps.map((o) =>
           `<span data-go="${o.go}" data-label="${o.tx}">${o.tx}</span>`).join("")}</div>`
@@ -172,17 +170,17 @@
     if (p.editbox != null) {
       /* 直接就是输入框：点「改」当场就能打字，不用再点一次进某个编辑态。
          用 data-bind 只写状态、不重渲染，否则每敲一个字光标就跳走。 */
-      vo = `<div class="editbox"><textarea data-bind="${p.bindKey || ""}" rows="3"
-              placeholder="写下这一段要说的第一句话…">${p.editbox}</textarea></div>`;
-      /* 顺序：文本框 → AI 按钮 → 时长说明。
-         AI 按钮必须紧贴文本框，它改的就是这段字；放到时长说明后面，
-         看起来就像个和文案无关的悬浮按钮。 */
-      if (p.editOps) {
-        vo += `<div class="editops">${p.editOps.map(([cls, tx, act]) => {
+      /* AI 按钮**长在输入框里面**（框底右下角），不属于框外——
+         它改的就是框里这段字，放在框外就成了另一个独立动作。
+         放在框内还能省掉一行高度。 */
+      vo = `<div class="editbox">
+        <textarea data-bind="${p.bindKey || ""}" rows="3"
+          placeholder="写下这一段要说的第一句话…">${p.editbox}</textarea>
+        ${p.editOps ? `<div class="editops in">${p.editOps.map(([cls, tx, act]) => {
           const attr = !act ? "" : (/=/.test(act) ? ` data-set="${act}"` : ` data-go="${act}" data-label="${tx}"`);
           return `<span class="op ${cls}"${attr}>${tx}</span>`;
-        }).join("")}</div>`;
-      }
+        }).join("")}</div>` : ""}
+      </div>`;
       if (p.meta) { vo += `<div class="pmeta" style="margin-top:8px">${p.meta}</div>`; metaDone = true; }
     } else if (p.vo) {
       vo = `<div class="vo"><span>${p.vo}</span><span class="edit"${p.voEditAct ? ` data-set="${p.voEditAct}"` : ""}>改</span></div>`;

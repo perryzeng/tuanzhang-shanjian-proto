@@ -242,10 +242,15 @@
 .seg-dur{margin-left:auto;font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
 .vo{font-size:13px;line-height:1.62;color:var(--text);display:flex;gap:8px}
 .vo .edit{margin-left:auto;font-size:11.5px;color:var(--brand);font-weight:600;flex:0 0 auto;align-self:flex-start;padding-top:2px;cursor:pointer}
-.editbox{border:1.5px solid var(--brand);border-radius:14px;padding:10px 12px;background:#fff;min-height:64px}
+.editbox{border:1.5px solid var(--brand);border-radius:14px;padding:9px 11px 8px;background:#fff}
+/* 框内的 AI 按钮：小一号、靠右，看起来像输入框自带的工具，不是页面上的一个动作 */
+.editops.in{margin-top:6px;justify-content:flex-end;gap:6px}
+.editops.in .op{height:24px;font-size:10.5px;padding:0 10px;border-radius:8px}
+.editops.in .op.hot{background:var(--brand-weak);color:var(--brand-ink);box-shadow:none}
+.editops.in .op.cold{background:transparent;color:var(--text-3);box-shadow:none;text-decoration:underline}
 /* 编辑框就是输入框：点「改」当场能打字，不再进一个"编辑态" */
 .editbox textarea{display:block;width:100%;border:0;outline:0;resize:none;background:transparent;
-                  font-family:inherit;font-size:13px;line-height:1.62;color:var(--text);min-height:56px;padding:0}
+                  font-family:inherit;font-size:13px;line-height:1.62;color:var(--text);min-height:52px;padding:0}
 .editbox textarea::placeholder{color:var(--text-4)}
 .editops{display:flex;gap:7px;margin-top:8px}
 .editops .op{flex:0 0 auto;padding:0 13px;white-space:nowrap}
@@ -576,6 +581,133 @@
 .gsearch input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:inherit;
                font-size:13px;color:var(--text)}
 .gsearch input::placeholder{color:var(--text-4)}
+
+/* ========== 成品详情（B4.1）：导出 / 预览 / 分享 / 谁看了 ========== */
+.donecard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;
+          padding:11px;box-shadow:var(--sh-1);cursor:pointer}
+.donecard .th{position:relative;width:62px;height:110px;border-radius:10px;overflow:hidden;flex:0 0 62px}
+.donecard .th .src{position:absolute;inset:0}
+.donecard .th .cvtxt{position:absolute;left:0;right:0;bottom:0;padding:5px 5px 6px;
+  background:linear-gradient(0deg,rgba(5,10,24,.8),transparent);color:#fff}
+.donecard .th .cvtxt b{display:block;font-size:8.5px;font-weight:800;line-height:1.25}
+.donecard .th .cvtxt i{display:block;font-style:normal;font-size:7px;opacity:.85;margin-top:2px}
+.donecard .th .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.92);color:#12224A;
+  font-size:9px;display:flex;align-items:center;justify-content:center;padding-left:2px}
+.donecard .th .dur{position:absolute;right:4px;top:4px;background:rgba(0,0,0,.55);color:#fff;
+  font-size:8px;border-radius:4px;padding:1px 4px}
+.donecard .tx{flex:1;min-width:0}
+.donecard .tx b{display:block;font-size:13.5px;font-weight:700;line-height:1.4}
+.donecard .tx>span{display:block;font-size:10.5px;color:var(--text-3);margin-top:5px}
+.donecard .plats{display:flex;align-items:center;gap:9px;margin-top:7px;font-size:9.5px;color:var(--text-4)}
+.donecard .plats i{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:1px}
+.donecard .go{font-size:18px;color:var(--text-4);flex:0 0 auto}
+
+.savedtip{display:flex;align-items:center;gap:7px;background:var(--success-weak);color:#0B8C68;
+          border-radius:12px;padding:9px 12px;font-size:12px;font-weight:600;margin-bottom:11px}
+.savedtip .ck{width:16px;height:16px;border-radius:50%;background:var(--success);color:#fff;
+              font-size:9px;display:flex;align-items:center;justify-content:center;flex:0 0 16px}
+
+.shrow{display:flex;gap:9px}
+.sh{flex:1;background:var(--surface);border-radius:14px;padding:12px 6px;box-shadow:var(--sh-1);
+    display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.sh .i{width:26px;height:26px;border-radius:9px;background:var(--brand-weak);color:var(--brand-ink);
+       font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:1}
+.sh b{font-size:11px;font-weight:600;color:var(--text-2)}
+
+.sharedata{margin-top:12px;background:var(--surface);border-radius:16px;padding:13px 14px;box-shadow:var(--sh-1)}
+.sharedata .hd{display:flex;align-items:center;font-size:12.5px;font-weight:700}
+.sharedata .hd span{margin-left:auto;font-size:10.5px;color:var(--text-4);font-weight:500}
+.sharedata .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:11px}
+.sharedata .grid4 div{text-align:center}
+.sharedata .grid4 b{display:block;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.sharedata .grid4 span{display:block;font-size:9.5px;color:var(--text-4);margin-top:3px}
+
+.tabs3{display:flex;gap:6px;padding:3px;background:#EDF1F9;border-radius:12px}
+.tabs3 b{flex:1;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+         font-size:12px;color:var(--text-2);cursor:pointer;font-weight:500}
+.tabs3 b.on{background:#fff;color:var(--brand);font-weight:700;box-shadow:var(--sh-1)}
+
+.vrow2{display:flex;align-items:center;gap:10px;padding:11px 0;cursor:pointer}
+.vrow2+.vrow2{box-shadow:inset 0 1px 0 var(--line-2)}
+.vrow2 .av{width:34px;height:34px;border-radius:50%;flex:0 0 34px;color:#fff;font-size:12px;
+           font-weight:700;display:flex;align-items:center;justify-content:center}
+.vrow2 .tx{flex:1;min-width:0}
+.vrow2 .n{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.vrow2 .n .lead{font-style:normal;font-size:9px;font-weight:700;color:#C2410C;
+                background:#FFF1E6;border-radius:5px;padding:1.5px 5px}
+.vrow2 .s{font-size:10.5px;color:var(--text-3);margin-top:3px}
+.vrow2 .a{font-size:10.5px;color:var(--text-4);margin-top:2px}
+.vrow2 .go{font-size:10.5px;font-weight:700;color:var(--brand);flex:0 0 auto}
+
+/* 动态流水：时间在左，事件在右，三种事件三种颜色 */
+.lg{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:11.5px;line-height:1.55}
+.lg+.lg{box-shadow:inset 0 1px 0 var(--line-2)}
+.lg .tm{flex:0 0 34px;color:var(--text-4);font-size:10px;font-variant-numeric:tabular-nums;padding-top:2px}
+.lg .ic{flex:0 0 16px;width:16px;height:16px;border-radius:5px;display:flex;align-items:center;
+        justify-content:center;font-size:9px;margin-top:1px}
+.lg.view .ic{background:#EEF1F8;color:#5B6B8C}
+.lg.share .ic{background:#E9EFFF;color:var(--brand)}
+.lg.comment .ic{background:#FFF1E6;color:#C2410C}
+.lg .tx{flex:1;min-width:0;color:var(--text-2)}
+.lg .tx b{color:var(--text);font-weight:700}
+.lg .tx i{display:block;font-style:normal;color:var(--text-4);font-size:10.5px;margin-top:1px}
+
+/* 全屏平台预览：同一条片子在三家平台长什么样 */
+.pvf{position:absolute;inset:0;z-index:30;background:#070B18;display:flex;flex-direction:column;color:#fff}
+.pvf-hd{display:flex;align-items:center;padding:12px 14px;flex:0 0 auto}
+.pvf-hd .ptabs{display:flex;gap:6px;flex:1}
+.pvf-hd .ptabs b{height:28px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.12);
+  font-size:11.5px;font-weight:600;color:rgba(255,255,255,.72);display:flex;align-items:center;cursor:pointer}
+.pvf-hd .ptabs b.on{background:#fff;color:#0A1226;font-weight:700}
+.pvf-hd .x{margin-left:auto;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;flex:0 0 30px}
+.pvf-mid{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:4px 0 8px}
+.pvf-screen{position:relative;height:100%;aspect-ratio:9/16;max-width:78%;border-radius:12px;
+            overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.pvf-screen .src{position:absolute;inset:0}
+.pvf-screen .cvtxt{position:absolute;left:0;right:0;bottom:36%;padding:0 12px;text-align:center;color:#fff}
+.pvf-screen .cvtxt b{display:block;font-size:19px;font-weight:800;line-height:1.16;
+  text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.pvf-screen .cvtxt i{display:block;font-style:normal;font-size:10px;opacity:.9;margin-top:6px}
+.pvf-screen .pfui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end}
+.pvf-screen .pfui .side{position:absolute;right:8px;bottom:74px;display:flex;flex-direction:column;
+  align-items:center;gap:13px}
+.pvf-screen .pfui .side .ava{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7C5CFF,#2C5BFF);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.pvf-screen .pfui .side .ic2{display:flex;flex-direction:column;align-items:center;line-height:1;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+.pvf-screen .pfui .side .ic2 svg{width:17px;height:17px}
+.pvf-screen .pfui .side .ic2 i{font-style:normal;font-size:8.5px;margin-top:4px;opacity:.92}
+.pvf-screen .pfui .foot{padding:10px 12px 14px;font-size:10px;line-height:1.5}
+.pvf-screen .pfui .foot b{display:block;font-size:10.5px;font-weight:700;margin-bottom:3px}
+.pvf-screen .pfui .foot p{margin:0;opacity:.92}
+
+/* 视频号：底部白卡片，圆角，深色字 */
+.pvf-screen.wx .pfui{background:linear-gradient(0deg,rgba(0,0,0,.55),transparent 62%)}
+.pvf-screen.wx .pfui .foot{background:rgba(255,255,255,.94);color:#0A1226;margin:0 8px 8px;
+  border-radius:10px}
+.pvf-screen.wx .pfui .foot b{color:#0A1226}
+.pvf-screen.wx .pfui .side{bottom:96px}
+.pvf-screen.wx .pfui .side .ic2{color:#fff}
+/* 抖音：无底条，纯文本压边，右侧图标更大更靠下 */
+.pvf-screen.dy .pfui{background:linear-gradient(0deg,rgba(0,0,0,.62),transparent 55%)}
+.pvf-screen.dy .pfui .side{bottom:70px;gap:16px}
+.pvf-screen.dy .pfui .side .ic2 svg{width:20px;height:20px}
+.pvf-screen.dy .pfui .foot{padding-bottom:16px}
+/* 小红书：白底正文条，标题 + 正文分两行 */
+.pvf-screen.xhs .pfui{background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 60%)}
+.pvf-screen.xhs .pfui .foot{background:#fff;color:#1A1A1A;margin:0 6px 6px;border-radius:8px}
+.pvf-screen.xhs .pfui .foot b{color:#1A1A1A;font-size:11px}
+.pvf-screen.xhs .pfui .side{bottom:112px}
+.pvf-screen.xhs .pfui .side .ic2{color:#fff}
+/* 小红书把话题标签单独一行（蓝色），视频号和抖音是跟在正文里的灰字 */
+.pvf-screen .pfui .foot .tags{display:none}
+.pvf-screen .pfui .foot p .tg{opacity:.75}
+.pvf-screen.xhs .pfui .foot p .tg{display:none}
+.pvf-screen.xhs .pfui .foot .tags{display:block;color:#3A5BD9;font-weight:600;margin-top:5px;font-size:9.5px}
+.pvf-ft{flex:0 0 auto;text-align:center;font-size:10.5px;color:rgba(255,255,255,.55);padding:0 16px 20px}
 
 /* ========== 视频文案抽取（C1）：一个加号、一个链接框、下面走进度 ========== */
 /* 加号上传位：整块就是一个巨大的＋，不做"卡片里再套一个选择按钮"——

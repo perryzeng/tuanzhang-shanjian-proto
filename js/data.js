@@ -684,7 +684,7 @@ window.DATA = {
   coverBases: [
     { k: "frame", name: "视频首帧", at: "00:00", from: "第 3 段 · 手拿产品特写",
       bg: "linear-gradient(160deg,#2C5BFF 0%,#0E2A6B 55%,#08142F 100%)" },
-    { k: "photo", name: "我上传的照片", at: "", from: "IMG_2088 · 1080×1920",
+    { k: "photo", name: "上传本地图片", at: "", from: "相册 · 竖版优先",
       bg: "linear-gradient(160deg,#8C6BFF 0%,#4A3AA8 55%,#1B1740 100%)" }
   ],
 
@@ -717,6 +717,47 @@ window.DATA = {
     { k: "left", name: "左侧卖点", big: "每粒 500mg", small: "磷脂型更好吸收",
       note: "信息量大时用，左下三行放得下三个卖点" }
   ],
+
+  /* ---------- 成品详情：谁看了、看了多久、谁分享、谁评论 ----------
+     数据来自发布后的回传（平台开放数据 + 小程序侧埋点），按人去重合并。
+     `lead` 是潜客标记：看过 ≥ 1 次且有过互动（点购物车/问价/收藏）才算，
+     只划过一眼的不算——潜客名单一旦掺水，团长就不看了。 */
+  viewers: [
+    { id: "u1", name: "阿梅", av: "梅", bg: "#2C5BFF", rel: "老客 · 买过 3 次", at: "21:02",
+      times: 3, stay: "1 分 12 秒", act: "点了购物车", score: 86, lead: true, src: "视频号" },
+    { id: "u2", name: "阿强", av: "强", bg: "#00A8E8", rel: "新客 · 关注 2 天", at: "20:56",
+      times: 2, stay: "58 秒", act: "评论区问价", score: 74, lead: true, src: "抖音" },
+    { id: "u3", name: "小燕", av: "燕", bg: "#00B389", rel: "潜客 · 群里来的", at: "20:07",
+      times: 2, stay: "1 分 34 秒", act: "私信问了价格", score: 91, lead: true, src: "小红书" },
+    { id: "u4", name: "阿玲", av: "玲", bg: "#7C5CFF", rel: "老客 · 买过 1 次", at: "20:31",
+      times: 1, stay: "41 秒", act: "收藏了", score: 62, lead: true, src: "视频号" },
+    { id: "u5", name: "微信用户 8***2", av: "匿", bg: "#8C93A3", rel: "陌生人", at: "20:19",
+      times: 1, stay: "12 秒", act: "看了就划走", score: 18, lead: false, src: "视频号" },
+    { id: "u6", name: "老周", av: "周", bg: "#F5A623", rel: "老客 · 买过 5 次", at: "19:58",
+      times: 1, stay: "33 秒", act: "看了一半", score: 45, lead: false, src: "抖音" }
+  ],
+
+  /* 动态日志：按时间倒序，三种事件分别记 —— 看了 / 分享了 / 评论了。
+     为什么要流水而不是只给汇总：团长真正要做的是"现在去跟进谁"，
+     而"谁在三分钟前问了价"比"今天 386 个访客"有用得多。 */
+  logs: [
+    { t: "21:02", who: "阿梅", av: "梅", bg: "#2C5BFF", type: "view",
+      act: "看了第 3 遍", extra: "停留 1 分 12 秒 · 点了购物车" },
+    { t: "20:56", who: "阿强", av: "强", bg: "#00A8E8", type: "comment",
+      act: "评论了", extra: "「多少钱一盒？」" },
+    { t: "20:48", who: "阿强", av: "强", bg: "#00A8E8", type: "share",
+      act: "分享了这条", extra: "分享到朋友圈" },
+    { t: "20:31", who: "阿玲", av: "玲", bg: "#7C5CFF", type: "view",
+      act: "看完了", extra: "停留 41 秒 · 收藏了" },
+    { t: "20:19", who: "微信用户 8***2", av: "匿", bg: "#8C93A3", type: "view",
+      act: "看了 12 秒就划走", extra: "没互动" },
+    { t: "20:07", who: "小燕", av: "燕", bg: "#00B389", type: "share",
+      act: "转给了闺蜜", extra: "对方从小红书点进来看了" }
+  ],
+
+  /* 这条发出去之后的回传汇总。分享是有前提的：
+     没分享出去，就只有自己那一次播放，所以数据是"分享带来的"。 */
+  shareStat: { times: 3, plays: 412, visitors: 96, stay: "38 秒", leads: 12 },
 
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
   teamVideos: [
@@ -1218,7 +1259,24 @@ window.DERIVE = (function () {
     return window.DATA.coverStyles.filter((x) => x.k === id)[0] || window.DATA.coverStyles[0];
   }
   function coverBases() { return window.DATA.coverBases; }
+  /* 封面文案默认取自主题，不是模板里那几句示例。
+     用户说的是"封面文案默认用主题文案"——主题本来就是他这次要讲的事，
+     模板只该决定字压在哪，不该替他决定说什么。
+     主题一般有两个分句，第一句当大字（太长按 5 字断一次），第二句的头一段当小字。 */
+  function coverFromTopic(topic) {
+    const t = String(topic || "").trim() || "磷虾油今晚 8 点开团，讲清成分和怎么买";
+    const parts = t.split(/[，,。;；]/).filter(Boolean);
+    let big = parts[0] || t;
+    if (big.length > 7) big = big.slice(0, 5) + "|" + big.slice(5).trim();
+    let small = (parts[1] || "").split(/[、，,]/)[0] || "";
+    if (!small) small = "看完再决定";
+    return { big, small };
+  }
   function myPhotos() { return window.DATA.myPhotos; }
+  function viewers() { return window.DATA.viewers; }
+  function leads() { return window.DATA.viewers.filter((x) => x.lead); }
+  function logs() { return window.DATA.logs; }
+  function shareStat() { return window.DATA.shareStat; }
   function coverBase(id) {
     return window.DATA.coverBases.filter((x) => x.k === id)[0] || window.DATA.coverBases[0];
   }
@@ -1260,6 +1318,7 @@ window.DERIVE = (function () {
            scripts, script, scriptTabs, extract,
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics, partSkeleton,
-           templates, template, voices, voice, covers, cover, coverBases, coverBase, myPhotos, search, drafts,
+           templates, template, voices, voice, covers, cover, coverBases, coverBase, coverFromTopic, myPhotos,
+           viewers, leads, logs, shareStat, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();
