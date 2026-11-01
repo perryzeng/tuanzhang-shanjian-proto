@@ -489,8 +489,8 @@ window.DERIVE = (function () {
      这就是"三个发布器合成一个"的数据基础：换的是来源，不是编辑器。 */
   const DRAFT_OF = { script: "draft", remix: "draftRemix", series: "draftSeries" };
   const KINDS = [
-    { k: "script", ic: "✎", tx: "脚本混剪" },
-    { k: "remix", ic: "⧉", tx: "剪同款" },
+    { k: "script", ic: "✎", tx: "AI 脚本" },
+    { k: "remix", ic: "⧉", tx: "二创" },
     { k: "series", ic: "▤", tx: "系列" }
   ];
 

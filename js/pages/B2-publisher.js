@@ -31,7 +31,9 @@ window.PAGES["B2"].render = function (ctx) {
     ? "来源：" + d.source.who + "「" + d.source.title + "」· " + D.plays(d.source.plays) + " 播放 · 已改 " + d.changed + "/" + d.segCount + " 段"
     : kind === "series"
       ? d.series.name + " · Day " + d.series.day + "/" + d.series.total + " · 今天主题：" + d.series.topic
-      : "商品：" + d.product + " · 素材库 " + window.DATA.assets.length + " 段 · 已配 " + (d.segCount - d.missSegs.length) + "/" + d.segCount + " 段";
+      : ctx.src === "import"
+        ? "已导入脚本 · 自动拆成 " + d.segCount + " 段 · 画面待确认"
+        : "商品：" + d.product + " · 素材库 " + window.DATA.assets.length + " 段 · 已配 " + (d.segCount - d.missSegs.length) + "/" + d.segCount + " 段";
 
   const dayBar = kind === "series"
     ? `<div class="dbar">${Array.from({ length: d.series.total }, (_, i) => {
