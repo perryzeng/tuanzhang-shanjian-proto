@@ -10,14 +10,8 @@ window.PAGES["A1"].states = [
 ];
 
 /* 右侧面板「数据来源」：给共创和开发看每个数字从哪来 */
-window.PAGES["A1"].sources = [
-  { block: "问候行", sys: "账号系统 / 团队关系表 / 通知中心", rule: "团队人数=成员表 status=active；未读=read_at 为空" },
-  { block: "Banner", sys: "运营后台 · banner 位", rule: "按人群包 + 时间窗下发，过期自动下线，必带落地页" },
-  { block: "今天必须做", sys: "素材缺口 + 团队派发 + SOP 打卡", rule: "三源合并；卡住发布的权重 50，团队任务 30，打卡 10；再按剩余时长排序，最多 3 条" },
-  { block: "今天发什么", sys: "内容数据后台 + 粉丝互动库 + 素材库存", rule: "出单率 45% + 完播 15% + 粉丝相关度 25% + 素材成本 15%，同商品只推 1 条，最多 3 条" },
-  { block: "团队最新", sys: "团队动态流", rule: "本团队近 24h 已发布视频，按播放量倒序" },
-  { block: "平台精选", sys: "运营后台 · 专题位", rule: "按人群包下发，与 banner 共用投放系统" }
-];
+/* 业务逻辑与数据来源统一写在 PRD（prd/PRD-V2-页面级.md 第 4 章），UI 稿不重复口径 */
+window.PAGES["A1"].prd = "PRD §4 · 首页";
 
 window.PAGES["A1"].render = function (ctx) {
   const C = window.C, G = window.G;
@@ -106,19 +100,15 @@ window.PAGES["A1"].render = function (ctx) {
         })}
 
         ${C.sec("今天必须做", tasksAll.length + " 项 · 全部 ›", "D1")}
-        <div class="rule">口径：素材缺口 + 团队派发 + SOP 打卡三源合并，卡住发布的排前面，同权重看剩余时长 · 每 10 分钟刷新</div>
         ${C.tasks(taskCards)}
 
         ${C.sec("今天发什么", "助理推荐 · 换一批")}
-        <div class="rule">口径：出单率 45% + 完播 15% + 你粉丝问题相关度 25% + 素材补拍成本 15%，同商品只推 1 条</div>
         ${sugg.map((x) => C.li(x)).join("")}
 
         ${C.sec("团队最新", "团队 ›", "E1")}
-        <div class="rule">口径：本团队近 24 小时已发布的视频，按播放量倒序</div>
         ${C.vrail(teamCards)}
 
         ${C.sec("平台精选 · 运营推荐", "广场 ›", "F1")}
-        <div class="rule">口径：运营专题位，按你所在人群包下发</div>
         ${C.themes(picks.map((p) => ({ img: p.img, pos: p.pos, title: p.title, sub: p.sub, go: p.go })))}
 
         <div class="xs" style="text-align:center;margin:16px 0 4px">数据更新于 ${D.now.slice(11, 16)} · 原型 mock，接真实接口后口径不变</div>
@@ -156,7 +146,6 @@ window.PAGES["A1"].render = function (ctx) {
       })}
 
       ${C.sec("新手清单", "1/4 已完成")}
-      <div class="rule">口径：账号开通状态 + 人设完成度 + 首条发布 + 是否加入团队素材库</div>
       ${C.checklist([
         { tx: "注册并绑定微信", done: true },
         { tx: "设置身份 IP 人设（2 分钟）", go: "G1" },
@@ -165,7 +154,6 @@ window.PAGES["A1"].render = function (ctx) {
       ])}
 
       ${C.sec("同行都在这么发", "更多案例 ›", "F1")}
-      <div class="rule">口径：平台内容池里你这类目、同粉丝量级、近 7 天完播率最高的 3 条</div>
       ${C.vrail([
         { bg: G("#2C5BFF", "#00C2FF"), who: "玲", whoBg: "rgba(44,91,255,.92)", plays: "12.4万", title: "开箱第一句就说价格", sub: "新手最容易抄的一条", go: "F3" },
         { bg: G("#7C5CFF", "#B08CFF"), who: "强", whoBg: "rgba(124,92,255,.92)", plays: "8.6万", title: "先讲问题再讲产品", sub: "完播率最高结构", go: "F3" },
