@@ -870,9 +870,9 @@ window.DATA = {
     ],
     /* 团队页 Banner 轮播：运营/团长投放的团队级横幅（目标、公告、素材包） */
     teamBanners: [
-      { t: "本周冲 3 条开团片", sub: "团队目标 · 还差 1 条就达成", tag: "团队目标", bg: "linear-gradient(135deg,#2C5BFF,#7C5CFF)", go: "E4" },
-      { t: "10 月团价已调整", sub: "脚本里的价格口径记得改", tag: "公告", bg: "linear-gradient(135deg,#FF7A45,#FF3D6E)", go: "E5" },
-      { t: "总部素材包上线", sub: "12 条秋季空镜可直接取用", tag: "素材", bg: "linear-gradient(135deg,#00A8E8,#00C2FF)", go: "E3?open=asset" }
+      { t: "本周冲 3 条开团片", sub: "团队目标 · 还差 1 条就达成", tag: "团队目标", bg: "linear-gradient(135deg,#7C6CFF,#A78BFA)", go: "E4" },
+      { t: "10 月团价已调整", sub: "脚本里的价格口径记得改", tag: "公告", bg: "linear-gradient(135deg,#FF8FB1,#FF5C8A)", go: "E5" },
+      { t: "总部素材包上线", sub: "12 条秋季空镜可直接取用", tag: "素材", bg: "linear-gradient(135deg,#5AC8FA,#7C6CFF)", go: "E3?open=asset" }
     ],
     /* 团队首页是一条**混排信息流**：公告置顶、任务插在中间、动态按时间排。
        分三个区块摆（公告一摞、任务一摞、动态一摞）看着整齐，但没人会挨个区块看完——

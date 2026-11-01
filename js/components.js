@@ -69,10 +69,17 @@
   C.sec = (title, more, moreGo) =>
     `<div class="sec-h"><span class="h2">${title}</span>${more ? `<span class="more"${moreGo ? ` data-go="${moreGo}" data-label="${more}"` : ""}>${more}</span>` : ""}</div>`;
 
+  const TABICON = {
+    home: `<svg viewBox="0 0 24 24"><path d="M4 10.6 12 4l8 6.6V20a1 1 0 0 1-1 1h-4.6v-5.6H9.6V21H5a1 1 0 0 1-1-1z"/></svg>`,
+    layers: `<svg viewBox="0 0 24 24"><path d="M12 3.4 3.4 8 12 12.6 20.6 8z"/><path d="m3.4 12 8.6 4.6L20.6 12"/><path d="m3.4 16 8.6 4.6L20.6 16"/></svg>`,
+    users: `<svg viewBox="0 0 24 24"><circle cx="9.2" cy="8" r="3.2"/><path d="M3.4 20c0-3.2 2.6-5.8 5.8-5.8s5.8 2.6 5.8 5.8"/><circle cx="17.2" cy="9" r="2.2"/><path d="M15.8 14.4c2.5.5 4.3 2.6 4.3 5.2"/></svg>`,
+    spark: `<svg viewBox="0 0 24 24"><path d="M12 3.6 13.6 9l5.4 1.6-5.4 1.6L12 17.6 10.4 12.2 5 10.6 10.4 9z"/><path d="M18.6 4.2v3M17.1 5.7h3"/></svg>`,
+    user: `<svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.4c0-4 3.2-7.2 7.2-7.2s7.2 3.2 7.2 7.2"/></svg>`
+  };
   C.tab = (active) => {
-    const items = [["A1", "⌂", "首页"], ["E2", "▤", "素材"], ["E3", "☺", "团队"], ["F1", "⊞", "剪同款"], ["G1", "◎", "我的"]];
-    return `<div class="tb">${items.map(([id, ic, tx]) =>
-      `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${ic}</span>${tx}</b>`).join("")}</div>`;
+    const items = [["A1", "首页", "home"], ["E2", "素材", "layers"], ["E3", "团队", "users"], ["F1", "剪同款", "spark"], ["G1", "我的", "user"]];
+    return `<div class="tb">${items.map(([id, tx, ic]) =>
+      `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${TABICON[ic]}</span>${tx}</b>`).join("")}</div>`;
   };
 
   C.estage = (o) => {

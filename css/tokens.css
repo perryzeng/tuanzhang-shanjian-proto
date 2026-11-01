@@ -1,40 +1,40 @@
 :root{
-  /* 主色：科技蓝 */
-  --brand:#2C5BFF;
-  --brand-2:#5B8CFF;
-  --brand-ink:#1B3EDB;
-  --brand-weak:#EBF0FF;
-  --brand-weak-2:#F4F7FF;
+  /* 主色：紫罗兰（参考截图） */
+  --brand:#7C6CFF;
+  --brand-2:#A78BFA;
+  --brand-ink:#5B4BE0;
+  --brand-weak:#F0EDFF;
+  --brand-weak-2:#F8F6FF;
 
   /* 辅助色 */
-  --cyan:#00C2FF;
-  --violet:#7C5CFF;
-  --violet-weak:#F1EDFF;
+  --cyan:#5AC8FA;
+  --violet:#8B5CF6;
+  --violet-weak:#F2EDFF;
   --success:#12B886;
   --success-weak:#E6F8F2;
-  --warm:#FF7A45;
-  --warm-weak:#FFF1EB;
-  --danger:#FF5C5C;
-  --danger-weak:#FFEEEE;
+  --warm:#FF7A5C;
+  --warm-weak:#FFF1EC;
+  --danger:#FF5C6E;
+  --danger-weak:#FFEEF0;
 
   /* 渐变 */
-  --g-brand:linear-gradient(135deg,#2C5BFF 0%,#5B8CFF 100%);
-  --g-tech:linear-gradient(135deg,#2C5BFF 0%,#00C2FF 100%);
-  --g-deep:linear-gradient(150deg,#0E1B3D 0%,#1E3A8A 60%,#2C5BFF 130%);
-  --g-violet:linear-gradient(135deg,#7C5CFF 0%,#B08CFF 100%);
+  --g-brand:linear-gradient(135deg,#7C6CFF 0%,#A78BFA 100%);
+  --g-tech:linear-gradient(135deg,#7C6CFF 0%,#5AC8FA 100%);
+  --g-deep:linear-gradient(150deg,#241B4D 0%,#3B2E7A 60%,#7C6CFF 130%);
+  --g-violet:linear-gradient(135deg,#8B5CF6 0%,#C4A7FF 100%);
 
-  /* 文字 */
-  --text:#0F1730;
-  --text-2:#5A6480;
-  --text-3:#98A0B8;
-  --text-4:#B9C0D4;
+  /* 文字：更中性的灰，接近参考稿 */
+  --text:#2B2B36;
+  --text-2:#6E6E7E;
+  --text-3:#9C9CAC;
+  --text-4:#C2C2CE;
 
   /* 面 */
-  --line:#EDF0F7;
-  --line-2:#F4F6FB;
+  --line:#EEEBF6;
+  --line-2:#F5F3FB;
   --surface:#FFFFFF;
-  --bg:#F6F8FC;
-  --bg-2:#FAFBFE;
+  --bg:#F5F4FB;
+  --bg-2:#FAF9FE;
 
   /* 圆角 */
   --r-sm:10px;
@@ -43,10 +43,10 @@
   --r-xl:26px;
   --r-pill:999px;
 
-  /* 阴影 */
-  --sh-1:0 2px 8px rgba(24,44,110,.04);
-  --sh-2:0 6px 20px rgba(24,44,110,.07);
-  --sh-3:0 12px 32px rgba(24,44,110,.12);
+  /* 阴影：更轻更散 */
+  --sh-1:0 4px 14px rgba(52,40,110,.05);
+  --sh-2:0 10px 26px rgba(52,40,110,.08);
+  --sh-3:0 16px 40px rgba(52,40,110,.12);
 
   --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
 }

@@ -53,9 +53,9 @@ window.PAGES["E2"].render = function (ctx) {
 
   const FICON = { script: "文", asset: "图", work: "作" };
   const KBG = {
-    script: "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
-    asset: "linear-gradient(150deg,#00A8E8,#00C2FF)",
-    work: "linear-gradient(150deg,#7C5CFF,#B08CFF)"
+    script: "linear-gradient(150deg,#7C6CFF,#A78BFA)",
+    asset: "linear-gradient(150deg,#5AC8FA,#8B9CFF)",
+    work: "linear-gradient(150deg,#B18CFF,#FF9AC4)"
   };
   const TITLE = {
     work: side === "team" ? "作品专题" : side === "friend" ? `${friendName}的作品` : "我的作品",
