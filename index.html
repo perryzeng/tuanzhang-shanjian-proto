@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>团长闪剪 · 交互原型（工作台）</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/ui.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{font-family:var(--font);background:#EDEFF4;color:var(--text);overflow:hidden}
+  .top{height:52px;display:flex;align-items:center;gap:14px;padding:0 18px;background:#fff;border-bottom:1px solid var(--line)}
+  .top b{font-size:14px;font-weight:700;letter-spacing:-.2px}
+  .top .meta{font-size:12px;color:var(--text-3)}
+  .top .sp{flex:1}
+  .top button{height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--text-2);cursor:pointer;font-family:inherit}
+  .top button:hover{background:var(--bg);color:var(--text)}
+  .top .warn{color:var(--danger);font-weight:600}
+
+  .shell{display:flex;height:calc(100% - 52px)}
+
+  .tree{width:236px;flex:0 0 236px;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:10px 0 30px}
+  .tree .g{padding:12px 16px 6px;font-size:10.5px;font-weight:700;color:var(--text-3);letter-spacing:.4px}
+  .tree .i{display:flex;align-items:center;gap:8px;height:32px;padding:0 16px;font-size:12.5px;color:var(--text-2);cursor:pointer;border-left:2px solid transparent}
+  .tree .i:hover{background:var(--bg)}
+  .tree .i .id{width:42px;flex:0 0 42px;font-size:10.5px;color:var(--text-3);font-variant-numeric:tabular-nums}
+  .tree .i .nm{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tree .i.on{background:var(--brand-weak);border-left-color:var(--brand);color:var(--brand-ink);font-weight:600}
+  .tree .i.on .id{color:var(--brand)}
+  .tree .i.ghost{opacity:.45}
+  .tree .i.ghost .nm::after{content:" 未迁";font-size:9.5px;color:var(--text-3)}
+
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+         background:radial-gradient(circle at 50% 40%,#F7F8FB,#E7EAF1 75%)}
+  .frame{background:#14151A;border-radius:56px;padding:11px;box-shadow:0 24px 60px rgba(20,26,50,.22);position:relative}
+  .phone{width:375px;height:812px;border-radius:45px;overflow:hidden;background:#fff;position:relative}
+  .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:104px;height:25px;background:#14151A;border-radius:14px;z-index:20;pointer-events:none}
+
+  .pager{position:absolute;bottom:16px;right:18px;display:flex;align-items:center;gap:10px;
+         background:#fff;border:1px solid var(--line);border-radius:22px;padding:5px 6px;box-shadow:var(--sh-2)}
+  .pager b{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-2);cursor:pointer}
+  .pager b:hover{background:var(--bg)}
+  .pager span{font-size:11.5px;color:var(--text-3);padding:0 6px;min-width:96px;text-align:center}
+
+  .panel{width:300px;flex:0 0 300px;background:#fff;border-left:1px solid var(--line);overflow-y:auto;padding:16px}
+  .panel h4{margin:0 0 4px;font-size:14px;font-weight:700}
+  .panel .sub{font-size:11.5px;color:var(--text-3);margin-bottom:12px}
+  .panel .box{border:1px solid var(--line);border-radius:10px;padding:10px 11px;margin-bottom:10px}
+  .panel .box .bt{font-size:10.5px;font-weight:700;color:var(--text-3);letter-spacing:.3px;margin-bottom:8px}
+  .panel .lk{display:flex;align-items:flex-start;gap:7px;font-size:12px;line-height:1.5;padding:4px 0;cursor:pointer}
+  .panel .lk:hover{color:var(--brand)}
+  .panel .lk .to{color:var(--brand);font-weight:600;white-space:nowrap}
+  .panel .lk .lb{flex:1;min-width:0;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .panel .lk.dead .to{color:var(--danger)}
+  .panel .lk.dead .lb{color:var(--danger)}
+  .panel .empty{font-size:12px;color:var(--text-3)}
+  .panel .note{font-size:11.5px;line-height:1.65;color:var(--text-2);background:var(--bg-2);border-radius:9px;padding:10px}
+  .panel .tagline{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;background:var(--brand-weak);color:var(--brand-ink);margin-bottom:10px}
+
+  /* ---- 手机 / 窄屏：只留手机屏，页面树变抽屉 ---- */
+  .menu-btn{display:none;height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--text-2);cursor:pointer;font-family:inherit}
+  @media (max-width:900px){
+    body{overflow:auto}
+    .top{gap:8px;padding:0 12px}
+    .top b{font-size:13px}
+    #btn-csv,#btn-copy,#deadtip{display:none}
+    .menu-btn{display:inline-flex;align-items:center}
+    .shell{height:calc(100% - 52px)}
+    .tree{display:none;position:fixed;left:0;top:52px;bottom:0;z-index:40;width:236px;box-shadow:12px 0 30px rgba(20,26,50,.18)}
+    .tree.open{display:block}
+    .panel{display:none}
+    .shell{overflow:hidden}
+    .stage{min-width:0;overflow:hidden;background:#fff}
+    /* 真机上看就当成 App：去掉手机壳，铺满屏 */
+    .frame{width:100%;height:100%;background:none;border-radius:0;padding:0;box-shadow:none;transform:none!important}
+    .phone{width:100%;height:100%;border-radius:0}
+    .notch{display:none}
+    .pager{bottom:10px;right:10px;background:rgba(255,255,255,.94)}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <b>团长闪剪 · 交互原型</b>
+  <button class="menu-btn" id="btn-menu">☰ 页面</button>
+  <span class="meta" id="count"></span>
+  <span class="sp"></span>
+  <span class="meta warn" id="deadtip"></span>
+  <button id="btn-csv">导出页面规格 CSV</button>
+  <button id="btn-copy">复制链路清单</button>
+</div>
+
+<div class="shell">
+  <aside class="tree" id="tree"></aside>
+  <main class="stage" id="stage">
+    <div class="frame"><div class="notch"></div><div class="phone" id="phone"></div></div>
+    <div class="pager"><b id="prev">‹</b><span id="pgnum">—</span><b id="next">›</b></div>
+  </main>
+  <aside class="panel" id="panel"></aside>
+</div>
+
+<script src="js/components.js"></script>
+<script src="js/pages/registry.js"></script>
+<script src="js/pages/A1-home.js"></script>
+<script src="js/pages/B1-create.js"></script>
+<script src="js/pages/B2-publisher.js"></script>
+<script src="js/pages/B2.1-picker.js"></script>
+<script src="js/pages/B2.2-shoot.js"></script>
+<script src="js/pages/B2.3-pip.js"></script>
+<script src="js/pages/B3-generating.js"></script>
+<script src="js/pages/B4-caption.js"></script>
+<script src="js/pages/B4.1-detail.js"></script>
+<script src="js/pages/C1-import.js"></script>
+<script src="js/pages/C2-deconstruct.js"></script>
+<script src="js/pages/C3-check.js"></script>
+<script src="js/pages/D1-sop.js"></script>
+<script src="js/pages/T1-schedule.js"></script>
+<script src="js/pages/T2-review.js"></script>
+<script src="js/pages/E1-team.js"></script>
+<script src="js/pages/E2-assets.js"></script>
+<script src="js/pages/E2.1-me.js"></script>
+<script src="js/pages/E4-tasks.js"></script>
+<script src="js/pages/E5-notice.js"></script>
+<script src="js/pages/F1-square.js"></script>
+<script src="js/pages/F3-template.js"></script>
+<script src="js/pages/G1-me.js"></script>
+<script src="js/pages/G3.1-leads.js"></script>
+<script src="js/core.js"></script>
+</body>
+</html>
