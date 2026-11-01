@@ -653,6 +653,32 @@
 .lg .tx b{color:var(--text);font-weight:700}
 .lg .tx i{display:block;font-style:normal;color:var(--text-4);font-size:10.5px;margin-top:1px}
 
+/* 三个平台按钮：直接摆在页面上，点哪个进哪个样式。
+   不藏在预览里再切一次 tab——他想看抖音，就该一下点到抖音。 */
+.platbtns{display:flex;gap:9px}
+.pb{flex:1;background:var(--surface);border-radius:14px;padding:11px 10px;box-shadow:var(--sh-1);
+    cursor:pointer;position:relative;padding-left:22px}
+.pb .dot{position:absolute;left:10px;top:13px;width:7px;height:7px;border-radius:50%}
+.pb b{display:block;font-size:12.5px;font-weight:700}
+.pb i{display:block;font-style:normal;font-size:9.5px;color:var(--text-4);margin-top:4px;line-height:1.35}
+
+/* 互动量三档 */
+.heats{display:flex;gap:8px}
+.ht{flex:1;background:#F3F5FA;border-radius:13px;padding:10px 8px;text-align:center;cursor:pointer;
+    box-shadow:inset 0 0 0 1px #E6EAF3}
+.ht b{display:block;font-size:12px;font-weight:700;color:var(--text-2)}
+.ht i{display:block;font-style:normal;font-size:9px;color:var(--text-4);margin-top:4px;line-height:1.35}
+.ht.on{background:var(--brand-weak);box-shadow:inset 0 0 0 1.5px var(--brand)}
+.ht.on b{color:var(--brand-ink)}
+.ht.on i{color:#5B7AB8}
+
+.heatnums{display:flex;gap:14px;margin:10px 2px 0;font-size:10.5px;color:var(--text-3)}
+.heatnums b{color:var(--text);font-size:12.5px;font-weight:800;margin-right:3px;
+            font-variant-numeric:tabular-nums}
+
+.sharedtip{margin-top:12px;background:#E9EFFF;border-radius:12px;padding:9px 12px;
+           font-size:11px;color:var(--brand-ink);line-height:1.55;font-weight:600}
+
 /* 全屏平台预览：同一条片子在三家平台长什么样 */
 .pvf{position:absolute;inset:0;z-index:30;background:#070B18;display:flex;flex-direction:column;color:#fff}
 .pvf-hd{display:flex;align-items:center;padding:12px 14px;flex:0 0 auto}
@@ -660,10 +686,40 @@
 .pvf-hd .ptabs b{height:28px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.12);
   font-size:11.5px;font-weight:600;color:rgba(255,255,255,.72);display:flex;align-items:center;cursor:pointer}
 .pvf-hd .ptabs b.on{background:#fff;color:#0A1226;font-weight:700}
+.pvf-hd .pfname{font-size:13px;font-weight:700;flex:1}
 .pvf-hd .x{margin-left:auto;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.14);
   display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;flex:0 0 30px}
+
+/* 评论区**盖在视频上**从底部升起，不是把视频压窄——
+   9:16 的片子一旦被压，宽度就跟着缩，画面小到看不清（第一版就是这样）。
+   底边留出 78px 给分享按钮，所以展开评论也还能分享。 */
+/* 收起时只露一条「N 条评论 ›」——不留这个入口，用户根本不知道能看评论。
+   展开后长成面板盖上去（视频不被压窄）。 */
+.pvf-cm{position:absolute;left:0;right:0;bottom:78px;max-height:54%;overflow-y:auto;
+  background:#0C1220;border-radius:16px 16px 0 0;z-index:2}
+.pvf-cm.open{box-shadow:0 -8px 28px rgba(0,0,0,.5)}
+.pvf-cm .cmbar{display:flex;align-items:center;padding:12px 16px;font-size:11.5px;cursor:pointer;
+  position:sticky;top:0;background:#0C1220;border-radius:16px 16px 0 0}
+.pvf-cm .cmbar b{font-weight:700}
+.pvf-cm .cmbar span{margin-left:auto;color:rgba(255,255,255,.55);font-size:10.5px}
+.pvf-cm .cmlist{padding:0 16px 10px}
+.pvf-cm .cmrow{display:flex;gap:9px;padding:8px 0}
+.pvf-cm .cmrow .av{width:26px;height:26px;border-radius:50%;flex:0 0 26px;color:#fff;font-size:10px;
+  font-weight:700;display:flex;align-items:center;justify-content:center}
+.pvf-cm .cmrow .tx{flex:1;min-width:0}
+.pvf-cm .cmrow .n{font-size:10.5px;color:rgba(255,255,255,.62);display:flex;align-items:center;gap:5px}
+.pvf-cm .cmrow .n i{font-style:normal;font-size:8.5px;padding:1px 4px;border-radius:4px;
+  background:rgba(255,255,255,.13);color:rgba(255,255,255,.75)}
+.pvf-cm .cmrow p{margin:3px 0 0;font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.9)}
+.pvf-cm .cmrow .m{font-size:9.5px;color:rgba(255,255,255,.4);margin-top:4px}
+.pvf-cm .cmmore{font-size:10px;color:rgba(255,255,255,.42);text-align:center;padding:8px 0 4px}
+
+.pvf-ft2{flex:0 0 auto;padding:8px 16px 20px;position:relative;z-index:3}
+.pvf-ft2 .shb{display:flex;align-items:center;justify-content:center;height:42px;border-radius:12px;
+  background:var(--g-brand);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 18px rgba(44,91,255,.35)}
 .pvf-mid{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:4px 0 8px}
-.pvf-screen{position:relative;height:100%;aspect-ratio:9/16;max-width:78%;border-radius:12px;
+.pvf-screen{position:relative;height:100%;aspect-ratio:9/16;max-width:90%;border-radius:14px;
             overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.5)}
 .pvf-screen .src{position:absolute;inset:0}
 .pvf-screen .cvtxt{position:absolute;left:0;right:0;bottom:36%;padding:0 12px;text-align:center;color:#fff}
@@ -671,7 +727,7 @@
   text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .pvf-screen .cvtxt i{display:block;font-style:normal;font-size:10px;opacity:.9;margin-top:6px}
 .pvf-screen .pfui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end}
-.pvf-screen .pfui .side{position:absolute;right:8px;bottom:74px;display:flex;flex-direction:column;
+.pvf-screen .pfui .side{position:absolute;right:8px;bottom:104px;display:flex;flex-direction:column;
   align-items:center;gap:13px}
 .pvf-screen .pfui .side .ava{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7C5CFF,#2C5BFF);
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
@@ -686,21 +742,24 @@
 
 /* 视频号：底部白卡片，圆角，深色字 */
 .pvf-screen.wx .pfui{background:linear-gradient(0deg,rgba(0,0,0,.55),transparent 62%)}
-.pvf-screen.wx .pfui .foot{background:rgba(255,255,255,.94);color:#0A1226;margin:0 8px 8px;
+.pvf-screen.wx .pfui .foot{background:rgba(255,255,255,.94);color:#0A1226;margin:0 8px 52px;
   border-radius:10px}
 .pvf-screen.wx .pfui .foot b{color:#0A1226}
-.pvf-screen.wx .pfui .side{bottom:96px}
+.pvf-screen.wx .pfui .side{bottom:132px}
 .pvf-screen.wx .pfui .side .ic2{color:#fff}
 /* 抖音：无底条，纯文本压边，右侧图标更大更靠下 */
 .pvf-screen.dy .pfui{background:linear-gradient(0deg,rgba(0,0,0,.62),transparent 55%)}
 .pvf-screen.dy .pfui .side{bottom:70px;gap:16px}
 .pvf-screen.dy .pfui .side .ic2 svg{width:20px;height:20px}
-.pvf-screen.dy .pfui .foot{padding-bottom:16px}
+.pvf-screen.dy .pfui .foot{padding-bottom:54px}
 /* 小红书：白底正文条，标题 + 正文分两行 */
 .pvf-screen.xhs .pfui{background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 60%)}
-.pvf-screen.xhs .pfui .foot{background:#fff;color:#1A1A1A;margin:0 6px 6px;border-radius:8px}
+.pvf-screen.xhs .pfui .foot{background:#fff;color:#1A1A1A;margin:0 6px 52px;border-radius:8px}
 .pvf-screen.xhs .pfui .foot b{color:#1A1A1A;font-size:11px}
-.pvf-screen.xhs .pfui .side{bottom:112px}
+/* 小红书正文后面有个"展开"，视频号和抖音没有——这是它和视频号白卡最容易分辨的一处 */
+.pvf-screen.xhs .pfui .foot::after{content:"展开";display:block;margin-top:5px;
+  font-size:9px;color:#8A8A8A}
+.pvf-screen.xhs .pfui .side{bottom:146px}
 .pvf-screen.xhs .pfui .side .ic2{color:#fff}
 /* 小红书把话题标签单独一行（蓝色），视频号和抖音是跟在正文里的灰字 */
 .pvf-screen .pfui .foot .tags{display:none}

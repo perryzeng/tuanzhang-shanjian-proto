@@ -33,6 +33,12 @@ window.PAGES["B4"].render = function (ctx) {
   const bigTx = (ctx.big != null && ctx.big !== "") ? ctx.big : auto.big;
   const smallTx = (ctx.small != null && ctx.small !== "") ? ctx.small : auto.small;
   const tpl = { ...tpl0, big: bigTx, small: smallTx };
+  /* 从相册选过就只留两张卡：视频首帧 / 我选的那张。没选过时第二张是「＋ 选择封面」，
+     点了进相册——不再单列一张「上传本地图片」，那等于把同一件事说两遍。 */
+  const fromAlbum = !!ctx.ph;
+  const album = fromAlbum
+    ? (D.myPhotos().filter((x) => x.id === ctx.ph)[0] || { label: "我选的那张", bg: base.bg })
+    : null;
 
   /* 一个封面 = 底图 + 一层字。字号用 em，外面改 font-size 就能整块缩放——
      大预览和缩略卡因此共用同一套版式 CSS，不会出现"小图和大图长得不一样"。 */
@@ -75,28 +81,34 @@ window.PAGES["B4"].render = function (ctx) {
         </div>
         <div class="cvtext">
           <div class="fd">
-            <span class="fl">大字</span>
+            <span class="fl">主标题</span>
             <input data-bind="B4.big" data-live value="${String(bigTx).replace(/"/g, "&quot;")}"
                    placeholder="封面主打的那句话" />
           </div>
           <div class="fd">
-            <span class="fl">小字</span>
+            <span class="fl">副标题</span>
             <input data-bind="B4.small" data-live value="${String(smallTx).replace(/"/g, "&quot;")}"
                    placeholder="价格 / 时间 / 补充" />
           </div>
-          <div class="hint">大字里打 <b>|</b> 可以手动换行</div>
+          <div class="hint">主标题里打 <b>|</b> 可以手动换行</div>
           <div class="hint" style="margin-top:6px">改完立刻看左边，不用保存</div>
         </div>
       </div>
 
-      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">底图</span>
-        <span class="more">用你自己的画面</span></div>
+      <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">封面</span>
+        <span class="more">用哪张画面当底</span></div>
       <div class="bsets">
-        ${D.coverBases().map(baseCard).join("")}
-        <div class="bset add" data-go="B4.2" data-label="上传本地图片">
-          <div class="th add">＋</div>
-          <div class="tx"><b>上传本地图片</b><span>从相册选一张</span></div>
-        </div>
+        ${baseCard(D.coverBase("frame"))}
+        ${fromAlbum ? `
+          <div class="bset${base.k === "photo" ? " sel" : ""}" data-set="B4.base=photo">
+            <div class="th" style="background:${album.bg}"></div>
+            <div class="tx"><b>${album.label}</b><span>相册 · 竖版</span></div>
+            ${base.k === "photo" ? `<span class="tick">✓</span>` : ""}
+          </div>`
+        : `<div class="bset add" data-go="B4.2" data-label="选择封面">
+            <div class="th add">＋</div>
+            <div class="tx"><b>选择封面</b><span>从相册选一张</span></div>
+          </div>`}
       </div>
 
       <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">爆款封面</span>

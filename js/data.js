@@ -757,7 +757,34 @@ window.DATA = {
 
   /* 这条发出去之后的回传汇总。分享是有前提的：
      没分享出去，就只有自己那一次播放，所以数据是"分享带来的"。 */
-  shareStat: { times: 3, plays: 412, visitors: 96, stay: "38 秒", leads: 12 },
+  shareStat: { times: 3, stay: "38 秒" },
+
+  /* 互动量三档：给演示用的开关。
+     冷启动 = 刚发出去只有熟人看到；启动中 = 推了一波开始有人转；热门 = 进了推荐池。
+     选了哪一档，预览里的赞/评/转和页面上的播放/访客/潜客一起变——
+     让评审的人能看见"同一条片子在三种热度下长什么样"，而不是只看到一个中间值。 */
+  heatLevels: [
+    { id: "cold", name: "冷启动", note: "刚发出去，只有熟人看得到",
+      like: 12, comment: 3, share: 1, plays: 42, visitors: 18, leads: 1 },
+    { id: "warming", name: "启动中", note: "推了一波，开始有人转",
+      like: 186, comment: 23, share: 17, plays: 1280, visitors: 312, leads: 12 },
+    { id: "hot", name: "热门", note: "进了推荐池，量还在涨",
+      like: 3200, comment: 268, share: 96, plays: 38600, visitors: 7420, leads: 186 }
+  ],
+
+  /* 评论：按评论数截取前 N 条展示。真实产品这里由 AI 按台词和卖点生成，
+     原型里写死一组"像真评论"的样本——有问价的、有回购的、有提问的，
+     因为这三种才是团长要回的人。 */
+  comments: [
+    { who: "阿梅", av: "梅", bg: "#2C5BFF", tx: "我妈也在吃这个，睡眠确实好了不少", like: 23, at: "2 分钟前", tag: "老客" },
+    { who: "小燕", av: "燕", bg: "#00B389", tx: "多少钱一盒？链接在哪儿", like: 41, at: "6 分钟前", tag: "问价" },
+    { who: "阿强", av: "强", bg: "#00A8E8", tx: "跟鱼油比，哪个好吸收一点", like: 15, at: "11 分钟前", tag: "" },
+    { who: "老周", av: "周", bg: "#F5A623", tx: "吃了一个月，精神比以前好，回购了", like: 9, at: "19 分钟前", tag: "老客" },
+    { who: "微信用户 3***8", av: "匿", bg: "#8C93A3", tx: "看配方挺干净，先买一盒试试", like: 5, at: "27 分钟前", tag: "" },
+    { who: "阿玲", av: "玲", bg: "#7C5CFF", tx: "开团价什么时候结束呀", like: 12, at: "38 分钟前", tag: "问价" },
+    { who: "小何", av: "何", bg: "#FF7A45", tx: "一直回购，这次直接囤两盒", like: 7, at: "1 小时前", tag: "老客" },
+    { who: "微信用户 9***1", av: "匿", bg: "#8C93A3", tx: "孕妇可以吃吗？在线等", like: 3, at: "1 小时前", tag: "" }
+  ],
 
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
   teamVideos: [
@@ -1277,6 +1304,11 @@ window.DERIVE = (function () {
   function leads() { return window.DATA.viewers.filter((x) => x.lead); }
   function logs() { return window.DATA.logs; }
   function shareStat() { return window.DATA.shareStat; }
+  function heatLevels() { return window.DATA.heatLevels; }
+  function heat(id) {
+    return window.DATA.heatLevels.filter((x) => x.id === id)[0] || window.DATA.heatLevels[1];
+  }
+  function comments() { return window.DATA.comments; }
   function coverBase(id) {
     return window.DATA.coverBases.filter((x) => x.k === id)[0] || window.DATA.coverBases[0];
   }
@@ -1319,6 +1351,6 @@ window.DERIVE = (function () {
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics, partSkeleton,
            templates, template, voices, voice, covers, cover, coverBases, coverBase, coverFromTopic, myPhotos,
-           viewers, leads, logs, shareStat, search, drafts,
+           viewers, leads, logs, shareStat, heatLevels, heat, comments, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();
