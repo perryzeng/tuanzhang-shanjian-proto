@@ -34,6 +34,7 @@ window.PAGES["E2.2"].render = function (ctx) {
       <!-- 这一段只说标题栏没说的：用过几次、放在哪一摞。
            "5 段 · 46 秒"上面已经有了，这里再说一遍是废话。 -->
       <div class="metaline">
+        <span>作者 ${it.by || "—"}</span><i>·</i>
         <span>用过 ${Math.round(it.hot / 8)} 次</span>
         ${folderName ? `<i>·</i><span>在「${folderName}」</span>` : ""}
         ${it.pick ? `<span class="picktag">精选</span>` : ""}

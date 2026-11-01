@@ -1,24 +1,20 @@
-window.PAGES["E2"].prd = "PRD §6.21 · 素材库（我的 / 好友 / 团队 · 社区化信息流，三个版本对比）";
+window.PAGES["E2"].prd = "PRD §6.21 · 素材库（我的 / 团队 · 数据 + 模块卡 + 动态/最新/精选/目录）";
 window.PAGES["E2"].states = [
-  { k: "", n: "方案 A：卡片流（大卡 + 封面 + 互动），社区感最强" },
-  { k: "v=b", n: "方案 B：双列瀑布，一屏看六到八个" },
-  { k: "v=c", n: "方案 C：紧凑时间线，一行一条，密度最高" },
-  { k: "side=team", n: "团队：任务/通知压成一条，下面是流" },
-  { k: "open=asset", n: "进了「视频素材」：三视图 + 内容" },
-  { k: "team=0", n: "没加入团队：只有「我的」和「好友」" }
+  { k: "", n: "我的：数据（只数字）+ 三张模块卡 + 我的好友（各出最新几条变动）" },
+  { k: "side=team", n: "团队：数据 + 通知 + 任务(一条条) + 作品/素材/脚本 + 整个团队动态" },
+  { k: "open=script", n: "钻取：tab 动态/最新/精选/目录（目录可建/移/删）" },
+  { k: "open=asset", n: "钻取素材：同 4 个 tab" },
+  { k: "open=work", n: "钻取作品：同 4 个 tab" },
+  { k: "team=0", n: "没团队：只有「我的」一个 tab" }
 ];
 
-/* 素材库。第六版，用户说要**社区化 + 信息紧凑**，并想多看几个版本对比。
-
-   上一版是"管理后台"的样子：一摞区块标题 + 一摞卡片，每块都占一屏的一小半，
-   打开只看得见两块内容。社区产品的做法恰好相反——**把人当主角、把内容挂在他身上、
-   一块块往下刷**，而且每一条都要小到"一屏能看五六条"。
-
-   所以这一版把外层全压扁（团队/我的信息条一行、三个文件夹一行胶囊），
-   省下来的空间全给流；流本身出三个版本：
-     A 卡片流 —— 大封面 + 头像 + 互动数，社区感最强，一屏两条；
-     B 双列瀑布 —— 像发现页，一屏六到八个；
-     C 紧凑时间线 —— 一行一条，一屏六到八条，密度最高。 */
+/* 素材库 v10 —— 四个 tab：动态 / 最新 / 精选 / 目录。
+   - 顶部只留数字（脚本 / 素材 / 作品 / 今日更新），团队那侧还有团队名与切换；
+   - 主界面：三张模块卡（作品 / 素材 / 脚本）；「我的」底部是「我的好友」，
+     每个好友默认列出他最近几条素材库变动；团队底部是「整个团队的动态」；
+   - 团队任务不再一张张割裂的大卡，收成一张卡里一条条任务；
+   - 点进任意一类：tab = 动态（这类内容的变更记录）/ 最新 / 精选 / 目录；
+     目录里按文件夹分组，可新建文件夹、把条目移进文件夹、删除条目（整理模式）。 */
 window.PAGES["E2"].render = function (ctx) {
   const C = window.C;
   const D = window.DERIVE;
@@ -26,48 +22,35 @@ window.PAGES["E2"].render = function (ctx) {
 
   const teams = LIB.teams || [];
   const teamOn = LIB.teamOn && ctx.team !== "0" && teams.length > 0;
-  const friendOn = (LIB.friends || []).length > 0;
 
-  const SIDES = [["mine", "我的"], ["friend", "好友"], ["team", "团队"]].filter(([k]) =>
-    k === "mine" || (k === "friend" && friendOn) || (k === "team" && teamOn));
+  const SIDES = [["mine", "我的"], ["team", "团队"]].filter(([k]) => k === "mine" || (k === "team" && teamOn));
   const side = SIDES.some((s) => s[0] === ctx.side) ? ctx.side : "mine";
 
   const tid = teams.some((t) => t.id === ctx.tid) ? ctx.tid : (teams[0] || {}).id;
   const team = teams.filter((t) => t.id === tid)[0] || {};
 
   const KINDS = [["script", "脚本"], ["asset", "视频素材"], ["work", "作品"]];
+  const KINDNAME = { script: "脚本", asset: "素材", work: "作品" };
   const open = KINDS.some((k) => k[0] === ctx.open) ? ctx.open : "";
   const kind = open || "script";
-  const VIEWS = [["recent", "最近用的"], ["pick", "我精选的"], ["folder", "文件夹"]];
-  const view = VIEWS.some((v) => v[0] === ctx.view) ? ctx.view : "recent";
-  const fd = ctx.fd || "";
   const q = ctx.q || "";
   const sel = ctx.sel === "1";
   const picked = (ctx.pick || "").split(",").filter(Boolean);
   const mvOpen = ctx.mv === "1";
-  const toast = ctx.toast || "";
-  const fabOpen = ctx.new === "1";
   const tsw = ctx.tsw === "1";
-
-  /* 三个版本的开关（定下来之后删掉） */
-  const tv = ["a", "b", "c"].indexOf(ctx.v) >= 0 ? ctx.v : "a";
 
   const movStr = ctx.moved || "";
   const moved = {};
-  movStr.split(";").forEach((pair) => {
-    const a = pair.split(">")[0], b = pair.split(">")[1];
-    if (a && b) moved[a] = b;
-  });
+  movStr.split(";").forEach((pair) => { const a = pair.split(">")[0], b = pair.split(">")[1]; if (a && b) moved[a] = b; });
+  const delStr = ctx.del || "";
+  const delSet = {};
+  delStr.split(",").filter(Boolean).forEach((id) => { delSet[id] = 1; });
   const nfdStr = ctx.nfd || "";
   const extraFd = nfdStr.split(",").filter(Boolean).map((n, i) => ({ id: "nf" + i, name: n, n: 0, fresh: true }));
 
-  const L = D.lib(side, kind, { view, fd, q, moved });
-  const folders = L.folders.concat(extraFd);
-  const curFd = folders.filter((f) => f.on)[0];
-
-  const qs = (kv) => "E2.side=" + side + "&E2.tid=" + tid + "&E2.v=" + tv + "&E2.open=" + open
-    + "&E2.kind=" + kind + "&E2.view=" + view
-    + "&E2.q=" + q + "&E2.moved=" + movStr + "&E2.nfd=" + nfdStr + "&" + (kv || "");
+  const qs = (kv) => "E2.side=" + side + "&E2.tid=" + tid + "&E2.open=" + open
+    + "&E2.tab=" + (ctx.tab || "log") + "&E2.q=" + q + "&E2.moved=" + movStr
+    + "&E2.del=" + delStr + "&E2.nfd=" + nfdStr + "&E2.tsw=" + tsw + "&E2.pick=" + picked.join(",") + "&" + (kv || "");
 
   const FICON = { script: "文", asset: "图", work: "作" };
   const KBG = {
@@ -75,24 +58,164 @@ window.PAGES["E2"].render = function (ctx) {
     asset: "linear-gradient(150deg,#00A8E8,#00C2FF)",
     work: "linear-gradient(150deg,#7C5CFF,#B08CFF)"
   };
+  const TITLE = {
+    work: side === "team" ? "作品专题" : "我的作品",
+    asset: side === "team" ? "团队素材" : "我的素材",
+    script: side === "team" ? "共享脚本" : "我的脚本"
+  };
 
-  /* 每类有多少：三个胶囊上要写数字，得先算出来 */
-  const CNT = { script: D.lib(side, "script", {}).counts.script, asset: D.lib(side, "asset", {}).counts.asset, work: D.lib(side, "work", {}).counts.work };
+  const TYPE = {
+    notice: { ic: "!", fg: "#C2410C", bg: "#FFE3C2", word: "公告" },
+    task: { ic: "✓", fg: "#C2410C", bg: "#FFE3C2", word: "任务" },
+    work: { ic: "▶", fg: "var(--violet)", bg: "#EFE9FF", word: "作品" },
+    asset: { ic: "▦", fg: "#0B8C68", bg: "#E2F7F0", word: "素材" },
+    script: { ic: "≡", fg: "#2C5BFF", bg: "#E6EDFF", word: "脚本" },
+    member: { ic: "＋", fg: "#0B8C68", bg: "#E2F7F0", word: "成员" },
+    folder: { ic: "◫", fg: "#5B6B8C", bg: "#EEF1F8", word: "整理" }
+  };
 
-  const grouped = view === "folder" && !fd && !q;
-  const groups = folders.map((f) => ({ ...f, list: L.items.filter((x) => x.fd === f.id) }));
-  const loose = L.items.filter((x) => !folders.some((f) => f.id === x.fd));
-  if (loose.length) groups.push({ id: "", name: "未分类", n: loose.length, list: loose });
+  const AV = {};
+  (LIB.friends || []).forEach((f) => { AV[f.name] = { av: f.av, bg: f.bg }; });
+  (LIB.teamFeed ? Object.values(LIB.teamFeed).flat() : []).forEach((f) => {
+    if (f.who && !AV[f.who]) AV[f.who] = { av: f.who.slice(0, 1), bg: "#2C5BFF" };
+  });
 
-  const toggle = (id) => "E2.pick=" + (picked.indexOf(id) >= 0
-    ? picked.filter((x) => x !== id) : picked.concat(id)).join(",");
+  /* 一条动态 → 统一成"人 + 动作 + 可点目标" */
+  const decorate = (f, who) => {
+    const t = TYPE[f.type] || TYPE.script;
+    const av = AV[who];
+    const item = f.item ? D.libItem(f.item) : null;
+    let go = "";
+    if (f.type === "script") go = item ? "E2.2?id=" + item.id : "E2?open=script&tab=log";
+    else if (f.type === "asset") go = item ? "E2.3?id=" + item.id : "E2?open=asset&tab=log";
+    else if (f.type === "work") go = item ? (item.go || "B4.1?id=" + item.id) : (f.go || "E2?open=work&tab=log");
+    return {
+      ...f, t, go, item,
+      av: av ? av.av : (who === "我" ? "珍" : (who || "?").slice(0, 1)),
+      avBg: av ? av.bg : (who === "我" ? "linear-gradient(135deg,#7C5CFF,#2C5BFF)" : "#2C5BFF"),
+      title: (f.extra || "").split(" · ")[0],
+      meta: (f.extra || "").split(" · ").slice(1).join(" · "),
+      when: f.t || f.d || ""
+    };
+  };
+
+  const thread = (f) => `<div class="thr${f.go ? " tap" : ""}" ${f.go ? `data-go="${f.go}"` : ""} data-label="${f.title || f.act}">
+      <div class="ta"><span class="av" style="background:${f.avBg}">${f.av}</span>
+        <b>${f.who}</b><i>${f.act}</i><span class="tm">${f.when}</span>
+        ${f.go ? `<span class="go">›</span>` : ""}</div>
+      ${f.title ? `<div class="tt"><span class="ttag" style="background:${f.t.bg};color:${f.t.fg}">${f.t.word}</span><b>${f.title}</b></div>` : ""}
+      ${f.meta ? `<div class="tn">${f.meta}</div>` : ""}
+    </div>`;
+
+  const flow = side === "mine"
+    ? LIB.mineFeed.map((f) => decorate(f, "我"))
+    : ((LIB.teamFeed && LIB.teamFeed[tid]) || []).filter((x) => x.type !== "notice" && x.type !== "task").map((f) => decorate(f, f.who));
+
+  /* ---------- 顶部：只留数字（团队那侧保留团队名/切换） ---------- */
+  const cntOf = (k) => D.lib(side, k, {}).items.filter((x) => !delSet[x.id]).length;
+  const CNT = { script: cntOf("script"), asset: cntOf("asset"), work: cntOf("work") };
+  const recentN = KINDS.reduce((s, [k]) => s + D.lib(side, k, {}).items.filter((x) => x.at === 1 && !delSet[x.id]).length, 0);
+
+  const statNums = `<div class="stg">
+      <div data-set="${qs()}&E2.open=script&E2.tab=log&E2.q="><b>${CNT.script}</b><span>脚本</span></div>
+      <div data-set="${qs()}&E2.open=asset&E2.tab=log&E2.q="><b>${CNT.asset}</b><span>素材</span></div>
+      <div data-set="${qs()}&E2.open=work&E2.tab=log&E2.q="><b>${CNT.work}</b><span>作品</span></div>
+      <div class="rc"><b>${recentN}</b><span>今日更新</span></div>
+    </div>`;
+  const statCard = side === "team"
+    ? `<div class="statc">
+        <div class="sth"><span class="sav">${(team.name || "团").slice(0, 1)}</span>
+          <div class="stt"><b>${team.name}</b><span>${team.members} 人 · ${team.day} · ${team.role === "团长" ? "我是团长" : "我是团员"}</span></div>
+          ${teams.length > 1 ? `<span class="chg" data-set="${qs()}&E2.tsw=${tsw ? "" : "1"}">切换 ▾</span>` : ""}</div>
+        ${statNums}</div>`
+    : `<div class="statc plain">${statNums}</div>`;
+
+  const teamSw = tsw && teams.length > 1 && side === "team" ? `<div class="teamsw">
+      ${teams.map((t) => `<b class="${t.id === tid ? "on" : ""}" data-set="${qs()}&E2.tid=${t.id}&E2.tsw=&E2.tab=log">
+        <i>${t.name.slice(0, 1)}</i>${t.name}<em>${t.members} 人</em>${t.id === tid ? "✓" : ""}</b>`).join("")}
+    </div>` : "";
+
+  /* ---------- 团队：通知（紧凑） + 任务（一条条，收在一张卡里） ---------- */
+  const notices = LIB.notices || [];
+  const noticeCard = notices.length ? `<div class="ncard">
+      <div class="nh"><span class="ni">!</span>公告<span class="cnt">${notices.length}</span></div>
+      ${notices.map((n) => `<div class="nr" data-go="${n.go || "E5"}" data-label="${n.t}">
+        <div class="nl"><b>${n.t}</b><span class="tm">${n.at}</span></div>
+        ${n.sub ? `<i>${n.sub}</i>` : ""}<span class="go">›</span></div>`).join("")}
+    </div>` : "";
+
+  const tasks = LIB.teamTasks || [];
+  const taskList = tasks.length ? `<div class="tlist">
+      <div class="tlh">团队任务<span class="cnt">${tasks.filter((t) => t.state !== "done").length} 进行中</span></div>
+      ${tasks.map((t) => {
+        const pct = Math.round(t.done / t.total * 100);
+        return `<div class="tlr${t.state === "done" ? " done" : ""}" data-go="${t.go}" data-label="${t.t}">
+          <div class="tlt"><b>${t.t}</b><em>${t.state === "done" ? "已完成" : "进行中"}</em></div>
+          <div class="tls">${t.by} · 派给 ${t.to} · 截止 ${t.due}</div>
+          <div class="bar"><i style="width:${pct}%"></i></div>
+          <div class="tlf"><span>已交 ${t.done}/${t.total}</span><span class="tgo3">去处理 ›</span></div>
+        </div>`;
+      }).join("")}
+    </div>` : "";
+
+  /* ---------- 模块卡：作品专题（通栏）+ 素材 / 脚本（半栏） ---------- */
+  const modCard = (k, hero) => {
+    const its = D.lib(side, k, {}).items.filter((x) => !delSet[x.id]);
+    const show = its.slice(0, hero ? 3 : 2);
+    const body = k === "script"
+      ? `<div class="modb col">${show.map((x) => `<span class="mrow"><i class="d"></i>${x.name}</span>`).join("") || `<span class="mem">暂无脚本</span>`}</div>`
+      : `<div class="modb">${show.map((x) => `<span class="mth" style="background:${x.bg || KBG[k]}">${x.pick ? `<span>精选</span>` : ""}</span>`).join("") || `<span class="mem">暂无</span>`}</div>`;
+    const cap = hero && show[0] ? `<div class="modcap">最新 · ${show[0].name}</div>` : "";
+    return `<div class="mod${hero ? " hero" : ""}" data-set="${qs()}&E2.open=${k}&E2.tab=log&E2.q=" data-label="${TITLE[k]}">
+      <div class="modh"><span class="mi" style="background:${KBG[k]}">${FICON[k]}</span>
+        <b>${TITLE[k]}</b><em>${its.length}</em><span class="go">›</span></div>
+      ${body}${cap}</div>`;
+  };
+  const mods = `<div class="mods">${modCard("work", true)}${modCard("asset", false)}${modCard("script", false)}</div>`;
+
+  /* ---------- 「我的」底部：我的好友（每个好友默认列最近几条变动） ---------- */
+  const friendSection = (function () {
+    const friends = LIB.friends || [];
+    if (!friends.length) return "";
+    const cards = friends.map((fr) => {
+      const changes = (LIB.friendFeed || []).filter((x) => x.who === fr.name).slice(0, 3).map((x) => decorate(x, x.who));
+      const rows = changes.map((c) => `<div class="fcr${c.go ? " tap" : ""}" ${c.go ? `data-go="${c.go}"` : ""} data-label="${c.title || c.act}">
+          <span class="ftag" style="background:${c.t.bg};color:${c.t.fg}">${c.t.word}</span>
+          <b>${c.title || c.act}</b><span class="go">›</span></div>`).join("");
+      return `<div class="frc">
+          <div class="frh"><span class="fav" style="background:${fr.bg}">${fr.av}</span>
+            <b>${fr.name}</b><span class="frt">${fr.note || ""}</span></div>
+          ${rows || `<div class="frempty">最近没有更新</div>`}
+        </div>`;
+    }).join("");
+    return `<div class="feedhd">我的好友<span>${friends.length}</span></div>${cards}`;
+  })();
+
+  /* ---------- 钻取：动态 / 最新 / 精选 / 目录 ---------- */
+  const ALL = D.lib(side, kind, { moved });
+  const allItems = ALL.items.filter((x) => !delSet[x.id]);
+  const folders = ALL.folders.concat(extraFd);
+  const loose = allItems.filter((x) => !folders.some((f) => f.id === x.fd));
+  const pickCount = allItems.filter((x) => x.pick).length;
+  const kindFlow = flow.filter((f) => f.type === kind);
+
+  const TABS = [
+    ["log", "动态", kindFlow.length],
+    ["latest", "最新", allItems.length],
+    ["pick", "精选", pickCount],
+    ["dir", "目录", folders.length]
+  ];
+  const curTab = TABS.some((t) => t[0] === ctx.tab) ? ctx.tab : "log";
+  const canOrganize = open && curTab !== "log";
+
+  const toggle = (id) => "E2.pick=" + (picked.indexOf(id) >= 0 ? picked.filter((x) => x !== id) : picked.concat(id)).join(",");
 
   const rowScript = (x) => `<div class="srow" ${sel
       ? `data-set="${qs(toggle(x.id))}"`
       : `data-go="E2.2?id=${x.id}" data-label="${x.name}"`}>
       ${sel ? `<span class="ck${picked.indexOf(x.id) >= 0 ? " on" : ""}"></span>` : ""}
       <span class="ic">≡</span>
-      <div class="tx"><b>${x.name}</b><span>${x.sub} · ${x.at === 1 ? "今天" : x.at + " 天前"}</span></div>
+      <div class="tx"><b>${x.name}</b><span>${x.by || "—"} · ${x.sub} · ${x.at === 1 ? "今天" : x.at + " 天前"}</span></div>
       ${sel ? "" : `<span class="go">›</span>`}
     </div>`;
 
@@ -104,204 +227,109 @@ window.PAGES["E2"].render = function (ctx) {
         ${x.pick ? `<span class="pickmark">精选</span>` : ""}
         <span class="cnt">${x.sub.split(" · ")[0]}</span>
       </div>
-      <div class="cap"><b>${x.name}</b></div>
+      <div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span></div>
     </div>`;
 
-  const listOf = (arr) => kind === "script"
-    ? `<div class="card" style="padding:2px 14px;border-radius:14px">${arr.map(rowScript).join("")}</div>`
-    : `<div class="g3">${arr.map(tile).join("")}</div>`;
+  const tileGo = (x) => (kind === "asset" ? "E2.3?id=" + x.id : (x.go || "B4.1?id=" + x.id));
+  const arrOf = (arr, flat) => kind === "script"
+    ? (flat ? arr.map(rowScript).join("")
+      : `<div class="card" style="padding:2px 14px;border-radius:14px;margin-top:10px">${arr.map(rowScript).join("")}</div>`)
+    : `<div class="g3" style="margin-top:10px">${arr.map((x) => tile({ ...x, go: tileGo(x) })).join("")}</div>`;
 
-  const fort = (g) => `<div class="fdz${side === "team" ? " tm" : ""}">
-      <div class="fdh" ${g.id ? `data-set="${qs()}&E2.fd=${fd === g.id ? "" : g.id}"` : ""}>
-        <span class="fi">${g.id ? FICON[kind] : "·"}</span>
-        <b>${g.name}</b><i>${g.list.length}</i>
-        ${g.id ? `<span class="more">${fd === g.id ? "收起" : "全部"} ›</span>` : ""}
-      </div>
-      <div class="fdb">
-        ${g.list.length ? listOf(g.list.slice(0, 3))
-          : `<div class="gempty">这一摞还空着 · 用「整理 → 移动到」把东西挪进来</div>`}
-        ${g.list.length > 3 ? `<div class="gmore" data-set="${qs()}&E2.fd=${g.id}">这一摞还有 ${g.list.length - 3} 个 ›</div>` : ""}
-      </div>
+  const empty = `<div class="emptybox"><span class="ei">${q ? "⌕" : "▦"}</span>
+      <b>${q ? "没找到「" + q + "」" : "这里还是空的"}</b>
+      <span>${q ? "换个词试试，或者清掉搜索" : "上传素材、或者新建一个文件夹开始整理"}</span>
+      ${q ? `<em data-set="E2.q=">清掉搜索</em>` : ""}</div>`;
+  const emptyLog = `<div class="emptybox"><span class="ei">≡</span><b>这类还没有变更记录</b>
+      <span>上传或更新${KINDNAME[kind]}后，这里会按时间记下流水</span></div>`;
+
+  /* 新建文件夹：点开原地变成输入框，起名再确定（不再直接塞一个"新建文件夹N"） */
+  const nfNew = ctx.nfnew === "1";
+  const nfNameRaw = (ctx.nfname || "").trim().replace(/[&=><"]/g, "");
+  const nfInputVal = (ctx.nfname || "").replace(/"/g, "&quot;");
+  const dirNew = nfNew
+    ? `<div class="dirnew editing">
+        <input data-bind="E2.nfname" data-live value="${nfInputVal}" placeholder="给文件夹起个名字" />
+        <b class="ok${nfNameRaw ? "" : " off"}" ${nfNameRaw ? `data-set="${qs("E2.nfd=" + (nfdStr ? nfdStr + "," : "") + nfNameRaw + "&E2.nfnew=&E2.nfname=")}&E2.toast=已新建「${nfNameRaw}」"` : ""}>确定</b>
+        <span class="cnl" data-set="E2.nfnew=&E2.nfname=">取消</span>
+      </div>`
+    : `<div class="dirnew" data-set="E2.nfnew=1">＋ 新建文件夹</div>`;
+
+  const dirBody = `
+    ${dirNew}
+    ${folders.map((f) => {
+      const list = allItems.filter((x) => x.fd === f.id);
+      return `<div class="dirgrp">
+        <div class="dirgh"><span class="fi">${FICON[kind]}</span><b>${f.name}</b><i>${list.length}</i></div>
+        <div class="dirgb">${list.length ? arrOf(list, true) : `<div class="gempty">这个文件夹还空着 · 用「整理 → 移动到」把东西挪进来</div>`}</div>
+      </div>`;
+    }).join("")}
+    ${loose.length ? `<div class="dirgrp"><div class="dirgh"><span class="fi">·</span><b>未分类</b><i>${loose.length}</i></div>
+      <div class="dirgb">${arrOf(loose, true)}</div></div>` : ""}`;
+
+  let tabBody;
+  if (curTab === "log") {
+    let log = kindFlow;
+    if (q) log = log.filter((f) => ((f.who || "") + (f.act || "") + (f.title || "") + (f.meta || "")).indexOf(q) >= 0);
+    tabBody = log.length ? `<div class="dyn"><div class="dynh">变更日志<span>${log.length}</span></div>${log.map(thread).join("")}</div>` : emptyLog;
+  } else if (curTab === "dir") {
+    tabBody = dirBody;
+  } else {
+    let items = curTab === "pick" ? allItems.filter((x) => x.pick) : allItems;
+    if (q) items = items.filter((x) => (x.name + " " + x.sub).indexOf(q) >= 0);
+    tabBody = items.length ? arrOf(items) : empty;
+  }
+
+  const otabs = `<div class="otabs">
+      ${TABS.map(([k, tx, n]) => `<b class="${curTab === k ? "on" : ""}" data-set="${qs()}&E2.tab=${k}&E2.q=&E2.pick=&E2.sel=">${tx}<em>${n}</em></b>`).join("")}
     </div>`;
 
-  const empty = `<div class="emptybox">
-      <span class="ei">${q ? "⌕" : "▦"}</span>
-      <b>${q ? "没找到「" + q + "」" : view === "pick" ? "还没挑过精选" : "这一摞还是空的"}</b>
-      <span>${q ? "换个词试试，或者清掉搜索看全部" : "上传素材、或者新建一个文件夹开始整理"}</span>
-      ${q ? `<em data-set="E2.q=">清掉搜索</em>` : ""}
-    </div>`;
-
-  /* 流里的六类记号：脚本 / 作品 / 素材 / 公告 / 任务 / 新成员 */
-  const TYPE = {
-    notice: { ic: "!", fg: "var(--brand)", bg: "var(--brand-weak)", grad: "linear-gradient(150deg,#2C5BFF,#5B8CFF)", word: "公告" },
-    task: { ic: "✓", fg: "#C2410C", bg: "var(--warm-weak)", grad: "linear-gradient(150deg,#FF7A45,#FFC85B)", word: "任务" },
-    work: { ic: "▶", fg: "var(--violet)", bg: "var(--violet-weak)", grad: "linear-gradient(150deg,#7C5CFF,#B08CFF)", word: "作品" },
-    asset: { ic: "▦", fg: "#0B8C68", bg: "var(--success-weak)", grad: "linear-gradient(150deg,#00A8E8,#00C2FF)", word: "素材" },
-    script: { ic: "≡", fg: "#5B6B8C", bg: "#EEF1F8", grad: "linear-gradient(150deg,#2C5BFF,#5B8CFF)", word: "脚本" },
-    member: { ic: "＋", fg: "#0B8C68", bg: "var(--success-weak)", grad: "linear-gradient(150deg,#00B389,#00C2FF)", word: "成员" },
-    folder: { ic: "◫", fg: "#5B6B8C", bg: "#EEF1F8", grad: "linear-gradient(150deg,#5B8CFF,#8FB0FF)", word: "整理" }
-  };
-
-  /* 头像：团队/好友流是别人的名字首字；"我的"流是我自己 */
-  const AV = {};
-  (LIB.friends || []).forEach((f) => { AV[f.name] = f; });
-  (LIB.teamFeed ? Object.values(LIB.teamFeed).flat() : []).forEach((f) => {
-    if (f.who && !AV[f.who]) AV[f.who] = { av: f.who.slice(0, 1), bg: "#2C5BFF" };
-  });
-
-  const rawFlow = side === "mine" ? LIB.mineFeed.map((f) => ({ ...f, d: f.t, who: "我", t: "" }))
-    : side === "friend" ? (LIB.friendFeed || [])
-      : ((LIB.teamFeed && LIB.teamFeed[tid]) || []);
-
-  /* 每条动态都挂一个"内容预览"：有封面的显示封面，没有的显示类型字。
-     社区流里，一条没有东西可看的动态等于废话。 */
-  const flow = rawFlow.map((f) => {
-    const t = TYPE[f.type] || TYPE.script;
-    const who = f.who || "";
-    const av = AV[who];
-    return {
-      ...f, t: t,
-      av: av ? av.av : (who === "我" ? "珍" : who.slice(0, 1)),
-      avBg: av ? av.bg : (who === "我" ? "linear-gradient(135deg,#7C5CFF,#2C5BFF)" : "#2C5BFF"),
-      title: (f.extra || "").split(" · ")[0],
-      meta: (f.extra || "").split(" · ").slice(1).join(" · "),
-      when: f.t || f.d || ""
-    };
-  });
-
-  /* ---------- 三种流 ---------- */
-  const cardA = (f) => `<div class="fcard" ${f.go ? `data-go="${f.go}"` : ""} data-label="${f.title}">
-      <div class="fh">
-        <span class="av" style="background:${f.avBg}">${f.av}</span>
-        <div class="hn"><b>${f.who}</b><i>${f.act}${f.pin ? " · 置顶" : ""}</i></div>
-        <span class="tm">${f.when}</span>
-      </div>
-      <div class="fim" style="background:${f.t.grad}">${f.t.ic}<em>${f.t.word}</em></div>
-      <div class="fb"><b>${f.title}</b>${f.meta ? `<span>${f.meta}</span>` : ""}</div>
-      <div class="fi"><span>♥ ${12 + (f.title.length * 3) % 40}</span><span>💬 ${2 + f.title.length % 9}</span><span>↗ ${1 + f.title.length % 6}</span></div>
-    </div>`;
-
-  const cardB = (f) => `<div class="bcard" ${f.go ? `data-go="${f.go}"` : ""} data-label="${f.title}">
-      <div class="th" style="background:${f.t.grad}">${f.t.ic}</div>
-      <b>${f.title}</b>
-      <div class="by"><span class="av" style="background:${f.avBg}">${f.av}</span>${f.who}</div>
-    </div>`;
-
-  const cardC = (f) => `<div class="crow" ${f.go ? `data-go="${f.go}"` : ""} data-label="${f.title}">
-      <div class="th" style="background:${f.t.grad}">${f.t.ic}</div>
-      <div class="tx">
-        <b><span class="av" style="background:${f.avBg}">${f.av}</span>${f.who}${f.who === "我" ? "" : " "}${f.act}${f.pin ? `<i class="pin">置顶</i>` : ""}</b>
-        <span>${f.title}${f.meta ? " · " + f.meta : ""}</span>
-      </div>
-      <span class="tm">${f.when}</span>
-    </div>`;
-
-  const flowHTML = tv === "b"
-    ? `<div class="bgrid">${flow.map(cardB).join("")}</div>`
-    : tv === "c"
-      ? `<div class="clist">${flow.map(cardC).join("")}</div>`
-      : `<div class="flist">${flow.map(cardA).join("")}</div>`;
-
-  /* 顶部压缩条：空间信息一行搞定，剩下的空间全给流 */
-  const headLine = side === "team" ? `<div class="tline">
-      <span class="av" style="background:var(--g-brand)">${(team.name || "团").slice(0, 1)}</span>
-      <b>${team.name || ""}</b>
-      <span>${team.members} 人 · 2 个任务待交</span>
-      ${teams.length > 1 ? `<span class="chg" data-set="${qs()}&E2.tsw=${tsw ? "" : "1"}">${tsw ? "▴" : "切换 ▾"}</span>` : ""}
-    </div>
-    ${tsw && teams.length > 1 ? `<div class="teamlist">
-      ${teams.map((t) => `<b class="${t.id === tid ? "on" : ""}" data-set="${qs()}&E2.tid=${t.id}&E2.tsw=&E2.fd=">
-        <i>${t.name.slice(0, 1)}</i>${t.name}<em>${t.members} 人</em>${t.id === tid ? "✓" : ""}</b>`).join("")}
-    </div>` : ""}`
-    : side === "friend" ? `<div class="frrow">${(LIB.friends || []).map((f) => `<div class="frl">
-        <span class="av" style="background:${f.bg}">${f.av}</span><b>${f.name}</b></div>`).join("")}</div>`
-      : "";
-
-  /* 三个文件夹压成一行胶囊：上一版是三张 90px 高的卡，一屏直接被它吃掉八分之一 */
-  const kPill = `<div class="kpill">
-      ${KINDS.map(([k, tx]) => `<b data-set="${qs()}&E2.open=${k}&E2.view=recent&E2.fd="
-        data-label="${tx}"><i style="background:${KBG[k]}">${FICON[k]}</i>${tx}<em>${CNT[k]}</em></b>`).join("")}
-    </div>`;
-
-  /* 团队的任务和通知压成一条：它们要"看得见"，但不该"占掉第一屏" */
-  const taskLine = side === "team" ? (function () {
-    const doing = (LIB.teamTasks || []).filter((t) => t.state !== "done");
-    const unread = LIB.notices.filter((n) => n.unread).length;
-    return `<div class="prompt">
-      <span class="pi" style="background:var(--warm-weak);color:#C2410C">✓</span>
-      <div class="tx"><b>${doing.length} 个任务待交</b>
-        <span>${doing[0] ? doing[0].t + " · " + doing[0].due + " 截止" : ""}</span></div>
-      <span class="go" data-go="E4" data-label="全部任务">去处理 ›</span>
-    </div>
-    <div class="prompt">
-      <span class="pi" style="background:var(--brand-weak);color:var(--brand)">!</span>
-      <div class="tx"><b>${LIB.notices.length} 条通知${unread ? ` · ${unread} 未读` : ""}</b>
-        <span>${LIB.notices[0].t}</span></div>
-      <span class="go" data-go="E5" data-label="全部通知">去看看 ›</span>
-    </div>`;
-  })() : "";
-
-  const vswitch = `<div class="vswitch">
-      ${[["a", "A 卡片流"], ["b", "B 双列"], ["c", "C 紧凑"]].map(([k, tx]) =>
-        `<b class="${tv === k ? "on" : ""}" data-set="${qs()}&E2.v=${k}">${tx}</b>`).join("")}
+  const searchBar = `<div class="gsearch compact" style="margin-top:10px">
+      <span class="mag">⌕</span>
+      <input data-bind="E2.q" data-live value="${q.replace(/"/g, "&quot;")}"
+             placeholder="${curTab === "log" ? "搜变更记录" : "搜" + KINDNAME[kind] + "名称"}" />
+      ${q ? `<span class="clr" data-set="E2.q=">清空</span>` : ""}
     </div>`;
 
   const openBody = `
     <div class="kfbar">
-      <span class="bk" data-set="${qs()}&E2.open=&E2.fd=&E2.pick=">‹ 全部</span>
-      <b>${KINDS.filter((k) => k[0] === open).map((k) => k[1])[0] || ""} · ${L.items.length} 个</b>
+      <span class="bk" data-set="${qs()}&E2.open=&E2.tab=log&E2.pick=&E2.sel=">‹ 全部</span>
+      <b>${KINDNAME[kind]} · ${allItems.length} 个</b>
     </div>
-    <div class="sortrow">
-      ${VIEWS.map(([k, tx]) =>
-        `<span class="s${view === k ? " on" : ""}" data-set="${qs()}&E2.view=${k}&E2.fd=">${tx}</span>`).join("")}
-    </div>
-    ${grouped
-      ? (L.items.length === 0 ? empty : groups.filter((g) => g.list.length || g.fresh).map(fort).join(""))
-      : (L.items.length === 0 ? empty : `
-          ${curFd ? `<div class="fdfilter">只看「${curFd.name}」 · ${L.items.length} 个
-            <b data-set="${qs()}&E2.fd=">取消</b></div>` : ""}
-          <div style="margin-top:10px">${listOf(L.items)}</div>`)}`;
+    ${otabs}
+    ${curTab === "log" ? "" : searchBar}
+    ${tabBody}`;
 
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
       <div class="ttl" style="margin-left:2px">素材库
-        <small>${side === "team" ? (team.name || "") + " · " + team.members + " 人"
-          : side === "friend" ? "好友共享 · " + (CNT.script + CNT.asset + CNT.work) + " 份"
-            : "我的 · " + (CNT.script + CNT.asset + CNT.work) + " 份"}</small></div>
-      <span class="act" data-set="${sel ? "E2.sel=&E2.pick=&E2.mv=" : "E2.sel=1"}">${sel ? "完成" : "整理"}</span>
+        <small>${side === "team" ? team.name : "我的"}</small></div>
+      ${canOrganize ? `<span class="act" data-set="${sel ? "E2.sel=&E2.pick=&E2.mv=" : "E2.sel=1"}">${sel ? "完成" : "整理"}</span>` : ""}
     </div>
 
     <div class="body" style="padding-bottom:110px">
       <div class="sidetabs">
         ${SIDES.map(([k, tx]) => `<b class="${side === k ? "on" : ""}"
-          data-set="${qs()}&E2.side=${k}&E2.open=&E2.fd=&E2.pick=">${tx}</b>`).join("")}
+          data-set="${qs()}&E2.side=${k}&E2.open=&E2.tab=log&E2.pick=&E2.sel=">${tx}</b>`).join("")}
       </div>
-
-      ${headLine}
-      ${taskLine}
-
-      <div class="gsearch compact" style="margin-top:11px;margin-bottom:0">
-        <span class="mag">⌕</span>
-        <input data-bind="E2.q" data-live value="${q.replace(/"/g, "&quot;")}"
-               placeholder="${open ? "搜" + (KINDS.filter((k) => k[0] === open).map((k) => k[1])[0] || "资料") + "名称" : "搜名字"}" />
-        ${q ? `<span class="clr" data-set="E2.q=">清空</span>` : ""}
-      </div>
-
-      ${kPill}
-      ${toast ? `<div class="toast"><span>${toast}</span><b data-set="E2.toast=">×</b></div>` : ""}
 
       ${open ? openBody : `
-        ${vswitch}
-        ${flowHTML}
+        ${statCard}
+        ${teamSw}
+        ${side === "team" ? noticeCard + taskList : ""}
+        ${mods}
+        ${side === "team"
+          ? `<div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
+          : friendSection}
       `}
     </div>
 
-    ${sel && open ? `<div class="selbar">
+    ${sel && canOrganize ? `<div class="selbar">
       <b>已选 ${picked.length} 个</b>
       <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="E2.mv=1"` : ""}>移动到</span>
-      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-label="设为精选"` : ""}>设为精选</span>
-      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-label="删除"` : ""}>删除</span>
+      <span class="sb${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs("E2.pick=&E2.sel=")}&E2.toast=已设为精选"` : ""}>设为精选</span>
+      <span class="sb warn${picked.length ? "" : " off"}" ${picked.length ? `data-set="${qs("E2.del=" + (delStr ? delStr + "," : "") + picked.join(",") + "&E2.pick=&E2.sel=")}&E2.toast=已删除 ${picked.length} 项"` : ""}>删除</span>
     </div>
     ${mvOpen && picked.length ? `<div class="mvpanel">
       <div class="mh">移动到哪个文件夹</div>
@@ -311,14 +339,6 @@ window.PAGES["E2"].render = function (ctx) {
         <b class="nf" data-set="${qs("E2.nfd=" + (nfdStr ? nfdStr + "," : "") + "新建文件夹" + (extraFd.length + 1) + "&E2.pick=&E2.mv=")}&E2.toast=已新建文件夹">＋ 新建文件夹</b>
       </div>
     </div>` : ""}` : ""}
-
-    ${sel ? "" : `${fabOpen ? `<div class="fabmask" data-set="E2.new="></div>
-      <div class="fabmenu">
-        <b data-set="E2.new=&E2.toast=已打开相册，选好就上传">↑ 上传素材</b>
-        <b data-go="B1" data-label="新建脚本">✎ 新建脚本</b>
-        <b data-set="E2.new=&E2.nfd=${nfdStr ? nfdStr + "," : ""}新建文件夹${extraFd.length + 1}&E2.toast=已新建文件夹">▦ 新建文件夹</b>
-      </div>` : ""}
-    <div class="fab${fabOpen ? " open" : ""}" data-set="E2.new=${fabOpen ? "" : "1"}">＋</div>`}
 
     ${C.tab("E2")}
   </div>`;

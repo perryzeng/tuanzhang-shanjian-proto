@@ -70,7 +70,7 @@
     `<div class="sec-h"><span class="h2">${title}</span>${more ? `<span class="more"${moreGo ? ` data-go="${moreGo}" data-label="${more}"` : ""}>${more}</span>` : ""}</div>`;
 
   C.tab = (active) => {
-    const items = [["A1", "⌂", "首页"], ["E2", "▤", "素材"], ["F1", "⊞", "广场"], ["G1", "◎", "我的"]];
+    const items = [["A1", "⌂", "首页"], ["E2", "▤", "素材"], ["F1", "⊞", "剪同款"], ["G1", "◎", "我的"]];
     return `<div class="tb">${items.map(([id, ic, tx]) =>
       `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${ic}</span>${tx}</b>`).join("")}</div>`;
   };

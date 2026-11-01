@@ -104,6 +104,26 @@
    放不下就会横滑，而横滑等于第五个"自定义"永远看不见。 */
 .chips.tight{gap:6px}
 .chips.tight .chip{padding:0 12px;font-size:12.5px;height:31px}
+
+/* 剪同款：2 列 9:16 模板卡 */
+.ttgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ttile{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--sh-1)}
+.ttile .tcov{position:relative;aspect-ratio:9/14;color:#fff;padding:9px;display:flex;flex-direction:column;justify-content:flex-end}
+.ttile .tcov .tctag{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.32);font-size:9px;font-weight:700;
+  border-radius:999px;padding:2px 8px}
+.ttile .tcov .tcdur{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.45);font-size:9px;font-weight:700;
+  border-radius:999px;padding:2px 7px}
+.ttile .tcov .tcovtx{font-size:14px;font-weight:800;line-height:1.35;letter-spacing:-.2px;
+  text-shadow:0 1px 8px rgba(0,0,0,.4);white-space:pre-line}
+.ttile .ttcap{font-size:12px;font-weight:700;color:var(--text);padding:9px 10px 0;line-height:1.35;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.ttile .ttft{display:flex;align-items:center;gap:6px;padding:8px 10px 10px}
+.ttile .ttft .tav{width:20px;height:20px;border-radius:50%;color:#fff;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 20px}
+.ttile .ttft .tname{flex:1;min-width:0;font-size:10px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttile .ttft .tdo{flex:0 0 auto;font-size:10.5px;font-weight:700;color:#fff;background:var(--g-brand);
+  border-radius:999px;padding:4px 11px;cursor:pointer}
+
 /* 自定义条数：点开就在原地长出来，不弹窗不换页 */
 .cnumbox{display:flex;align-items:center;gap:9px;margin-top:9px;background:var(--surface);
          border-radius:12px;box-shadow:var(--sh-1);padding:8px 12px}
@@ -1596,81 +1616,237 @@
 .frl b{font-size:10px;font-weight:600;color:var(--text-2)}
 .frl i{font-style:normal;font-size:8.5px;color:var(--text-4);white-space:nowrap}
 
-/* ========== 素材库 v6：社区化 + 紧凑 ==========
-   外层全压扁（信息条一行、文件夹一行胶囊），省下来的空间全给流。
-   流出三个版本，共用同一批数据。 */
-.tline{display:flex;align-items:center;gap:8px;margin-top:12px;padding:0 2px}
-.tline .av{width:26px;height:26px;border-radius:8px;color:#fff;font-size:11px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;flex:0 0 26px}
-.tline b{font-size:12.5px;font-weight:700}
-.tline span{font-size:10px;color:var(--text-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tline .chg{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--brand);cursor:pointer;flex:0 0 auto}
+/* ========== 素材库 v7：论坛 / 贴吧风格 ==========
+   把"我的 / 好友 / 团队"都做成一座"吧"：吧头顶成员数与身份，公告置顶横条，
+   资料夹 / 成员 / 任务三栏快捷，下面是帖子流（动态/作品/素材都是帖子，任务当置顶帖）。 */
+
+/* 吧头：论坛吧主页的招牌 */
+.barhd{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 13px;
+  border-radius:16px;color:#fff;box-shadow:0 6px 18px rgba(44,91,255,.26)}
+.barhd .bav{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.22);
+  color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 44px}
+.barhd .binfo{flex:1;min-width:0}
+.barhd .binfo b{display:block;font-size:15px;font-weight:800;letter-spacing:-.2px}
+.barhd .binfo i{display:block;font-style:normal;font-size:10.5px;opacity:.9;margin-top:3px}
+.barhd .chg{font-size:11px;font-weight:700;background:rgba(255,255,255,.22);padding:5px 10px;
+  border-radius:999px;cursor:pointer;flex:0 0 auto}
+
+/* 团队切换下拉 */
+.teamsw{background:#fff;border-radius:13px;box-shadow:var(--sh-1);padding:6px;margin-top:8px}
+.teamsw b{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;cursor:pointer;
+  font-size:12px;font-weight:600}
+.teamsw b.on{background:var(--brand-weak);color:var(--brand-ink)}
+.teamsw b i{width:26px;height:26px;border-radius:8px;background:var(--bg-2);font-style:normal;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:0 0 26px}
+.teamsw b em{font-style:normal;margin-left:auto;font-size:10px;color:var(--text-4)}
+
+/* 模块卡片：作品专题（通栏）+ 素材 / 脚本（半栏），点进去看这一类 */
+.mods{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+.mod{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:11px 12px 12px;cursor:pointer;position:relative}
+.mod.hero{grid-column:1 / -1}
+.mod .modh{display:flex;align-items:center;gap:7px}
+.mod .modh .mi{width:24px;height:24px;border-radius:8px;color:#fff;font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex:0 0 24px}
+.mod .modh b{font-size:13px;font-weight:800;color:var(--text)}
+.mod .modh em{font-style:normal;font-size:10.5px;font-weight:700;color:var(--text-4);margin-left:1px}
+.mod .modh .go{margin-left:auto;color:var(--text-4);font-size:15px;font-weight:700;line-height:1}
+.mod .modb{display:flex;gap:6px;margin-top:9px}
+.mod .modb .mth{flex:1;aspect-ratio:1/1;border-radius:9px;position:relative;overflow:hidden;min-width:0}
+.mod.hero .modb .mth{aspect-ratio:auto;height:74px}
+.mod .modb .mth span{position:absolute;left:4px;top:4px;font-size:7.5px;font-weight:700;color:#fff;
+  background:rgba(0,0,0,.3);border-radius:4px;padding:1px 4px}
+.mod .modb.col{flex-direction:column;gap:0}
+.mod .modb .mrow{display:flex;align-items:center;gap:6px;padding:7px 0;font-size:11px;font-weight:600;color:var(--text-2);
+  box-shadow:inset 0 -1px 0 var(--line-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mod .modb .mrow:last-child{box-shadow:none}
+.mod .modb .mrow .d{width:4px;height:4px;border-radius:50%;background:var(--brand);flex:0 0 4px}
+.mod .modb .mem{font-size:10.5px;color:var(--text-4);padding:4px 0}
+.mod .modcap{font-size:10px;color:var(--text-4);margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 顶部数据概览：脚本 / 素材 / 作品 / 今日更新 */
+.statc{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:13px 14px 14px;margin-top:12px}
+.statc .sth{display:flex;align-items:center;gap:10px}
+.statc .sav{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#2C5BFF,#7C5CFF);color:#fff;
+  font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 42px}
+.statc .sav.me{background:linear-gradient(135deg,#7C5CFF,#2C5BFF)}
+.statc .stt{flex:1;min-width:0}
+.statc .stt b{display:block;font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.2px}
+.statc .stt span{display:block;font-size:10.5px;color:var(--text-4);margin-top:3px}
+.statc .chg{font-size:11px;font-weight:700;color:var(--brand);background:var(--brand-weak);border-radius:999px;padding:5px 10px;cursor:pointer;flex:0 0 auto}
+.statc .stg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}
+.statc .stg div{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--bg-2);border-radius:11px;padding:9px 4px;cursor:pointer}
+.statc .stg div.rc{background:transparent;cursor:default}
+.statc .stg div b{font-size:18px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px}
+.statc .stg div span{font-size:9.5px;color:var(--text-4);font-weight:600}
+.statc .stg div.rc b{color:var(--brand)}
+
+/* 公告：紧凑两行，点进通知中心 */
+.ncard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:8px 13px 4px;margin-top:10px}
+.ncard .nh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);padding:5px 0 3px}
+.ncard .nh .ni{width:16px;height:16px;border-radius:5px;background:var(--brand);color:#fff;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex:0 0 16px}
+.ncard .nh .cnt{margin-left:auto;font-size:10px;font-weight:600;color:var(--text-4)}
+.ncard .nr{position:relative;display:block;padding:9px 18px 9px 0;box-shadow:inset 0 1px 0 var(--line-2);cursor:pointer}
+.ncard .nr .nl{display:flex;align-items:center;gap:8px}
+.ncard .nr .nl b{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ncard .nr .nl .tm{font-size:9px;color:var(--text-4);flex:0 0 auto}
+.ncard .nr i{display:block;font-style:normal;font-size:10px;color:var(--text-3);margin-top:3px;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ncard .nr .go{position:absolute;right:2px;top:50%;transform:translateY(-50%);color:var(--text-4);font-size:14px;font-weight:700}
+
+/* 团队任务：比通知更大的进度卡 */
+.tcards{margin-top:12px}
+.tcards .tchd{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-3);margin-bottom:7px}
+.tcards .tchd .cnt{margin-left:auto;font-size:10px;font-weight:600;color:var(--text-4)}
+.taskc{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:12px 13px;margin-bottom:9px;cursor:pointer;
+  border-left:3px solid var(--warm)}
+.taskc.done{border-left-color:var(--line-2);opacity:.72}
+.taskc .tct{display:flex;align-items:center;gap:7px}
+.taskc .tct .tci{width:22px;height:22px;border-radius:7px;background:#FFE9D9;color:#C2410C;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex:0 0 22px}
+.taskc .tct b{flex:1;min-width:0;font-size:13.5px;font-weight:800;color:var(--text);line-height:1.35}
+.taskc .tct em{font-style:normal;font-size:9.5px;font-weight:700;color:#C2410C;background:#FFE9D9;border-radius:999px;padding:2px 8px;flex:0 0 auto}
+.taskc.done .tct em{color:var(--text-4);background:var(--bg-2)}
+.taskc .tcs{font-size:10px;color:var(--text-4);margin-top:7px}
+.taskc .bar{height:6px;border-radius:4px;background:var(--bg-2);overflow:hidden;margin-top:9px}
+.taskc .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#FF9A5B,#FF7A45)}
+.taskc.done .bar i{background:var(--text-4)}
+.taskc .tcf{display:flex;align-items:center;margin-top:8px;font-size:10.5px;color:var(--text-3)}
+.taskc .tcf .tgo2{margin-left:auto;font-size:11.5px;font-weight:800;color:#C2410C}
+
+/* 进入某一类的 tab：最近使用(变更日志)/我精选的/各文件夹 */
+.otabs{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch}
+.otabs::-webkit-scrollbar{display:none}
+.otabs b{flex:0 0 auto;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--text-3);
+  background:#fff;box-shadow:var(--sh-1);border-radius:999px;padding:7px 13px;cursor:pointer;white-space:nowrap}
+.otabs b.on{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(44,91,255,.3)}
+.otabs b em{font-style:normal;font-size:9.5px;font-weight:700;opacity:.65}
+
+/* 只留数字的数据卡（我的） */
+.statc.plain{padding:12px 14px}
+.statc.plain .stg{margin-top:0}
+
+/* 团队任务：一条条，收在同一张卡里（不再割裂） */
+.tlist{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:9px 13px 4px;margin-top:12px}
+.tlist .tlh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);padding:4px 0 5px}
+.tlist .tlh .cnt{margin-left:auto;font-size:10px;font-weight:600;color:var(--text-4)}
+.tlist .tlr{display:block;padding:9px 0;box-shadow:inset 0 1px 0 var(--line-2);cursor:pointer}
+.tlist .tlr .tlt{display:flex;align-items:center;gap:7px}
+.tlist .tlr .tlt b{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--text);line-height:1.35}
+.tlist .tlr .tlt em{font-style:normal;font-size:9px;font-weight:700;color:#C2410C;background:#FFE9D9;border-radius:999px;padding:1px 7px;flex:0 0 auto}
+.tlist .tlr.done .tlt em{color:var(--text-4);background:var(--bg-2)}
+.tlist .tlr .tls{font-size:9.5px;color:var(--text-4);margin-top:4px}
+.tlist .tlr .bar{height:4px;border-radius:3px;background:var(--bg-2);overflow:hidden;margin-top:7px}
+.tlist .tlr .bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#FF9A5B,#FF7A45)}
+.tlist .tlr.done .bar i{background:var(--text-4)}
+.tlist .tlr .tlf{display:flex;align-items:center;margin-top:5px;font-size:9.5px;color:var(--text-3)}
+.tlist .tlr .tgo3{margin-left:auto;font-weight:800;color:#C2410C}
+
+/* 我的好友：每个好友一张小卡，列最近几条库变动 */
+.frc{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:11px 13px 6px;margin-top:9px}
+.frc .frh{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.frc .frh .fav{width:30px;height:30px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 30px}
+.frc .frh b{font-size:13px;font-weight:700;color:var(--text)}
+.frc .frh .frt{margin-left:auto;font-size:9.5px;color:var(--text-4)}
+.frc .fcr{display:flex;align-items:center;gap:7px;padding:8px 0;box-shadow:inset 0 1px 0 var(--line-2);cursor:pointer}
+.frc .fcr .ftag{font-size:8.5px;font-weight:800;border-radius:5px;padding:1px 5px;flex:0 0 auto;letter-spacing:.5px}
+.frc .fcr b{flex:1;min-width:0;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frc .fcr .go{color:var(--text-4);font-size:14px;font-weight:700;flex:0 0 auto}
+.frc .frempty{font-size:10.5px;color:var(--text-4);padding:8px 0}
+
+/* 目录：新建文件夹 + 按文件夹分组 */
+.dirnew{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;background:#fff;border:1px dashed #C7D3F2;
+  border-radius:13px;padding:11px;font-size:12px;font-weight:700;color:var(--brand);cursor:pointer}
+.dirgrp{background:#fff;border-radius:16px;box-shadow:var(--sh-1);padding:11px 13px 8px;margin-top:10px}
+.dirgrp .dirgh{display:flex;align-items:center;gap:7px}
+.dirgrp .dirgh .fi{width:20px;height:20px;border-radius:6px;background:var(--bg-2);color:var(--text-2);font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex:0 0 20px}
+.dirgrp .dirgh b{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--text)}
+.dirgrp .dirgh i{font-style:normal;font-size:10px;font-weight:600;color:var(--text-4)}
+.dirgrp .dirgb{padding:0 1px}
+.dirgrp .gempty{font-size:10.5px;color:var(--text-4);padding:8px 0 4px}
+.dirnew.editing{justify-content:flex-start;gap:8px;border-style:solid;border-color:#DCE4F7;padding:8px 11px}
+.dirnew.editing input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:12.5px;font-weight:600;color:var(--text)}
+.dirnew .ok{flex:0 0 auto;font-size:11.5px;font-weight:800;color:#fff;background:var(--brand);border-radius:999px;padding:6px 13px;cursor:pointer}
+.dirnew .ok.off{background:var(--bg-2);color:var(--text-4);cursor:default}
+.dirnew .cnl{flex:0 0 auto;font-size:11.5px;font-weight:600;color:var(--text-3);cursor:pointer}
+
+/* 删除按钮弱警示 */
+.selbar .sb.warn{color:#C2410C}
+
+/* 团队事务：紧凑置顶卡（公告 / 任务各一行） */
+.affair{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:8px 12px;margin-top:10px}
+.affair .ah{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-2);padding:3px 0 5px}
+.affair .ah .ai{width:16px;height:16px;border-radius:5px;background:var(--warm);color:#fff;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex:0 0 16px}
+.affair .ah em{font-style:normal;margin-left:auto;font-size:10px;font-weight:600;color:var(--text-4)}
+.affair .ar{display:flex;align-items:center;gap:7px;padding:8px 0;cursor:pointer;box-shadow:inset 0 1px 0 var(--line-2)}
+.affair .ar .atag{font-size:8.5px;font-weight:800;border-radius:5px;padding:1px 5px;flex:0 0 auto;letter-spacing:.5px}
+.affair .ar .atag.notice{background:#E6EDFF;color:#2C5BFF}
+.affair .ar .atag.task{background:#FFE3C2;color:#C2410C}
+.affair .ar b{flex:1;min-width:0;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.affair .ar em{font-style:normal;font-size:9.5px;font-weight:700;color:#C2410C;flex:0 0 auto}
+.affair .ar .go{color:var(--text-4);font-size:14px;font-weight:700;flex:0 0 auto}
+
+/* 进到某一类：这类动态的小标题 */
+.dyn{margin-top:12px}
+.dynh{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--text-3);margin-bottom:2px}
+.dynh span{font-size:10px;font-weight:600;color:var(--text-4);background:var(--bg-2);border-radius:999px;padding:1px 7px}
+
+/* 这一类下的文件夹 chips：横滑，点一下就只看这一摞 */
+.fdchips{display:flex;gap:7px;margin-top:10px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.fdchips::-webkit-scrollbar{display:none}
+.fdchips .fchip{flex:0 0 auto;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;
+  color:var(--text-2);background:#fff;box-shadow:var(--sh-1);border-radius:999px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.fdchips .fchip i{font-style:normal;font-size:9.5px;font-weight:700;color:var(--text-4)}
+.fdchips .fchip.on{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(44,91,255,.3)}
+.fdchips .fchip.on i{color:rgba(255,255,255,.85)}
+
+/* 素材详情（E2.3）：9:16 竖版预览，限高避免把下面的底细挤出屏幕 */
+.asset-pv{position:relative;height:400px;width:auto;aspect-ratio:9/16;margin:6px auto 0;border-radius:18px;overflow:hidden;
+  box-shadow:var(--sh-1);display:flex;align-items:center;justify-content:center}
+.asset-pv .ply{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.9);color:#1B3EDB;
+  font-size:20px;display:flex;align-items:center;justify-content:center;padding-left:3px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.asset-pv .dur{position:absolute;right:10px;bottom:10px;font-size:11px;font-weight:700;color:#fff;
+  background:rgba(0,0,0,.42);border-radius:999px;padding:3px 9px}
+
+/* 动态（贴吧的一楼）：更紧凑，去掉评论/赞/浏览，只留"谁干了什么" */
+.thr{background:#fff;border-radius:12px;box-shadow:var(--sh-1);padding:8px 12px;margin-top:7px}
+.thr.tap{cursor:pointer}
+.thr .ta{display:flex;align-items:center;gap:6px}
+.thr .ta .av{width:20px;height:20px;border-radius:50%;color:#fff;font-size:8.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 20px}
+.thr .ta b{font-size:11px;font-weight:700}
+.thr .ta i{font-style:normal;font-size:9.5px;color:var(--text-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52%}
+.thr .ta .tm{margin-left:auto;font-size:9px;color:var(--text-4);flex:0 0 auto}
+.thr .ta .go{margin-left:2px;color:var(--text-4);font-size:14px;font-weight:700;line-height:1}
+.thr .tt{display:flex;align-items:center;gap:6px;margin-top:5px}
+.thr .tt .ttag{font-size:8.5px;font-weight:800;border-radius:5px;padding:1px 5px;flex:0 0 auto;letter-spacing:.5px}
+.thr .tt b{flex:1;min-width:0;font-size:12.5px;font-weight:700;line-height:1.35;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.thr .tn{font-size:10px;color:var(--text-3);margin-top:3px;line-height:1.4;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* 置顶帖：公告（蓝）与任务（橙），钉在最前 */
+.thr.pin{border-radius:12px;padding:9px 12px;margin-top:7px}
+.thr.pin.notice{background:linear-gradient(120deg,#EAF1FF,#E6F7FF);border:1px solid #BBD4FF}
+.thr.pin.notice .tpin{color:var(--brand)}
+.thr.pin.notice .tgo{background:var(--brand)}
+.thr.pin:not(.notice){background:linear-gradient(120deg,#FFF4EC,#FFE9F0);border:1px solid #FFD9C2}
+.thr.pin .tpin{font-size:9px;font-weight:800;color:#C2410C;letter-spacing:.5px;margin-bottom:4px}
+.thr.pin .tt{margin-top:6px}
+.thr.pin .tt b{font-size:12.5px;font-weight:800;color:#7A3B06}
+.thr.pin .tprog{margin-left:6px;font-size:9px;font-weight:700;color:#C2410C}
+.thr.pin .tn{color:#9A5A2A;margin-top:3px}
+.thr.pin .tgo{display:inline-block;margin-top:7px;font-size:11px;font-weight:800;color:#fff;
+  background:var(--warm);border-radius:999px;padding:5px 13px;cursor:pointer}
+
+/* 动态区标题 */
+.feedhd{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:11.5px;font-weight:700;color:var(--text-3)}
+.feedhd:first-child{margin-top:12px}
+.feedhd span{font-size:10px;font-weight:600;color:var(--text-4);background:var(--bg-2);border-radius:999px;padding:1px 7px}
 
 /* 搜索框压到 36px：它是常驻控件，但不需要 44px 那么高 */
 .gsearch.compact{height:36px;padding:0 13px;font-size:12px}
 .gsearch.compact .mag{font-size:13px}
-
-/* 三个文件夹压成一行胶囊 */
-.kpill{display:flex;gap:7px;margin-top:10px}
-.kpill b{flex:1;display:flex;align-items:center;gap:5px;background:#fff;border-radius:10px;
-  box-shadow:var(--sh-1);padding:7px 9px;font-size:11px;font-weight:600;color:var(--text-2);cursor:pointer}
-.kpill b i{width:18px;height:18px;border-radius:6px;color:#fff;font-size:9px;font-weight:700;
-  font-style:normal;display:flex;align-items:center;justify-content:center;flex:0 0 18px}
-.kpill b em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:800;color:var(--text)}
-
-/* 任务 / 通知压成一条：要看得见，但不该占掉第一屏 */
-.prompt{display:flex;align-items:center;gap:9px;background:#fff;border-radius:12px;
-  box-shadow:var(--sh-1);padding:9px 11px;margin-top:8px}
-.prompt .pi{width:24px;height:24px;border-radius:8px;display:flex;align-items:center;
-  justify-content:center;font-size:11px;font-weight:700;flex:0 0 24px}
-.prompt .tx{flex:1;min-width:0}
-.prompt .tx b{display:block;font-size:11.5px;font-weight:700}
-.prompt .tx span{display:block;font-size:9.5px;color:var(--text-4);margin-top:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prompt .go{font-size:10.5px;font-weight:700;color:var(--brand);flex:0 0 auto;cursor:pointer}
-
-/* ---- A：卡片流 ---- */
-.flist{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-.fcard{background:#fff;border-radius:16px;box-shadow:var(--sh-1);overflow:hidden;cursor:pointer}
-.fcard .fh{display:flex;align-items:center;gap:8px;padding:10px 12px 8px}
-.fcard .fh .av{width:26px;height:26px;border-radius:50%;color:#fff;font-size:10.5px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;flex:0 0 26px}
-.fcard .fh .hn{flex:1;min-width:0;display:flex;align-items:baseline;gap:5px}
-.fcard .fh .hn b{font-size:11.5px;font-weight:700}
-.fcard .fh .hn i{font-style:normal;font-size:10px;color:var(--text-4);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fcard .fh .tm{font-size:9.5px;color:var(--text-4);flex:0 0 auto}
-.fcard .fim{height:96px;margin:0 12px;border-radius:11px;color:rgba(255,255,255,.92);
-  display:flex;align-items:center;justify-content:center;gap:7px;font-size:26px}
-.fcard .fim em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:1px;opacity:.85}
-.fcard .fb{padding:9px 12px 0}
-.fcard .fb b{display:block;font-size:12.5px;font-weight:700;line-height:1.35}
-.fcard .fb span{display:block;font-size:10px;color:var(--text-4);margin-top:3px}
-.fcard .fi{display:flex;gap:14px;padding:8px 12px 11px;font-size:10px;color:var(--text-3)}
-
-/* ---- B：双列瀑布 ---- */
-.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
-.bcard{background:#fff;border-radius:14px;box-shadow:var(--sh-1);overflow:hidden;cursor:pointer}
-.bcard .th{height:88px;color:rgba(255,255,255,.92);font-size:22px;
-  display:flex;align-items:center;justify-content:center}
-.bcard b{display:block;padding:8px 9px 0;font-size:11px;font-weight:600;line-height:1.35;
-  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.bcard .by{display:flex;align-items:center;gap:5px;padding:6px 9px 9px;font-size:9.5px;color:var(--text-4)}
-.bcard .by .av{width:15px;height:15px;border-radius:50%;color:#fff;font-size:8px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;flex:0 0 15px}
-
-/* ---- C：紧凑时间线 ---- */
-.clist{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:2px 12px;margin-top:12px}
-.crow{display:flex;align-items:center;gap:9px;padding:8px 0;cursor:pointer}
-.crow+.crow{box-shadow:inset 0 1px 0 var(--line-2)}
-.crow .th{width:34px;height:40px;border-radius:8px;color:rgba(255,255,255,.92);font-size:15px;
-  display:flex;align-items:center;justify-content:center;flex:0 0 38px}
-.crow .tx{flex:1;min-width:0}
-.crow .tx b{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;line-height:1.35}
-.crow .tx b .av{width:15px;height:15px;border-radius:50%;color:#fff;font-size:8px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;flex:0 0 15px}
-.crow .tx b .pin{font-style:normal;font-size:8px;font-weight:700;color:var(--brand-ink);
-  background:var(--brand-weak);border-radius:4px;padding:1px 4px}
-.crow .tx span{display:block;font-size:10px;color:var(--text-4);margin-top:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.crow .tm{font-size:9px;color:var(--text-4);flex:0 0 auto}

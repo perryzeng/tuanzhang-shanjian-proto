@@ -864,14 +864,14 @@ window.DATA = {
       tm_1: [
         { d: "今天", t: "09:20", type: "notice", who: "总部", act: "改了团价口径", extra: "磷虾油团价下调 8 元，脚本里的价格要改", pin: true, go: "E5" },
         { d: "今天", t: "08:05", type: "task", who: "系统", act: "派了一个任务", extra: "本周 3 条待发 · 2 条今天到期", go: "E4" },
-        { d: "昨天", t: "21:10", type: "work", who: "阿玲", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3" },
-        { d: "昨天", t: "16:32", type: "asset", who: "阿强", act: "上传了 3 条素材", extra: "仓库实拍 / 打包现场", go: "" },
-        { d: "前天", t: "10:00", type: "script", who: "总部", act: "更新了脚本", extra: "总部 10 月口径（必用）", go: "" },
+        { d: "昨天", t: "21:10", type: "work", who: "阿玲", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3", item: "li_tw1" },
+        { d: "昨天", t: "16:32", type: "asset", who: "阿强", act: "上传了 3 条素材", extra: "仓库实拍 / 打包现场", go: "", item: "li_ta4" },
+        { d: "前天", t: "10:00", type: "script", who: "总部", act: "更新了脚本", extra: "总部 10 月口径（必用）", go: "", item: "li_ts1" },
         { d: "前天", t: "09:12", type: "member", who: "小雨", act: "加入了团队", extra: "现在是第 12 位成员", go: "" }
       ],
       tm_2: [
         { d: "今天", t: "10:40", type: "notice", who: "联盟运营", act: "发了公告", extra: "12 月排期开始报名", pin: true, go: "E5" },
-        { d: "昨天", t: "19:20", type: "work", who: "小雨", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3" },
+        { d: "昨天", t: "19:20", type: "work", who: "小雨", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3", item: "li_tw2" },
         { d: "昨天", t: "14:05", type: "task", who: "系统", act: "派了一个任务", extra: "本月 5 条 · 还差 2 条", go: "E4" }
       ]
     },
@@ -883,20 +883,20 @@ window.DATA = {
       { id: "fr_3", name: "小雨", av: "雨", bg: "#00B389", note: "今天更新" }
     ],
     friendFeed: [
-      { d: "今天", t: "10:12", who: "小雨", type: "work", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3" },
-      { d: "今天", t: "09:30", who: "阿玲", type: "asset", act: "上传了 2 条素材", extra: "素颜出镜 · 拆快递", go: "" },
-      { d: "昨天", t: "18:40", who: "阿强", type: "script", act: "分享了一份脚本", extra: "信任背书口播 v2", go: "" },
-      { d: "前天", t: "11:05", who: "阿玲", type: "work", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3" }
+      { d: "今天", t: "10:12", who: "小雨", type: "work", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3", item: "li_fw1" },
+      { d: "今天", t: "09:30", who: "阿玲", type: "asset", act: "上传了 2 条素材", extra: "素颜出镜 · 拆快递", go: "", item: "li_fa1" },
+      { d: "昨天", t: "18:40", who: "阿强", type: "script", act: "分享了一份脚本", extra: "信任背书口播 v2", go: "", item: "li_fs1" },
+      { d: "前天", t: "11:05", who: "阿玲", type: "work", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3", item: "li_fw2" }
     ],
 
     /* 我的动态：只记"我自己干了什么"，不掺别人的事。
        放它的理由是——素材库不只是仓库，它也是"我最近在忙什么"的镜子：
        昨天传了三条素颜视频、今天用了开团话术，这些比"共 12 个"更能帮人找回上下文。 */
     mineFeed: [
-      { t: "今天", type: "asset", act: "上传了 3 条素材", extra: "素颜出镜 · 早上", go: "" },
-      { t: "今天", type: "script", act: "用了「开团话术 3 连问」", extra: "生成了一条片子", go: "B2?kind=script&src=import" },
+      { t: "今天", type: "asset", act: "上传了 3 条素材", extra: "素颜出镜 · 早上", go: "", item: "li_a8" },
+      { t: "今天", type: "script", act: "用了「开团话术 3 连问」", extra: "生成了一条片子", go: "B2?kind=script&src=import", item: "li_s1" },
       { t: "昨天", type: "folder", act: "新建了文件夹", extra: "素颜视频", go: "" },
-      { t: "昨天", type: "work", act: "收藏了一个作品", extra: "阿玲的复购实录", go: "F3" }
+      { t: "昨天", type: "work", act: "收藏了一个作品", extra: "阿玲的复购实录", go: "F3", item: "li_w4" }
     ],
 
     /* 团队 tab 顶上的四宫格：公告 / 动态 / 任务 / 成员。
@@ -1018,65 +1018,65 @@ window.DATA = {
     /* at：几天前（1 = 今天），排序"最新"用；hot：使用/播放热度，"最热"用；pick：精选 */
     items: {
       "mine.script": [
-        { id: "li_s1", name: "开团话术 3 连问", sub: "5 段 · 46 秒", fd: "fd_s1", at: 2, hot: 86, pick: true },
-        { id: "li_s2", name: "先别买 · 反转开场", sub: "4 段 · 38 秒", fd: "fd_s1", at: 6, hot: 92, pick: true },
-        { id: "li_s3", name: "开团最后 3 小时", sub: "3 段 · 26 秒", fd: "fd_s1", at: 11, hot: 64 },
-        { id: "li_s4", name: "500mg 到底算不算高", sub: "4 段 · 41 秒", fd: "fd_s2", at: 1, hot: 78, pick: true },
-        { id: "li_s5", name: "跟鱼油比差在哪", sub: "5 段 · 48 秒", fd: "fd_s2", at: 9, hot: 71 },
-        { id: "li_s6", name: "老客回购提醒", sub: "3 段 · 24 秒", fd: "fd_s3", at: 4, hot: 58 },
-        { id: "li_s7", name: "吃完一盒该说什么", sub: "4 段 · 33 秒", fd: "fd_s3", at: 15, hot: 43 }
+        { id: "li_s1", name: "开团话术 3 连问", sub: "5 段 · 46 秒", fd: "fd_s1", at: 2, hot: 86, pick: true, by: "我" },
+        { id: "li_s2", name: "先别买 · 反转开场", sub: "4 段 · 38 秒", fd: "fd_s1", at: 6, hot: 92, pick: true, by: "我" },
+        { id: "li_s3", name: "开团最后 3 小时", sub: "3 段 · 26 秒", fd: "fd_s1", at: 11, hot: 64, by: "我" },
+        { id: "li_s4", name: "500mg 到底算不算高", sub: "4 段 · 41 秒", fd: "fd_s2", at: 1, hot: 78, pick: true, by: "我" },
+        { id: "li_s5", name: "跟鱼油比差在哪", sub: "5 段 · 48 秒", fd: "fd_s2", at: 9, hot: 71, by: "我" },
+        { id: "li_s6", name: "老客回购提醒", sub: "3 段 · 24 秒", fd: "fd_s3", at: 4, hot: 58, by: "我" },
+        { id: "li_s7", name: "吃完一盒该说什么", sub: "4 段 · 33 秒", fd: "fd_s3", at: 15, hot: 43, by: "我" }
       ],
       "mine.asset": [
-        { id: "li_a1", name: "产品摆台", sub: "12 次使用", fd: "fd_a1", at: 3, hot: 96, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
-        { id: "li_a2", name: "开箱空镜", sub: "8 次使用", fd: "fd_a1", at: 5, hot: 88, pick: true, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" },
-        { id: "li_a3", name: "成分特写", sub: "6 次使用", fd: "fd_a1", at: 12, hot: 74, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)" },
-        { id: "li_a4", name: "手拿产品", sub: "3 次使用", fd: "fd_a1", at: 18, hot: 61, bg: "linear-gradient(150deg,#00C2FF,#8FE3FF)" },
-        { id: "li_a5", name: "平台介绍片头", sub: "5 秒 · 竖版", fd: "fd_a2", at: 1, hot: 52, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)" },
-        { id: "li_a6", name: "资质展示", sub: "8 秒 · 竖版", fd: "fd_a2", at: 21, hot: 46, bg: "linear-gradient(150deg,#5B8CFF,#8FB0FF)" },
-        { id: "li_a7", name: "总部背书讲解", sub: "12 秒 · 竖版", fd: "fd_a2", at: 26, hot: 39, bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)" },
-        { id: "li_a8", name: "素颜出镜 · 早上", sub: "9 秒 · 竖版", fd: "fd_a3", at: 2, hot: 81, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FFC85B)" },
-        { id: "li_a9", name: "素颜出镜 · 晚上", sub: "7 秒 · 竖版", fd: "fd_a3", at: 8, hot: 67, bg: "linear-gradient(150deg,#F5A623,#FFC85B)" },
-        { id: "li_a10", name: "素颜出镜 · 拆快递", sub: "11 秒 · 竖版", fd: "fd_a3", at: 14, hot: 55, bg: "linear-gradient(150deg,#C71F37,#FF7A45)" },
-        { id: "li_a11", name: "我的照片 12 张", sub: "画中画专用", fd: "fd_a4", at: 7, hot: 63, bg: "linear-gradient(150deg,#7C5CFF,#2C5BFF)", go: "E2.1" },
-        { id: "li_a12", name: "我的小视频 3 段", sub: "画中画专用", fd: "fd_a4", at: 20, hot: 48, bg: "linear-gradient(150deg,#2C5BFF,#7C5CFF)", go: "E2.1" }
+        { id: "li_a1", name: "产品摆台", sub: "12 次使用", fd: "fd_a1", at: 3, hot: 96, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)", by: "我" },
+        { id: "li_a2", name: "开箱空镜", sub: "8 次使用", fd: "fd_a1", at: 5, hot: 88, pick: true, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)", by: "我" },
+        { id: "li_a3", name: "成分特写", sub: "6 次使用", fd: "fd_a1", at: 12, hot: 74, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", by: "我" },
+        { id: "li_a4", name: "手拿产品", sub: "3 次使用", fd: "fd_a1", at: 18, hot: 61, bg: "linear-gradient(150deg,#00C2FF,#8FE3FF)", by: "我" },
+        { id: "li_a5", name: "平台介绍片头", sub: "5 秒 · 竖版", fd: "fd_a2", at: 1, hot: 52, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", by: "我" },
+        { id: "li_a6", name: "资质展示", sub: "8 秒 · 竖版", fd: "fd_a2", at: 21, hot: 46, bg: "linear-gradient(150deg,#5B8CFF,#8FB0FF)", by: "我" },
+        { id: "li_a7", name: "总部背书讲解", sub: "12 秒 · 竖版", fd: "fd_a2", at: 26, hot: 39, bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)", by: "我" },
+        { id: "li_a8", name: "素颜出镜 · 早上", sub: "9 秒 · 竖版", fd: "fd_a3", at: 2, hot: 81, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FFC85B)", by: "我" },
+        { id: "li_a9", name: "素颜出镜 · 晚上", sub: "7 秒 · 竖版", fd: "fd_a3", at: 8, hot: 67, bg: "linear-gradient(150deg,#F5A623,#FFC85B)", by: "我" },
+        { id: "li_a10", name: "素颜出镜 · 拆快递", sub: "11 秒 · 竖版", fd: "fd_a3", at: 14, hot: 55, bg: "linear-gradient(150deg,#C71F37,#FF7A45)", by: "我" },
+        { id: "li_a11", name: "我的照片 12 张", sub: "画中画专用", fd: "fd_a4", at: 7, hot: 63, bg: "linear-gradient(150deg,#7C5CFF,#2C5BFF)", go: "E2.1", by: "我" },
+        { id: "li_a12", name: "我的小视频 3 段", sub: "画中画专用", fd: "fd_a4", at: 20, hot: 48, bg: "linear-gradient(150deg,#2C5BFF,#7C5CFF)", go: "E2.1", by: "我" }
       ],
       "mine.work": [
-        { id: "li_w1", name: "磷虾油今晚开团，3 步选对不踩坑", sub: "1280 播放 · 今天 20:14", fd: "fd_w1", at: 1, hot: 94, pick: true, bg: "linear-gradient(160deg,#2C5BFF,#0E2A6B)", go: "B4.1" },
-        { id: "li_w2", name: "我妈吃了三个月，睡眠真的好了", sub: "860 播放 · 昨天", fd: "fd_w1", at: 2, hot: 87, bg: "linear-gradient(150deg,#00A8E8,#2C5BFF)", go: "B4.1" },
-        { id: "li_w3", name: "开箱 · 一盒里有几粒", sub: "420 播放 · 3 天前", fd: "fd_w1", at: 4, hot: 62, bg: "linear-gradient(150deg,#7C5CFF,#5B8CFF)", go: "B4.1" },
-        { id: "li_w4", name: "阿玲的复购实录", sub: "收藏 · 12.4 万播放", fd: "fd_w2", at: 9, hot: 99, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FF3D6E)", go: "F3" },
-        { id: "li_w5", name: "成分讲解天花板", sub: "收藏 · 8.6 万播放", fd: "fd_w2", at: 16, hot: 91, bg: "linear-gradient(150deg,#C71F37,#7A1020)", go: "F3" }
+        { id: "li_w1", name: "磷虾油今晚开团，3 步选对不踩坑", sub: "1280 播放 · 今天 20:14", fd: "fd_w1", at: 1, hot: 94, pick: true, bg: "linear-gradient(160deg,#2C5BFF,#0E2A6B)", go: "B4.1", by: "我" },
+        { id: "li_w2", name: "我妈吃了三个月，睡眠真的好了", sub: "860 播放 · 昨天", fd: "fd_w1", at: 2, hot: 87, bg: "linear-gradient(150deg,#00A8E8,#2C5BFF)", go: "B4.1", by: "我" },
+        { id: "li_w3", name: "开箱 · 一盒里有几粒", sub: "420 播放 · 3 天前", fd: "fd_w1", at: 4, hot: 62, bg: "linear-gradient(150deg,#7C5CFF,#5B8CFF)", go: "B4.1", by: "我" },
+        { id: "li_w4", name: "阿玲的复购实录", sub: "收藏 · 12.4 万播放", fd: "fd_w2", at: 9, hot: 99, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FF3D6E)", go: "F3", by: "阿玲" },
+        { id: "li_w5", name: "成分讲解天花板", sub: "收藏 · 8.6 万播放", fd: "fd_w2", at: 16, hot: 91, bg: "linear-gradient(150deg,#C71F37,#7A1020)", go: "F3", by: "阿强" }
       ],
       "team.script": [
-        { id: "li_ts1", name: "总部 10 月口径（必用）", sub: "5 段 · 50 秒 · 品牌锁定", fd: "fd_ts1", at: 2, hot: 100, pick: true },
-        { id: "li_ts2", name: "团价说明模板", sub: "3 段 · 28 秒", fd: "fd_ts1", at: 5, hot: 82, pick: true },
-        { id: "li_ts3", name: "开箱带货结构", sub: "5 段骨架 · 可套任何品", fd: "fd_ts2", at: 13, hot: 76 }
+        { id: "li_ts1", name: "总部 10 月口径（必用）", sub: "5 段 · 50 秒 · 品牌锁定", fd: "fd_ts1", at: 2, hot: 100, pick: true, by: "总部" },
+        { id: "li_ts2", name: "团价说明模板", sub: "3 段 · 28 秒", fd: "fd_ts1", at: 5, hot: 82, pick: true, by: "总部" },
+        { id: "li_ts3", name: "开箱带货结构", sub: "5 段骨架 · 可套任何品", fd: "fd_ts2", at: 13, hot: 76, by: "阿玲" }
       ],
       "team.asset": [
-        { id: "li_ta1", name: "品牌宣传片", sub: "60 秒 · 横版", fd: "fd_ta1", at: 6, hot: 88, pick: true, bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)" },
-        { id: "li_ta2", name: "总部产品图 24 张", sub: "白底 + 场景", fd: "fd_ta2", at: 3, hot: 91, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
-        { id: "li_ta3", name: "质检报告截图", sub: "可直接贴画面", fd: "fd_ta2", at: 11, hot: 69, bg: "linear-gradient(150deg,#5B8CFF,#8FB0FF)" },
-        { id: "li_ta4", name: "仓库发货实拍", sub: "15 秒 · 竖版", fd: "fd_ta3", at: 19, hot: 57, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" }
+        { id: "li_ta1", name: "品牌宣传片", sub: "60 秒 · 横版", fd: "fd_ta1", at: 6, hot: 88, pick: true, bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)", by: "总部" },
+        { id: "li_ta2", name: "总部产品图 24 张", sub: "白底 + 场景", fd: "fd_ta2", at: 3, hot: 91, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)", by: "总部" },
+        { id: "li_ta3", name: "质检报告截图", sub: "可直接贴画面", fd: "fd_ta2", at: 11, hot: 69, bg: "linear-gradient(150deg,#5B8CFF,#8FB0FF)", by: "总部" },
+        { id: "li_ta4", name: "仓库发货实拍", sub: "15 秒 · 竖版", fd: "fd_ta3", at: 19, hot: 57, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)", by: "阿强" }
       ],
       "team.work": [
-        { id: "li_tw1", name: "阿玲爆款 · 开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_tw1", at: 4, hot: 98, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3" },
-        { id: "li_tw2", name: "阿强 · 客户复购实录", sub: "8.6 万播放", fd: "fd_tw1", at: 10, hot: 90, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3" }
+        { id: "li_tw1", name: "阿玲爆款 · 开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_tw1", at: 4, hot: 98, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3", by: "阿玲" },
+        { id: "li_tw2", name: "阿强 · 客户复购实录", sub: "8.6 万播放", fd: "fd_tw1", at: 10, hot: 90, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3", by: "阿强" }
       ],
       "friend.script": [
-        { id: "li_fs1", name: "信任背书口播 v2", sub: "4 段 · 40 秒", fd: "fd_fs1", at: 2, hot: 70, pick: true },
-        { id: "li_fs2", name: "换季话术 3 句", sub: "3 段 · 25 秒", fd: "fd_fs1", at: 6, hot: 62 },
-        { id: "li_fs3", name: "先讲问题再讲产品", sub: "5 段 · 48 秒", fd: "fd_fs2", at: 9, hot: 55 }
+        { id: "li_fs1", name: "信任背书口播 v2", sub: "4 段 · 40 秒", fd: "fd_fs1", at: 2, hot: 70, pick: true, by: "阿玲" },
+        { id: "li_fs2", name: "换季话术 3 句", sub: "3 段 · 25 秒", fd: "fd_fs1", at: 6, hot: 62, by: "阿玲" },
+        { id: "li_fs3", name: "先讲问题再讲产品", sub: "5 段 · 48 秒", fd: "fd_fs2", at: 9, hot: 55, by: "阿强" }
       ],
       "friend.asset": [
-        { id: "li_fa1", name: "素颜出镜 · 拆快递", sub: "9 秒 · 竖版", fd: "fd_fa1", at: 1, hot: 76, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FFC85B)" },
-        { id: "li_fa2", name: "手部特写 · 拧瓶盖", sub: "3 秒 · 竖版", fd: "fd_fa1", at: 7, hot: 58, bg: "linear-gradient(150deg,#F5A623,#FFC85B)" },
-        { id: "li_fa3", name: "仓库打包现场", sub: "15 秒 · 竖版", fd: "fd_fa2", at: 11, hot: 49, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" },
-        { id: "li_fa4", name: "客户收货反馈截图", sub: "8 张", fd: "fd_fa2", at: 16, hot: 44, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" }
+        { id: "li_fa1", name: "素颜出镜 · 拆快递", sub: "9 秒 · 竖版", fd: "fd_fa1", at: 1, hot: 76, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FFC85B)", by: "阿玲" },
+        { id: "li_fa2", name: "手部特写 · 拧瓶盖", sub: "3 秒 · 竖版", fd: "fd_fa1", at: 7, hot: 58, bg: "linear-gradient(150deg,#F5A623,#FFC85B)", by: "阿玲" },
+        { id: "li_fa3", name: "仓库打包现场", sub: "15 秒 · 竖版", fd: "fd_fa2", at: 11, hot: 49, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)", by: "阿强" },
+        { id: "li_fa4", name: "客户收货反馈截图", sub: "8 张", fd: "fd_fa2", at: 16, hot: 44, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)", by: "阿强" }
       ],
       "friend.work": [
-        { id: "li_fw1", name: "换季话术 · 3 句话讲完", sub: "8.6 万播放", fd: "fd_fw1", at: 1, hot: 92, pick: true, bg: "linear-gradient(150deg,#00A8E8,#5B8CFF)", go: "F3" },
-        { id: "li_fw2", name: "开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_fw1", at: 5, hot: 95, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3" },
-        { id: "li_fw3", name: "客户复购实录 · 第 3 次买", sub: "8.6 万播放", fd: "fd_fw1", at: 12, hot: 84, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3" }
+        { id: "li_fw1", name: "换季话术 · 3 句话讲完", sub: "8.6 万播放", fd: "fd_fw1", at: 1, hot: 92, pick: true, bg: "linear-gradient(150deg,#00A8E8,#5B8CFF)", go: "F3", by: "小雨" },
+        { id: "li_fw2", name: "开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_fw1", at: 5, hot: 95, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3", by: "阿玲" },
+        { id: "li_fw3", name: "客户复购实录 · 第 3 次买", sub: "8.6 万播放", fd: "fd_fw1", at: 12, hot: 84, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3", by: "阿强" }
       ]
     }
   },

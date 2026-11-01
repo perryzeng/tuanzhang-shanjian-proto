@@ -1,65 +1,55 @@
 window.PAGES["F1"].render = function () {
   const C = window.C, G = window.G;
 
-  const tile = (bg, tx, sub, go) =>
-    `<div class="tile" data-go="${go}" data-label="${tx}">
-      <div class="im" style="aspect-ratio:3/4;background:${bg}">
-        <span style="background:rgba(0,0,0,.3);border-radius:6px;padding:2px 6px">${sub}</span>
+  /* 剪同款：平台运营的"可抄作业"库。分四类内容——视频模板 / 封面 / 脚本 / 主题，
+     每个分类是一个横向可滑的 chip，下面是 2 列 9:16 模板卡，右下角「做同款」。 */
+
+  const TABS = [
+    ["hot", "🔥", "热门"],
+    ["video", "▶", "视频模板"],
+    ["cover", "▤", "封面"],
+    ["script", "≡", "脚本"],
+    ["topic", "◈", "主题"]
+  ];
+
+  /* 模板卡：封面 + 标题 + 作者 + 做同款 */
+  const card = (t) => `
+    <div class="ttile">
+      <div class="tcov" style="background:${t.bg}">
+        ${t.tag ? `<span class="tctag">${t.tag}</span>` : ""}
+        <span class="tcdur">${t.dur}</span>
+        <div class="tcovtx">${t.cap}</div>
       </div>
-      <div class="cap"><b>${tx}</b><span>1.2 万人用过</span></div>
+      <div class="ttcap">${t.title}</div>
+      <div class="ttft">
+        <span class="tav" style="background:${t.avbg}">${t.av}</span>
+        <span class="tname">${t.by}</span>
+        <span class="tdo" data-go="F3" data-label="做同款 · ${t.title}">做同款</span>
+      </div>
     </div>`;
+
+  const FEED = [
+    { bg: G("#FF7A9C", "#FF3D6E"), cap: "美业人必看\n好业绩的关键", title: "经典 · 可换色", dur: "0:32", by: "小晓说房", av: "晓", avbg: G("#FF7A45", "#FF3D6E"), tag: "爆款", hot: true },
+    { bg: G("#7C5CFF", "#B08CFF"), cap: "明星同款\n高级红 · 双语", title: "高级红 · 双语", dur: "0:28", by: "阿北选款小店", av: "北", avbg: G("#7C5CFF", "#2C5BFF"), tag: "", hot: true },
+    { bg: G("#FFB648", "#FF7A45"), cap: "包包脸速退！\n私域运营", title: "素雅姜红", dur: "0:41", by: "阿黎妈咪", av: "黎", avbg: G("#F5A623", "#FFC85B"), tag: "", hot: true },
+    { bg: G("#00C2FF", "#2C5BFF"), cap: "开小拍\n一镜到底", title: "秀丽 · 可换色", dur: "0:35", by: "美甲小贝", av: "贝", avbg: G("#00A8E8", "#00C2FF"), tag: "", hot: false },
+    { bg: G("#5B8CFF", "#8FB0FF"), cap: "私域秘籍\n照抄就出单", title: "营销口播 v3", dur: "0:30", by: "阿玲", av: "玲", avbg: G("#2C5BFF", "#5B8CFF"), tag: "团队", hot: false },
+    { bg: G("#00B389", "#00C2FF"), cap: "哈喽\nHello everyone", title: "开场双语钩子", dur: "0:18", by: "小雨", av: "雨", avbg: G("#00B389", "#00C2FF"), tag: "", hot: false }
+  ];
+
+  const chips = TABS.map(([k, ic, tx]) =>
+    `<span class="chip${k === "hot" ? " on" : ""}">${ic} ${tx}</span>`).join("");
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ k: "创意广场", t: "抄作业的地方", act: `<span class="btn-pill line">我的收藏</span>` })}
+    ${C.ph({ k: "剪同款", t: "同行都在拍，一键做同款", act: `<span class="btn-pill line">＋ 发布</span>` })}
 
-    <div class="body">
-      <div class="gsearch"><span class="mag">⌕</span><span>搜模板、脚本、主题</span></div>
+    <div class="body" style="padding-bottom:100px">
+      <div class="gsearch"><span class="mag">⌕</span><span>搜模板、脚本、封面、主题</span></div>
 
-      <div class="chips" style="margin-bottom:14px">
-        <span class="chip on">全部</span><span class="chip">磷虾油</span><span class="chip">大健康</span>
-        <span class="chip">开箱</span><span class="chip">口播</span><span class="chip">晒单</span>
-      </div>
+      <div class="chips" style="margin-bottom:14px">${chips}</div>
 
-      <div class="card" style="padding:0;overflow:hidden;cursor:pointer" data-go="F3" data-label="本周爆款第一名">
-        <div style="height:168px;background:${G("#7C5CFF", "#B08CFF")};position:relative">
-          <span style="position:absolute;left:12px;top:12px;background:rgba(255,255,255,.92);color:#5B3FD1;font-size:10px;font-weight:700;border-radius:999px;padding:3px 9px">本周 Top1</span>
-          <span style="position:absolute;right:12px;top:12px;background:rgba(0,0,0,.35);color:#fff;font-size:10px;border-radius:999px;padding:3px 9px">8.6 万播放</span>
-        </div>
-        <div style="padding:14px">
-          <div class="h2">磷虾油 3 段式 · 信任版</div>
-          <div class="s" style="margin-top:6px">3 段 40 秒，开场提问 + 使用感受 + 开团。已 128 人使用。</div>
-          <div class="row" style="gap:8px;margin-top:12px">
-            <div style="width:28px;height:28px;border-radius:50%;background:${G("#2C5BFF", "#5B8CFF")};color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center">玲</div>
-            <span class="xs">阿玲 · 团队 Top1</span>
-            <span class="btn-pill" style="margin-left:auto">用同款</span>
-          </div>
-        </div>
-      </div>
-
-      ${C.sec("主题合集", "全部")}
-      <div class="g2" style="margin-bottom:10px">
-        <div class="card" style="padding:14px;background:${G("#2C5BFF", "#5B8CFF")};color:#fff;cursor:pointer" data-go="F3" data-label="开箱实拍合集">
-          <div style="font-size:13.5px;font-weight:700">开箱实拍</div>
-          <div style="font-size:11px;opacity:.78;margin-top:5px">8 个模板 · 3.2 万人用过</div>
-        </div>
-        <div class="card" style="padding:14px;background:${G("#00A8E8", "#00C2FF")};color:#fff;cursor:pointer" data-go="F3" data-label="口播讲解合集">
-          <div style="font-size:13.5px;font-weight:700">口播讲解</div>
-          <div style="font-size:11px;opacity:.78;margin-top:5px">12 个模板 · 2.6 万人用过</div>
-        </div>
-      </div>
-
-      ${C.sec("大家都在用")}
-      <div class="g3">
-        ${tile(G("#2C5BFF", "#00C2FF"), "成分拆解", "6 段", "F3")}
-        ${tile(G("#7C5CFF", "#B08CFF"), "晒单合集", "4 段", "F3")}
-        ${tile(G("#00A8E8", "#7C5CFF"), "对比测评", "5 段", "F3")}
-      </div>
-      <div class="g3" style="margin-top:10px">
-        ${tile(G("#5B8CFF", "#8FB0FF"), "开团倒计时", "3 段", "F3")}
-        ${tile(G("#2C5BFF", "#5B8CFF"), "长辈关心的点", "4 段", "F3")}
-        ${tile(G("#00C2FF", "#8FE3FF"), "囤货攻略", "5 段", "F3")}
-      </div>
+      <div class="ttgrid">${FEED.map(card).join("")}</div>
     </div>
 
     ${C.tab("F1")}
