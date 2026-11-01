@@ -530,26 +530,26 @@ window.DATA = {
     audience: {
       conf: "ask", label: "讲给谁", value: "both", note: "决定开头 3 秒要不要先解释这是什么",
       opts: [
-        { id: "old", tx: "老客为主" },
-        { id: "new", tx: "新客为主" },
-        { id: "both", tx: "两类都要" }
+        { id: "old", tx: "老客为主", say: "主要讲给已经买过的老客" },
+        { id: "new", tx: "新客为主", say: "主要讲给还没买过的人" },
+        { id: "both", tx: "两类都要", say: "老客和新客都要照顾到" }
       ]
     },
     focus: {
       conf: "ask", label: "这次的重点", value: "price", note: "一条只讲一件事，多了记不住",
       opts: [
-        { id: "price", tx: "开团·价格" },
-        { id: "ingredient", tx: "成分·含量" },
-        { id: "how", tx: "怎么吃" },
-        { id: "why", tx: "为什么选它" }
+        { id: "price", tx: "开团·价格", say: "重点是开团时间和团价" },
+        { id: "ingredient", tx: "成分·含量", say: "重点讲成分和含量" },
+        { id: "how", tx: "怎么吃", say: "重点讲怎么吃、吃多久" },
+        { id: "why", tx: "为什么选它", say: "重点讲为什么选它" }
       ]
     },
     price: {
       conf: "ask", label: "带不带价格", value: "yes", note: "健康品类的价必须和团价一字不差",
       opts: [
-        { id: "yes", tx: "要，说清团价" },
-        { id: "soft", tx: "只说有团价" },
-        { id: "no", tx: "不提价" }
+        { id: "yes", tx: "要，说清团价", say: "会直接说清团价" },
+        { id: "soft", tx: "只说有团价", say: "只说有团价，不报具体数字" },
+        { id: "no", tx: "不提价", say: "全程不提价格" }
       ]
     }
   },
@@ -561,6 +561,16 @@ window.DATA = {
     { id: "why", short: "讲清原理", name: "问题 → 原理 → 用法", note: "讲知识的路子，适合账号还没人认识", conf: "ask" },
     { id: "proof", short: "晒单复购", name: "晒单 → 复购理由", note: "老客多、手里有反馈截图时最好用", conf: "ask" },
     { id: "vs", short: "对比测评", name: "对比 → 我的选择", note: "有明确的对比对象，讲清差别再落到它", conf: "ask" }
+  ],
+
+  /* 讲多长：只说短 / 中 / 长，不报秒数。
+     为什么不给"30 秒 / 45 秒 / 60 秒"：团长脑子里没有秒数这个概念，
+     他想的是"这条要讲多细"。秒数交给系统换算，写出来反而要他去算。
+     真实秒数只在结果页出现（约 46 秒），那是给他判断片子长短用的。 */
+  lens: [
+    { id: "short", name: "短", note: "一句话钩住就走，适合刷到即看" },
+    { id: "mid", name: "中", note: "讲清一件事，最常见的一条" },
+    { id: "long", name: "长", note: "从头讲到尾，适合讲成分和原理" }
   ],
 
   /* 口吻：跟 B2.4 的"谁在说"（音色）不是一件事。
@@ -1071,6 +1081,10 @@ window.DERIVE = (function () {
     return window.DATA.structs.filter((x) => x.id === id)[0] || window.DATA.structs[0];
   }
   function tones() { return window.DATA.tones; }
+  function lens() { return window.DATA.lens; }
+  function len(id) {
+    return window.DATA.lens.filter((x) => x.id === id)[0] || window.DATA.lens[1];
+  }
   function tone(id) {
     return window.DATA.tones.filter((x) => x.id === id)[0] || window.DATA.tones[0];
   }
@@ -1126,5 +1140,5 @@ window.DERIVE = (function () {
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics, partSkeleton,
            templates, template, voices, voice, covers, search, drafts,
-           brief, briefOf, structs, structOf, tones, tone };
+           brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();
