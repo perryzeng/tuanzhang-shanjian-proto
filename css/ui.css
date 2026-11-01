@@ -1299,3 +1299,96 @@
 .plbox .plfoot .morelink{display:inline-block;margin-top:5px;font-size:10px;font-weight:600;color:#3A5BD9}
 /* 小红书右侧有四项（赞 / 收藏 / 评论 / 转发），位置要跟着抬高 */
 .plbox.xhs .plside{bottom:112px;gap:13px}
+
+/* ========== 素材库（E2）==========
+   三层：身份域（我的/团队）→ 类别（脚本/素材/作品）→ 文件夹。
+   三层的视觉重量要递减：第一层最重（分段控件），第二层中等（下划线 tab），
+   第三层最轻（可横滑的小胶囊）+ 排序做成一行小字——层次靠重量区分，不靠字号。 */
+.sidetabs{display:flex;gap:5px;background:var(--bg-2);border-radius:12px;padding:3px}
+.sidetabs b{flex:1;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;color:var(--text-3);cursor:pointer}
+.sidetabs b.on{background:#fff;color:var(--text);box-shadow:var(--sh-1)}
+
+.kindtabs{display:flex;gap:20px;margin-top:15px;box-shadow:inset 0 -1px 0 var(--line-2)}
+.kindtabs b{padding:0 0 10px;font-size:13.5px;font-weight:600;color:var(--text-3);cursor:pointer;
+  position:relative;display:flex;align-items:center;gap:5px}
+.kindtabs b i{font-style:normal;font-size:10px;font-weight:600;color:var(--text-4)}
+.kindtabs b.on{color:var(--text);font-weight:700}
+.kindtabs b.on i{color:var(--brand)}
+.kindtabs b.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--brand);border-radius:2px}
+
+.sortrow{display:flex;align-items:center;gap:15px;margin-top:11px}
+.sortrow .s{font-size:11.5px;color:var(--text-3);cursor:pointer}
+.sortrow .s.on{color:var(--brand);font-weight:700}
+.sortrow .add{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--brand);cursor:pointer}
+
+/* 文件夹横着排：一屏能扫完四五个，比纵着列省一半高度 */
+.fdrow{display:flex;gap:8px;overflow-x:auto;margin-top:11px;padding-bottom:3px}
+.fd{flex:0 0 auto;display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;
+  box-shadow:var(--sh-1);padding:8px 12px 8px 9px;cursor:pointer}
+.fd .fi{width:26px;height:26px;border-radius:8px;background:var(--bg-2);color:var(--text-3);
+  display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 26px}
+.fd .ft{display:flex;align-items:baseline;gap:6px}
+.fd b{font-size:12px;font-weight:600;white-space:nowrap}
+.fd i{font-style:normal;font-size:10px;color:var(--text-4)}
+.fd.on{box-shadow:inset 0 0 0 1.5px var(--brand)}
+.fd.on .fi{background:var(--brand-weak);color:var(--brand)}
+.fd.on b{color:var(--brand-ink)}
+
+.fdfilter{display:flex;align-items:center;gap:6px;margin-top:11px;font-size:11px;color:var(--text-3)}
+.fdfilter b{margin-left:auto;color:var(--brand);font-weight:700;cursor:pointer}
+
+/* 脚本用列表行：它是一段文字，缩略图对它没有意义 */
+.srow{display:flex;align-items:center;gap:11px;padding:11px 0;cursor:pointer}
+.srow+.srow{box-shadow:inset 0 1px 0 var(--line-2)}
+.srow .ic{width:32px;height:32px;border-radius:9px;background:var(--brand-weak);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 32px}
+.srow .tx{flex:1;min-width:0}
+.srow .tx b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srow .tx span{display:block;font-size:10px;color:var(--text-4);margin-top:3px}
+.srow .go{color:var(--text-4);font-size:13px;flex:0 0 auto}
+
+/* 团队 tab 顶上的公告与任务：它们不是素材，是"有事找你"，所以做成卡片而不是分类 */
+.tcards{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.tcard{display:flex;align-items:center;gap:10px;background:#fff;border-radius:13px;
+  box-shadow:var(--sh-1);padding:11px 12px;cursor:pointer}
+.tcard .ti{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;flex:0 0 30px}
+.tcard .tx{flex:1;min-width:0}
+.tcard .tx b{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600}
+.tcard .tx b .dot{background:var(--danger);color:#fff;font-style:normal;font-size:8.5px;
+  min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.tcard .tx span{display:block;font-size:10px;color:var(--text-4);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tcard .go{color:var(--text-4);font-size:13px;flex:0 0 auto}
+
+/* 素材 / 作品网格卡 */
+.tile{border-radius:13px;overflow:hidden;background:#fff;box-shadow:var(--sh-1);cursor:pointer}
+.tile .im{position:relative;width:100%}
+.tile .im .cnt{position:absolute;left:7px;bottom:7px;font-size:9px;font-weight:600;color:#fff;
+  background:rgba(0,0,0,.4);border-radius:5px;padding:2px 6px}
+.tile .im .pickmark{position:absolute;right:7px;top:7px;font-size:8.5px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#FF7A45,#FF3D6E);border-radius:6px;padding:2px 6px}
+.tile .cap{padding:8px 9px 9px}
+.tile .cap b{font-size:11.5px;font-weight:600;line-height:1.35;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tile .cap span{display:block;font-size:9.5px;color:var(--text-4);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.emptybox{display:flex;flex-direction:column;align-items:center;gap:5px;padding:38px 20px;text-align:center}
+.emptybox .ei{font-size:26px;color:var(--text-4);opacity:.7}
+.emptybox b{font-size:13px;font-weight:700;margin-top:4px}
+.emptybox span{font-size:11px;color:var(--text-4);line-height:1.5}
+.emptybox em{font-style:normal;margin-top:6px;font-size:11.5px;font-weight:700;color:var(--brand);cursor:pointer}
+/* 素材网格走三列：竖屏素材用两列的话，一屏只看得见四个，
+   十二个素材要滚三屏——"浏览高效"就落空了。三列 + 一行的标题，是这一页的最优解。 */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g3 .tile .cap{padding:6px 7px 7px}
+.g3 .tile .cap b{font-size:10.5px;font-weight:600;line-height:1.3;-webkit-line-clamp:1}
+.g3 .tile .im .cnt{left:5px;bottom:5px;font-size:8px;padding:1px 5px}
+.g3 .tile .im .pickmark{right:5px;top:5px;font-size:8px;padding:1px 5px}
+/* 公告的描述允许两行：它是给人读的，截成一行等于没说清 */
+.tcard .tx span{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;line-height:1.45}
+.tmore{font-size:11px;font-weight:600;color:var(--brand);padding:2px 4px 1px;cursor:pointer}

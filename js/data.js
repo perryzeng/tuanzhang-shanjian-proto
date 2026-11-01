@@ -826,6 +826,103 @@ window.DATA = {
     { id: "nc_23", who: "小雨", whoBg: "rgba(0,168,232,.92)", plays: 52000, title: "晒单 + 一句我的感受", sub: "不用出镜也能拍", bg: "linear-gradient(135deg,#00A8E8,#5B8CFF)", go: "F3" }
   ],
 
+  /* ============ 素材库（E2）============
+     三层结构：**身份域 → 类别 → 文件夹**。
+     身份域只有"我的 / 团队"两个（好友是后续要加的第三个，数据结构留好了位置）；
+     类别固定三类：脚本 / 视频素材 / 作品——这三类覆盖了团长手上的全部东西，
+     再多一类就分不清"这条片子该放哪儿"；
+     文件夹由用户自己建，"视频素材"下天然会长出产品素材 / 平台介绍 / 素颜视频这几摞。
+
+     为什么文件夹不写死在类别下、而是单独一张表：它是**用户资产**，
+     以后要能改名、拖动、删；写进类别里以后没法动。 */
+  library: {
+    teamOn: true,          // 没加入团队时，页面上只有"我的"一个 tab
+    notices: [
+      { id: "nt_1", t: "10 月团价调整", sub: "磷虾油团价下调 8 元，脚本里的价格口径要改", at: "今天 09:20", unread: 2, go: "E5" },
+      { id: "nt_2", t: "新素材包已上线", sub: "秋季滋补专题 · 12 条空镜可直接取用", at: "昨天", unread: 0, go: "E5" }
+    ],
+    teamTasks: [
+      { id: "tk_1", t: "本周 3 条待发", sub: "2 条今天到期（开团 / 晒单）", at: "今天 18:00 截止", go: "E4" }
+    ],
+    folders: {
+      "mine.script": [
+        { id: "fd_s1", name: "开团话术", n: 3 },
+        { id: "fd_s2", name: "成分讲解", n: 2 },
+        { id: "fd_s3", name: "复购催单", n: 2 }
+      ],
+      "mine.asset": [
+        { id: "fd_a1", name: "产品素材", n: 4 },
+        { id: "fd_a2", name: "平台介绍", n: 3 },
+        { id: "fd_a3", name: "素颜视频", n: 3 },
+        { id: "fd_a4", name: "我的出镜", n: 2 }
+      ],
+      "mine.work": [
+        { id: "fd_w1", name: "已发布", n: 3 },
+        { id: "fd_w2", name: "我收藏的", n: 2 }
+      ],
+      "team.script": [
+        { id: "fd_ts1", name: "总部口径", n: 2 },
+        { id: "fd_ts2", name: "结构模板", n: 1 }
+      ],
+      "team.asset": [
+        { id: "fd_ta1", name: "品牌宣传片", n: 1 },
+        { id: "fd_ta2", name: "总部产品图", n: 2 },
+        { id: "fd_ta3", name: "仓库实拍", n: 1 }
+      ],
+      "team.work": [
+        { id: "fd_tw1", name: "团队爆款", n: 2 }
+      ]
+    },
+    /* at：几天前（1 = 今天），排序"最新"用；hot：使用/播放热度，"最热"用；pick：精选 */
+    items: {
+      "mine.script": [
+        { id: "li_s1", name: "开团话术 3 连问", sub: "5 段 · 46 秒", fd: "fd_s1", at: 2, hot: 86, pick: true },
+        { id: "li_s2", name: "先别买 · 反转开场", sub: "4 段 · 38 秒", fd: "fd_s1", at: 6, hot: 92, pick: true },
+        { id: "li_s3", name: "开团最后 3 小时", sub: "3 段 · 26 秒", fd: "fd_s1", at: 11, hot: 64 },
+        { id: "li_s4", name: "500mg 到底算不算高", sub: "4 段 · 41 秒", fd: "fd_s2", at: 1, hot: 78, pick: true },
+        { id: "li_s5", name: "跟鱼油比差在哪", sub: "5 段 · 48 秒", fd: "fd_s2", at: 9, hot: 71 },
+        { id: "li_s6", name: "老客回购提醒", sub: "3 段 · 24 秒", fd: "fd_s3", at: 4, hot: 58 },
+        { id: "li_s7", name: "吃完一盒该说什么", sub: "4 段 · 33 秒", fd: "fd_s3", at: 15, hot: 43 }
+      ],
+      "mine.asset": [
+        { id: "li_a1", name: "产品摆台", sub: "12 次使用", fd: "fd_a1", at: 3, hot: 96, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
+        { id: "li_a2", name: "开箱空镜", sub: "8 次使用", fd: "fd_a1", at: 5, hot: 88, pick: true, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" },
+        { id: "li_a3", name: "成分特写", sub: "6 次使用", fd: "fd_a1", at: 12, hot: 74, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)" },
+        { id: "li_a4", name: "手拿产品", sub: "3 次使用", fd: "fd_a1", at: 18, hot: 61, bg: "linear-gradient(150deg,#00C2FF,#8FE3FF)" },
+        { id: "li_a5", name: "平台介绍片头", sub: "5 秒 · 竖版", fd: "fd_a2", at: 1, hot: 52, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)" },
+        { id: "li_a6", name: "资质展示", sub: "8 秒 · 竖版", fd: "fd_a2", at: 21, hot: 46, bg: "linear-gradient(150deg,#5B8CFF,#8FB0FF)" },
+        { id: "li_a7", name: "总部背书讲解", sub: "12 秒 · 竖版", fd: "fd_a2", at: 26, hot: 39, bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)" },
+        { id: "li_a8", name: "素颜出镜 · 早上", sub: "9 秒 · 竖版", fd: "fd_a3", at: 2, hot: 81, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FFC85B)" },
+        { id: "li_a9", name: "素颜出镜 · 晚上", sub: "7 秒 · 竖版", fd: "fd_a3", at: 8, hot: 67, bg: "linear-gradient(150deg,#F5A623,#FFC85B)" },
+        { id: "li_a10", name: "素颜出镜 · 拆快递", sub: "11 秒 · 竖版", fd: "fd_a3", at: 14, hot: 55, bg: "linear-gradient(150deg,#C71F37,#FF7A45)" },
+        { id: "li_a11", name: "我的照片 12 张", sub: "画中画专用", fd: "fd_a4", at: 7, hot: 63, bg: "linear-gradient(150deg,#7C5CFF,#2C5BFF)", go: "E2.1" },
+        { id: "li_a12", name: "我的小视频 3 段", sub: "画中画专用", fd: "fd_a4", at: 20, hot: 48, bg: "linear-gradient(150deg,#2C5BFF,#7C5CFF)", go: "E2.1" }
+      ],
+      "mine.work": [
+        { id: "li_w1", name: "磷虾油今晚开团，3 步选对不踩坑", sub: "1280 播放 · 今天 20:14", fd: "fd_w1", at: 1, hot: 94, pick: true, bg: "linear-gradient(160deg,#2C5BFF,#0E2A6B)", go: "B4.1" },
+        { id: "li_w2", name: "我妈吃了三个月，睡眠真的好了", sub: "860 播放 · 昨天", fd: "fd_w1", at: 2, hot: 87, bg: "linear-gradient(150deg,#00A8E8,#2C5BFF)", go: "B4.1" },
+        { id: "li_w3", name: "开箱 · 一盒里有几粒", sub: "420 播放 · 3 天前", fd: "fd_w1", at: 4, hot: 62, bg: "linear-gradient(150deg,#7C5CFF,#5B8CFF)", go: "B4.1" },
+        { id: "li_w4", name: "阿玲的复购实录", sub: "收藏 · 12.4 万播放", fd: "fd_w2", at: 9, hot: 99, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FF3D6E)", go: "F3" },
+        { id: "li_w5", name: "成分讲解天花板", sub: "收藏 · 8.6 万播放", fd: "fd_w2", at: 16, hot: 91, bg: "linear-gradient(150deg,#C71F37,#7A1020)", go: "F3" }
+      ],
+      "team.script": [
+        { id: "li_ts1", name: "总部 10 月口径（必用）", sub: "5 段 · 50 秒 · 品牌锁定", fd: "fd_ts1", at: 2, hot: 100, pick: true },
+        { id: "li_ts2", name: "团价说明模板", sub: "3 段 · 28 秒", fd: "fd_ts1", at: 5, hot: 82, pick: true },
+        { id: "li_ts3", name: "开箱带货结构", sub: "5 段骨架 · 可套任何品", fd: "fd_ts2", at: 13, hot: 76 }
+      ],
+      "team.asset": [
+        { id: "li_ta1", name: "品牌宣传片", sub: "60 秒 · 横版", fd: "fd_ta1", at: 6, hot: 88, pick: true, bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)" },
+        { id: "li_ta2", name: "总部产品图 24 张", sub: "白底 + 场景", fd: "fd_ta2", at: 3, hot: 91, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" },
+        { id: "li_ta3", name: "质检报告截图", sub: "可直接贴画面", fd: "fd_ta2", at: 11, hot: 69, bg: "linear-gradient(150deg,#5B8CFF,#8FB0FF)" },
+        { id: "li_ta4", name: "仓库发货实拍", sub: "15 秒 · 竖版", fd: "fd_ta3", at: 19, hot: 57, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" }
+      ],
+      "team.work": [
+        { id: "li_tw1", name: "阿玲爆款 · 开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_tw1", at: 4, hot: 98, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3" },
+        { id: "li_tw2", name: "阿强 · 客户复购实录", sub: "8.6 万播放", fd: "fd_tw1", at: 10, hot: 90, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3" }
+      ]
+    }
+  },
+
   /* 平台精选：运营后台专题位，按人群包下发 */  platformPicks: [
     { id: "tp_31", img: "assets/bn-2.jpg", pos: "center 34%", title: "秋季滋补专题", sub: "12 条现成素材 · 平台已过审", go: "F1", audience: "全体团长" },
     { id: "tp_28", img: "assets/bn-1.jpg", pos: "center 44%", title: "高转化开箱合集", sub: "照着结构改就能发", go: "F1", audience: "近 7 天有发布的团长" }
@@ -1341,6 +1438,29 @@ window.DERIVE = (function () {
     return window.DATA.heatLevels.filter((x) => x.id === id)[0] || window.DATA.heatLevels[1];
   }
   function comments() { return window.DATA.comments; }
+  /* 素材库取数：身份域（我的/团队）+ 类别（脚本/视频素材/作品）+ 排序 + 文件夹 + 搜索词。
+     顺序很重要——**先筛后排**：文件夹和搜索是"只看这些"，排序是"这些怎么摆"；
+     反过来先排再筛，精选档就会变成"全库里挑几条"而不是"这一摞里挑几条"。 */
+  function lib(side, kind, opt) {
+    opt = opt || {};
+    const L = window.DATA.library;
+    const sd = side === "team" ? "team" : "mine";
+    const key = sd + "." + kind;
+    let items = (L.items[key] || []).slice();
+    if (opt.fd) items = items.filter((x) => x.fd === opt.fd);
+    const q = String(opt.q || "").trim();
+    if (q) items = items.filter((x) => (x.name + " " + x.sub).indexOf(q) >= 0);
+    if (opt.sort === "hot") items.sort((a, b) => b.hot - a.hot);
+    else if (opt.sort === "pick") items = items.filter((x) => x.pick).sort((a, b) => b.hot - a.hot);
+    else items.sort((a, b) => a.at - b.at);
+    const cnt = (k) => (L.items[sd + "." + k] || []).length;
+    return {
+      items,
+      folders: (L.folders[key] || []).map((f) => ({ ...f, on: f.id === opt.fd })),
+      counts: { script: cnt("script"), asset: cnt("asset"), work: cnt("work") },
+      hasTeam: !!L.teamOn
+    };
+  }
   /* 按"评论数"取评论：填 200 条就生成 200 条，列表只渲染前 24 条，
      剩下的用一句「还有 N 条」带过——原型没必要真渲染 200 行。
      真实产品这一步是 AI 按台词 + 卖点现写，这里用种子循环。 */
@@ -1392,6 +1512,6 @@ window.DERIVE = (function () {
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics,
            templates, template, voices, voice, covers, cover, coverBases, coverBase, coverFromTopic, myPhotos,
-           viewers, leads, logs, shareStat, heatLevels, heat, comments, makeComments, search, drafts,
+           viewers, leads, logs, shareStat, heatLevels, heat, comments, makeComments, lib, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();
