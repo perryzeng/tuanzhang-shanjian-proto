@@ -866,7 +866,8 @@ window.DATA = {
         { d: "今天", t: "08:05", type: "task", who: "系统", act: "派了一个任务", extra: "本周 3 条待发 · 2 条今天到期", go: "E4" },
         { d: "昨天", t: "21:10", type: "work", who: "阿玲", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3" },
         { d: "昨天", t: "16:32", type: "asset", who: "阿强", act: "上传了 3 条素材", extra: "仓库实拍 / 打包现场", go: "" },
-        { d: "前天", t: "10:00", type: "script", who: "总部", act: "更新了脚本", extra: "总部 10 月口径（必用）", go: "" }
+        { d: "前天", t: "10:00", type: "script", who: "总部", act: "更新了脚本", extra: "总部 10 月口径（必用）", go: "" },
+        { d: "前天", t: "09:12", type: "member", who: "小雨", act: "加入了团队", extra: "现在是第 12 位成员", go: "" }
       ],
       tm_2: [
         { d: "今天", t: "10:40", type: "notice", who: "联盟运营", act: "发了公告", extra: "12 月排期开始报名", pin: true, go: "E5" },
@@ -874,6 +875,20 @@ window.DATA = {
         { d: "昨天", t: "14:05", type: "task", who: "系统", act: "派了一个任务", extra: "本月 5 条 · 还差 2 条", go: "E4" }
       ]
     },
+    /* 好友：和团队同一套结构（三个文件夹 + 一条更新流），只是没有任务和公告——
+       朋友之间没有"派活"这回事，只有"他又发了什么"。 */
+    friends: [
+      { id: "fr_1", name: "阿玲", av: "玲", bg: "#2C5BFF", note: "3 天前更新" },
+      { id: "fr_2", name: "阿强", av: "强", bg: "#00A8E8", note: "昨天更新" },
+      { id: "fr_3", name: "小雨", av: "雨", bg: "#00B389", note: "今天更新" }
+    ],
+    friendFeed: [
+      { d: "今天", t: "10:12", who: "小雨", type: "work", act: "发了新作品", extra: "换季话术 · 3 句话讲完 · 8.6 万播放", go: "F3" },
+      { d: "今天", t: "09:30", who: "阿玲", type: "asset", act: "上传了 2 条素材", extra: "素颜出镜 · 拆快递", go: "" },
+      { d: "昨天", t: "18:40", who: "阿强", type: "script", act: "分享了一份脚本", extra: "信任背书口播 v2", go: "" },
+      { d: "前天", t: "11:05", who: "阿玲", type: "work", act: "发了新作品", extra: "开箱第一句就说价格 · 12.4 万播放", go: "F3" }
+    ],
+
     /* 我的动态：只记"我自己干了什么"，不掺别人的事。
        放它的理由是——素材库不只是仓库，它也是"我最近在忙什么"的镜子：
        昨天传了三条素颜视频、今天用了开团话术，这些比"共 12 个"更能帮人找回上下文。 */
@@ -920,6 +935,17 @@ window.DATA = {
       ],
       "team.work": [
         { id: "fd_tw1", name: "团队爆款", n: 2 }
+      ],
+      "friend.script": [
+        { id: "fd_fs1", name: "阿玲分享的", n: 2 },
+        { id: "fd_fs2", name: "阿强分享的", n: 1 }
+      ],
+      "friend.asset": [
+        { id: "fd_fa1", name: "阿玲的素材", n: 2 },
+        { id: "fd_fa2", name: "阿强的素材", n: 2 }
+      ],
+      "friend.work": [
+        { id: "fd_fw1", name: "他们的作品", n: 3 }
       ]
     },
     /* 脚本正文：单独一张表，不塞进 items。
@@ -1035,6 +1061,22 @@ window.DATA = {
       "team.work": [
         { id: "li_tw1", name: "阿玲爆款 · 开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_tw1", at: 4, hot: 98, pick: true, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3" },
         { id: "li_tw2", name: "阿强 · 客户复购实录", sub: "8.6 万播放", fd: "fd_tw1", at: 10, hot: 90, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3" }
+      ],
+      "friend.script": [
+        { id: "li_fs1", name: "信任背书口播 v2", sub: "4 段 · 40 秒", fd: "fd_fs1", at: 2, hot: 70, pick: true },
+        { id: "li_fs2", name: "换季话术 3 句", sub: "3 段 · 25 秒", fd: "fd_fs1", at: 6, hot: 62 },
+        { id: "li_fs3", name: "先讲问题再讲产品", sub: "5 段 · 48 秒", fd: "fd_fs2", at: 9, hot: 55 }
+      ],
+      "friend.asset": [
+        { id: "li_fa1", name: "素颜出镜 · 拆快递", sub: "9 秒 · 竖版", fd: "fd_fa1", at: 1, hot: 76, pick: true, bg: "linear-gradient(150deg,#FF7A45,#FFC85B)" },
+        { id: "li_fa2", name: "手部特写 · 拧瓶盖", sub: "3 秒 · 竖版", fd: "fd_fa1", at: 7, hot: 58, bg: "linear-gradient(150deg,#F5A623,#FFC85B)" },
+        { id: "li_fa3", name: "仓库打包现场", sub: "15 秒 · 竖版", fd: "fd_fa2", at: 11, hot: 49, bg: "linear-gradient(150deg,#00A8E8,#00C2FF)" },
+        { id: "li_fa4", name: "客户收货反馈截图", sub: "8 张", fd: "fd_fa2", at: 16, hot: 44, bg: "linear-gradient(150deg,#2C5BFF,#5B8CFF)" }
+      ],
+      "friend.work": [
+        { id: "li_fw1", name: "换季话术 · 3 句话讲完", sub: "8.6 万播放", fd: "fd_fw1", at: 1, hot: 92, pick: true, bg: "linear-gradient(150deg,#00A8E8,#5B8CFF)", go: "F3" },
+        { id: "li_fw2", name: "开箱第一句就说价格", sub: "12.4 万播放", fd: "fd_fw1", at: 5, hot: 95, bg: "linear-gradient(150deg,#2C5BFF,#00C2FF)", go: "F3" },
+        { id: "li_fw3", name: "客户复购实录 · 第 3 次买", sub: "8.6 万播放", fd: "fd_fw1", at: 12, hot: 84, bg: "linear-gradient(150deg,#7C5CFF,#B08CFF)", go: "F3" }
       ]
     }
   },

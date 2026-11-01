@@ -1570,3 +1570,28 @@
 .lt b{display:block;font-size:10px;font-weight:600;margin-top:5px;line-height:1.3;
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .lt span{display:block;font-size:9px;color:var(--text-4);margin-top:2px}
+
+/* ========== 三个文件夹 = 三张入口卡 ==========
+   做成卡而不是 tab，是因为卡上能写"里面有多少个"；tab 只能写名字——
+   用户在点之前就想知道这一摞值不值得点进去。 */
+.kf3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kf3 b{background:#fff;border-radius:14px;box-shadow:var(--sh-1);padding:12px 8px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:0;cursor:pointer;text-align:center}
+.kf3 b i{width:30px;height:30px;border-radius:10px;color:#fff;font-size:13px;font-weight:700;
+  font-style:normal;display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+.kf3 b span{font-size:11px;font-weight:600;color:var(--text-2);line-height:1.2}
+.kf3 b em{font-style:normal;font-size:15px;font-weight:800;color:var(--text);
+  letter-spacing:-.4px;margin-top:3px;line-height:1.1}
+
+/* 进了某一摞之后，顶部给一条"返回全部"，不然人不知道自己现在在哪 */
+.kfbar{display:flex;align-items:center;gap:8px;margin:13px 2px 0}
+.kfbar .bk{font-size:11.5px;font-weight:600;color:var(--brand);cursor:pointer}
+.kfbar b{font-size:12px;font-weight:700;color:var(--text-3);margin-left:auto}
+
+/* 好友头像条 */
+.frrow{display:flex;gap:12px;overflow-x:auto;margin-top:13px;padding-bottom:3px}
+.frl{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;width:52px;cursor:pointer}
+.frl .av{width:42px;height:42px;border-radius:50%;color:#fff;font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(20,40,110,.16)}
+.frl b{font-size:10px;font-weight:600;color:var(--text-2)}
+.frl i{font-style:normal;font-size:8.5px;color:var(--text-4);white-space:nowrap}
