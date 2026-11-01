@@ -448,3 +448,8 @@
 
 /* 列表头里的粗体不许换行（"脚本 5 个 part" / "这一集 5 个 part"） */
 .listhead b{flex:0 0 auto;white-space:nowrap}
+
+/* 两个来源卡（系列拆走后只剩导入脚本 / 导入视频） */
+.src2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.src2 .srcitem{padding:13px 13px 14px}
+.src2 .srcitem span{font-size:10.5px;line-height:1.5;margin-top:5px}

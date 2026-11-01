@@ -502,11 +502,20 @@ window.DATA = {
     bestTopic: "信任背书"
   },
 
-  /* 新建战役时 AI 给的选题建议（可逐条改、可换一批） */
+  /* 新建系列时 AI 排选题用的「整条弧线」，每个品都是按 14 天排好的顺序：
+     前段铺垫（为什么/是什么）→ 中段立信任（谁适合/反馈）→ 后段收单（价格/CTA）
+     排 7 天就取前 6 + 收尾，排 10 天取前 9 + 收尾——顺序不动，只砍中间。
+     这样不管几天，讲故事的节奏是对的；接真接口后换成按品 + 人群动态生成的选题。 */
   topicSeeds: {
-    "磷虾油": ["为什么选这款", "成分怎么讲", "含量看哪里", "谁适合谁不适合", "信任背书", "老客晒单", "常见问题答疑", "团价怎么算", "拍一单看看", "收官复盘"],
-    "换季免疫": ["换季最容易忽略的一件事", "谁最需要补", "孩子能吃吗", "怎么吃不浪费", "我家的做法", "顾客真实反馈", "收官 · 团价"],
-    "老客复购": ["为什么老客会回头", "第一次买的人最担心什么", "怎么提醒复购不烦人", "晒单怎么挑"]
+    "磷虾油": ["为什么选这款", "成分怎么讲", "含量看哪里", "谁适合谁不适合", "信任背书", "老客晒单",
+             "常见问题答疑", "怎么吃不浪费", "团价怎么算", "拍一单看看", "送礼场景", "断货怎么说",
+             "老客复购怎么提醒", "收官复盘"],
+    "换季免疫": ["换季最容易忽略的一件事", "谁最需要补", "成分有什么不一样", "孩子能吃吗", "怎么吃才不浪费",
+              "我家的做法", "常见误区", "和其他补剂怎么搭", "顾客真实反馈", "价格值不值",
+              "囤货节奏", "送礼怎么讲", "老客回访", "收官 · 团价"],
+    "老客复购": ["为什么老客会回头", "第一次买的人最担心什么", "怎么提醒复购不烦人", "晒单怎么挑",
+              "价格敏感期怎么讲", "囤货节奏", "送礼场景", "家庭装怎么配", "断货怎么说", "新品怎么接",
+              "老带新怎么开口", "售后怎么处理", "年度复盘", "下一轮预告"]
   },
 
   /* 团队动态流：只取本团队、近 24h、已发布视频，按播放量倒序 */
@@ -721,6 +730,27 @@ window.DERIVE = (function () {
     return window.DATA.topicSeeds[product] || window.DATA.topicSeeds["磷虾油"];
   }
 
+  /* 排 N 天的选题：顺序不动，只砍中间，永远保住开头和收尾。
+     为什么不是随便取前 N 个：收尾（团价 / 复盘）是整场战役的落点，
+     砍掉它，后面几天就变成"一直在铺垫、始终不收单"。 */
+  function planTopics(product, days) {
+    const all = topicSeeds(product);
+    const n = Math.max(1, Math.min(days || 10, all.length));
+    if (n >= all.length) return all.slice(0, n);
+    return all.slice(0, n - 1).concat([all[all.length - 1]]);
+  }
+
+  /* 一天几趴 → 这一天的段落骨架。3 趴最省事，5 趴最完整。
+     "趴"就是脚本框里的 part：一段台词 + 一个画面槽。 */
+  const SKELETON = {
+    3: ["开场立信任", "今天讲什么", "CTA · 开团"],
+    4: ["开场立信任", "今天讲什么", "例子或反馈", "CTA · 开团"],
+    5: ["开场立信任", "报天数", "今天讲什么", "例子或反馈", "CTA · 开团"]
+  };
+  function partSkeleton(n) {
+    return SKELETON[+n] || SKELETON[5];
+  }
+
   /* 三种来源 → 三份草稿，共用同一套段落结构与派生逻辑。
      这就是"三个发布器合成一个"的数据基础：换的是来源，不是编辑器。 */
   const DRAFT_OF = { script: "draft", remix: "draftRemix", series: "draftSeries" };
@@ -908,5 +938,6 @@ window.DERIVE = (function () {
   return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now,
            draft, recommend, resolveFix, mmss, pool,
            scripts, script, scriptTabs, extract,
-           campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta };
+           campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
+           planTopics, partSkeleton };
 })();

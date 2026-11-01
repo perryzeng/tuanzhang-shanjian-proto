@@ -1,12 +1,13 @@
 window.PAGES["B1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE, G = window.G;
   const s = D.draft("script"), r = D.draft("remix");
-  const run = D.campaigns("running")[0];
   const topic = ctx.topic || "";
 
-  /* 四种脚本来源，全是一条路：先有脚本，再进同一个发布器
-     ① 写主题 → B1.1 开工确认 → B2   ② 导入脚本 → B1.2 脚本库 → B1.3 详情 → B2
-     ③ 导入视频 → C1 → C1.1 抽取 → C1.2 结果 → B2   ④ 系列 → D1 → D1.1 日程 → D1.2 → B2 */
+  /* 脚本只有三种来路，全汇到同一个结构化脚本框（B2）：
+     ① AI 自动写 → B1.1 开工确认 → B2
+     ② 导入现成的 → B1.2 脚本库 → B1.3 详情 → B2
+     ③ 抽视频里的 → C1 → C1.1 抽取 → C1.2 结果 → B2
+     系列不在这里——它不是"一条脚本"，是"一场节奏"，入口在首页「SOP 系列」。 */
   const quick = ["磷虾油今晚开团", "换季免疫力怎么讲", "老客复购怎么说"];
 
   const src = (o) => `<div class="srcitem" data-go="${o.go}" data-label="${o.name}">
@@ -29,10 +30,9 @@ window.PAGES["B1"].render = function (ctx) {
       </div>
 
       ${C.sec("手上已经有内容")}
-      <div class="src3">
-        ${src({ name: "导入脚本", sub: "从我的 / 团队库<br>选一份", ic: "⧉", bg: G("#2C5BFF", "#5B8CFF"), go: "B1.2" })}
-        ${src({ name: "导入视频", sub: "本地或链接<br>抽出口播", ic: "▷", bg: G("#00A8E8", "#00C2FF"), go: "C1" })}
-        ${src({ name: "系列", sub: "总部战役<br>Day " + run.day + " 待发", ic: "≡", bg: G("#7C5CFF", "#B08CFF"), go: "D1", dot: true })}
+      <div class="src2">
+        ${src({ name: "导入脚本", sub: "从我的 / 团队库<br>选一份现成的", ic: "⧉", bg: G("#2C5BFF", "#5B8CFF"), go: "B1.2" })}
+        ${src({ name: "导入视频", sub: "本地或贴链接<br>抽出它的口播", ic: "▷", bg: G("#00A8E8", "#00C2FF"), go: "C1" })}
       </div>
 
       ${C.sec("继续创作", "全部", "A1")}
