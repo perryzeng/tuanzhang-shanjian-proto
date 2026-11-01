@@ -10,14 +10,14 @@ window.PAGES["G1"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ k: "我的", t: "阿珍", av: "珍" })}
+    ${C.ph({ k: "我的", t: "暴富者", av: "暴" })}
 
     <div class="body">
       <div class="hero">
         <div class="row">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex:0 0 44px">珍</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex:0 0 44px">暴</div>
           <div style="flex:1;margin-left:12px">
-            <div style="font-size:15px;font-weight:700">阿珍</div>
+            <div style="font-size:15px;font-weight:700">暴富者</div>
             <div class="sub" style="margin-top:4px">大健康选品 5 年 · 团队第 7</div>
           </div>
           <span style="font-size:11.5px;background:rgba(255,255,255,.16);border-radius:999px;padding:5px 12px">编辑</span>

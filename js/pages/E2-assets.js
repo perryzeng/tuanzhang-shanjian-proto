@@ -91,7 +91,7 @@ window.PAGES["E2"].render = function (ctx) {
     else if (f.type === "work") go = item ? (item.go || "B4.1?id=" + item.id) : (f.go || "E2?open=work&tab=log");
     return {
       ...f, t, go, item,
-      av: av ? av.av : (who === "我" ? "珍" : (who || "?").slice(0, 1)),
+      av: av ? av.av : (who === "我" ? "暴" : (who || "?").slice(0, 1)),
       avBg: av ? av.bg : (who === "我" ? "linear-gradient(135deg,#7C5CFF,#2C5BFF)" : "#2C5BFF"),
       title: (f.extra || "").split(" · ")[0],
       meta: (f.extra || "").split(" · ").slice(1).join(" · "),

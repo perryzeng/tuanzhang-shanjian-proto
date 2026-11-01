@@ -65,10 +65,10 @@ window.PAGES["B4.1.1"].render = function (ctx) {
     <div class="plbox ${pf}">
       <div class="src"></div>
       ${pf === "xhs" ? `<div class="plhead">
-        <span class="ava">珍</span><b>阿珍 · 大健康选品</b><em>关注</em></div>` : ""}
+        <span class="ava">暴</span><b>暴富者 · 大健康选品</b><em>关注</em></div>` : ""}
       <div class="cvtxt"><b>磷虾油今晚<br>8 点开团</b><i>讲清成分和怎么买</i></div>
       <div class="plside">
-        ${pf === "dy" ? `<span class="it"><span class="ava2">珍</span></span>` : ""}
+        ${pf === "dy" ? `<span class="it"><span class="ava2">暴</span></span>` : ""}
         <span class="it on">${sideIcon("like")}<i>${fmt(lk)}</i></span>
         ${pf === "xhs" ? `<span class="it">${sideIcon("star")}<i>${fmt(Math.round(lk / 3))}</i></span>` : ""}
         <span class="it" data-set="B4.1.1.cm=${cm ? "" : "1"}" data-label="看评论">${sideIcon("comment")}<i>${fmt(cn)}</i></span>
@@ -76,7 +76,7 @@ window.PAGES["B4.1.1"].render = function (ctx) {
       </div>
       ${pf === "dy" ? `<div class="pldisc"><i></i></div>` : ""}
       <div class="plfoot">
-        <b>阿珍 · 大健康选品</b>
+        <b>暴富者 · 大健康选品</b>
         <p>磷虾油今晚 8 点开团，3 步选对不踩坑 <em class="tg">#磷虾油 #开团</em></p>
         ${pf === "xhs" ? `<span class="morelink">展开</span>` : ""}
       </div>

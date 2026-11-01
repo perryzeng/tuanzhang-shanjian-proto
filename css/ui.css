@@ -289,7 +289,7 @@
 .editops .op.hot{box-shadow:inset 0 0 0 1px rgba(44,91,255,.2)}
 .clips{display:flex;gap:8px;margin-top:10px;align-items:center}
 .clip{width:38px;height:66px;border-radius:10px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:9px;font-weight:700;line-height:1.2;padding:4px;position:relative;overflow:hidden}
-.clip.pip::after{content:"珍";position:absolute;right:3px;bottom:3px;width:14px;height:14px;border-radius:50%;background:var(--violet);font-size:8px;display:flex;align-items:center;justify-content:center}
+.clip.pip::after{content:"暴";position:absolute;right:3px;bottom:3px;width:14px;height:14px;border-radius:50%;background:var(--violet);font-size:8px;display:flex;align-items:center;justify-content:center}
 .addclip{width:38px;height:66px;border:1.5px dashed #C9D2E6;border-radius:10px;flex:0 0 38px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;color:var(--text-2);line-height:1.25;text-align:center;padding:3px;cursor:pointer}
 .addclip.need{border-color:#FFB4B4;color:var(--danger);background:#FFF8F8}
 .ops{display:flex;gap:7px;margin-top:10px}

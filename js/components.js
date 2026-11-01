@@ -77,7 +77,7 @@
 
   C.estage = (o) => {
     const track = (o.track || []).map(([f, st]) => `<i class="${st || ""}" style="flex:${f}"></i>`).join("");
-    const pip = o.preview.pip ? `<span class="n" style="position:absolute;right:5px;bottom:5px;background:#7C5CFF">珍</span>` : "";
+    const pip = o.preview.pip ? `<span class="n" style="position:absolute;right:5px;bottom:5px;background:#7C5CFF">暴</span>` : "";
     return `<div class="estage">
       <div class="epv" style="background:${o.preview.bg}">
         ${o.preview.no ? `<span class="n">${o.preview.no}</span>` : "<span></span>"}
@@ -251,7 +251,7 @@
   /* 轻头部：头像 + 问候 + 通知 */
   C.hrow = (o) =>
     `<div class="hrow">
-      <div class="av">${o.av || "珍"}</div>
+      <div class="av">${o.av || "暴"}</div>
       <div style="flex:1;min-width:0">
         <div class="hi">${o.hi}</div>
         <div class="hs">${o.hs || ""}</div>

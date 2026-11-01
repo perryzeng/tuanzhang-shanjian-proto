@@ -41,7 +41,7 @@ window.PAGES["T1"].render = function () {
 
       ${C.sec("生成后用我的")}
       <div class="card" style="padding:4px 16px 8px">
-        ${row("声音", "温柔女声 · 阿珍克隆音", true)}
+        ${row("声音", "温柔女声 · 暴富者克隆音", true)}
         ${row("字幕样式", "大字吸睛", true)}
         ${row("出镜方式", "照片画中画（不真人录制）", true)}
         ${row("自动过合规", "生成时就做违规词检测", true)}

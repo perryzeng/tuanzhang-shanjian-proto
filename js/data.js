@@ -11,7 +11,7 @@ window.DATA = {
   /* 账号系统 + 团队关系表 + 通知中心未读数 */
   me: {
     uid: "u_10027",
-    name: "阿珍",
+    name: "暴富者",
     city: "广东深圳",
     teamName: "前海臻选战队",
     teamSize: 12,          // 团队关系表：status=active 的成员数
@@ -202,7 +202,7 @@ window.DATA = {
     segments: [
       {
         id: "sg01", role: "hook", name: "我是谁 · 立信任", dur: 8,
-        vo: "我是阿珍，做大健康选品 5 年。", voSrc: "self",
+        vo: "我是暴富者，做大健康选品 5 年。", voSrc: "self",
         needTags: ["person", "broll"], lock: null,
         hint: "用你自己的空镜或照片打底，人先出现在画面上，后面说什么才有人听",
         shots: [{ id: "sh_101", asset: "as_518", dur: 8, pip: true }]
@@ -321,7 +321,7 @@ window.DATA = {
     segments: [
       {
         id: "se01", role: "trust", name: "我是谁 · 立信任", dur: 8,
-        vo: "我是阿珍，做大健康选品 5 年。", needTags: ["person", "broll"], lock: null, fixed: true,
+        vo: "我是暴富者，做大健康选品 5 年。", needTags: ["person", "broll"], lock: null, fixed: true,
         hint: "每天开头都用这段，观众才记得住你",
         shots: [{ id: "ss_101", asset: "as_518", dur: 8, pip: true }]
       },
@@ -363,7 +363,7 @@ window.DATA = {
       product: "磷虾油", segs: 5, dur: 46, used: 12, at: "10-28", compliance: true,
       tags: ["口播", "成分"], note: "跑过 12 单，结尾是开团话术",
       lines: [
-        { name: "我是谁 · 立信任", dur: 8, vo: "我是阿珍，做大健康选品 5 年。" },
+        { name: "我是谁 · 立信任", dur: 8, vo: "我是暴富者，做大健康选品 5 年。" },
         { name: "磷虾油是什么", dur: 14, vo: "今晚开团磷虾油，选购门道一次讲清楚。" },
         { name: "血管知识示意", dur: 8, vo: "每粒含磷脂型 Omega-3，吸收比普通鱼油更好。" },
         { name: "产品落卖点", dur: 10, vo: "品牌方提供的卖点口播，锁定不可改。", lock: "brand" },
@@ -793,7 +793,7 @@ window.DATA = {
     { who: "阿玲", av: "玲", bg: "#7C5CFF", tx: "开团价什么时候结束呀", like: 12, at: "38 分钟前", tag: "问价" },
     { who: "小何", av: "何", bg: "#FF7A45", tx: "一直回购，这次直接囤两盒", like: 7, at: "1 小时前", tag: "老客" },
     { who: "微信用户 9***1", av: "匿", bg: "#8C93A3", tx: "孕妇可以吃吗？在线等", like: 3, at: "1 小时前", tag: "" },
-    { who: "阿珍姐", av: "珍", bg: "#2C5BFF", tx: "第 3 步那个吃法我没听清，能再说一遍吗", like: 18, at: "1 小时前", tag: "" },
+    { who: "暴富者姐", av: "暴", bg: "#2C5BFF", tx: "第 3 步那个吃法我没听清，能再说一遍吗", like: 18, at: "1 小时前", tag: "" },
     { who: "小雨", av: "雨", bg: "#00B389", tx: "上次买的还没吃完，这次囤一盒够吗", like: 6, at: "2 小时前", tag: "老客" },
     { who: "微信用户 5***7", av: "匿", bg: "#8C93A3", tx: "这个跟药一起吃有冲突没", like: 11, at: "2 小时前", tag: "" },
     { who: "阿强", av: "强", bg: "#00A8E8", tx: "已经拍了两盒，什么时候发货", like: 22, at: "2 小时前", tag: "问价" },
@@ -807,7 +807,7 @@ window.DATA = {
     { who: "大刘", av: "刘", bg: "#00A8E8", tx: "这个牌子有检测报告吗", like: 9, at: "6 小时前", tag: "" },
     { who: "微信用户 1***6", av: "匿", bg: "#8C93A3", tx: "已经回购第三次了，家里人都吃", like: 19, at: "7 小时前", tag: "老客" },
     { who: "小雨", av: "雨", bg: "#00B389", tx: "开团到几号？我怕错过", like: 13, at: "8 小时前", tag: "问价" },
-    { who: "阿珍姐", av: "珍", bg: "#2C5BFF", tx: "今晚 8 点，链接在我头像里，拍完记得看群公告", like: 45, at: "9 小时前", tag: "" },
+    { who: "暴富者姐", av: "暴", bg: "#2C5BFF", tx: "今晚 8 点，链接在我头像里，拍完记得看群公告", like: 45, at: "9 小时前", tag: "" },
     { who: "微信用户 4***9", av: "匿", bg: "#8C93A3", tx: "看完就下单了，试试再说", like: 3, at: "10 小时前", tag: "" }
   ],
 
@@ -845,16 +845,16 @@ window.DATA = {
        每条都有"谁派的 / 派给谁 / 还差几个人 / 什么时候截止"——
        团长要的是"催谁"，团员要的是"我还有没有没交的"。 */
     teamTasks: [
-      { id: "tk_1", t: "信任背书口播 · 每人 1 条", by: "阿珍 · 团长", to: "全员 12 人",
+      { id: "tk_1", t: "信任背书口播 · 每人 1 条", by: "暴富者 · 团长", to: "全员 12 人",
         due: "今天 18:00", done: 8, total: 12, state: "doing", go: "E4" },
-      { id: "tk_2", t: "开箱合集 · 每人各发 1 条", by: "阿珍 · 团长", to: "全员 12 人",
+      { id: "tk_2", t: "开箱合集 · 每人各发 1 条", by: "暴富者 · 团长", to: "全员 12 人",
         due: "本周日", done: 4, total: 12, state: "doing", go: "E4" },
       { id: "tk_3", t: "9 月复盘 · 填一张表", by: "总部", to: "全员",
         due: "已结束", done: 12, total: 12, state: "done", go: "E4" }
     ],
     /* 团队：一个人可以加入多个团。只有一个的时候不显示切换器，直接就是它的首页。 */
     teams: [
-      { id: "tm_1", name: "阿珍的团", members: 12, role: "团长", brief: "本周目标 · 3 条开团片", day: "第 3 周" },
+      { id: "tm_1", name: "暴富者的团", members: 12, role: "团长", brief: "本周目标 · 3 条开团片", day: "第 3 周" },
       { id: "tm_2", name: "深圳健康选品联盟", members: 86, role: "团员", brief: "总部直管 · 每周 5 条", day: "第 8 周" }
     ],
     /* 团队首页是一条**混排信息流**：公告置顶、任务插在中间、动态按时间排。

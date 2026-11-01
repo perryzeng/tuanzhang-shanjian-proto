@@ -53,7 +53,7 @@ window.PAGES["B2.3"].render = function (ctx) {
         <div style="width:178px;position:relative;border-radius:16px;overflow:hidden;background:${G("#2C5BFF", "#5B8CFF")};aspect-ratio:9/16">
           <div style="position:absolute;left:8px;top:10px;font-size:9.5px;color:rgba(255,255,255,.8)">${name}</div>
           <div style="position:absolute;left:0;right:0;bottom:0;padding:8px;background:linear-gradient(0deg,rgba(0,0,0,.55),transparent);color:#fff;font-size:9.5px;line-height:1.5">${vo}</div>
-          <div style="position:absolute;right:10px;bottom:52px;width:58px;height:58px;border-radius:50%;background:${G("#7C5CFF", "#B08CFF")};box-shadow:0 0 0 2px #fff,0 8px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700">珍</div>
+          <div style="position:absolute;right:10px;bottom:52px;width:58px;height:58px;border-radius:50%;background:${G("#7C5CFF", "#B08CFF")};box-shadow:0 0 0 2px #fff,0 8px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700">暴</div>
         </div>
       </div>
 

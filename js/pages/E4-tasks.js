@@ -45,7 +45,7 @@ window.PAGES["E4"].render = function () {
         ${mem("强", G("#7C5CFF", "#B08CFF"), "阿强", 2, 3, "进行中", "b")}
         ${mem("敏", G("#00A8E8", "#00C2FF"), "小敏", 1, 3, "落后", "o")}
         ${mem("华", G("#5B8CFF", "#8FB0FF"), "阿华", 0, 3, "未开始", "r")}
-        ${mem("珍", G("#2C5BFF", "#00C2FF"), "你", 2, 3, "进行中", "b")}
+        ${mem("暴", G("#2C5BFF", "#00C2FF"), "你", 2, 3, "进行中", "b")}
       </div>
 
       <div class="card plain" style="margin-top:12px">
