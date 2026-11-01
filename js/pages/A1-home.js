@@ -87,10 +87,10 @@ window.PAGES["A1"].render = function () {
       ${C.sec("今天发什么", "助理推荐 · 换一批")}
       ${sugg.map((x) => C.li(x)).join("")}
 
-      ${C.sec("团队最新", "素材 ›", "E2")}
+      ${C.sec("团队最新", "进入团队 ›", "E3")}
       ${C.vrail(teamCards)}
 
-      ${C.sec("平台精选 · 运营推荐", "广场 ›", "F1")}
+      ${C.sec("平台精选 · 运营推荐", "剪同款 ›", "F1")}
       ${C.themes(picks.map((p) => ({ img: p.img, pos: p.pos, title: p.title, sub: p.sub, go: p.go })))}
 
       <div class="xs" style="text-align:center;margin:16px 0 4px">数据更新于 ${D.now.slice(11, 16)}</div>
