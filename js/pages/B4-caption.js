@@ -24,7 +24,12 @@ window.PAGES["B4"].render = function (ctx) {
     const ph = D.myPhotos().filter((x) => x.id === ctx.ph)[0];
     if (ph) base = { ...base, bg: ph.bg, from: ph.label + " · " + ph.at };
   }
-  const tpl = D.cover(ctx.tpl || ctx.cv);
+  const tpl0 = D.cover(ctx.tpl || ctx.cv);
+  /* 封面上的字归用户改：AI 给的只是初稿，价格、时间、卖点都得他自己核。
+     改过的存在 state 里，切版式时保留——他改的是这句话，不是这个版式。 */
+  const bigTx = (ctx.big != null && ctx.big !== "") ? ctx.big : tpl0.big;
+  const smallTx = (ctx.small != null && ctx.small !== "") ? ctx.small : tpl0.small;
+  const tpl = { ...tpl0, big: bigTx, small: smallTx };
 
   /* 一个封面 = 底图 + 一层字。字号用 em，外面改 font-size 就能整块缩放——
      大预览和缩略卡因此共用同一套版式 CSS，不会出现"小图和大图长得不一样"。 */
@@ -42,7 +47,7 @@ window.PAGES["B4"].render = function (ctx) {
   };
 
   const tile = (t) => `<div class="cvt${t.k === tpl.k ? " sel" : ""}" data-set="B4.tpl=${t.k}">
-      ${cover(t, base, 5.8)}
+      ${cover(t, base, 5.4)}
       <span class="nm">${t.name}</span>
       ${t.k === tpl.k ? `<span class="ck">✓</span>` : ""}
     </div>`;
@@ -58,17 +63,33 @@ window.PAGES["B4"].render = function (ctx) {
     ${C.ab({ title: "选封面", sub: "挑张底图，再挑个字压在哪儿", back: "B3" })}
 
     <div class="body">
-      <div class="cvpreview">${cover(tpl, base, 13, "big")}
-        <div class="cap">${base.name}${base.at ? " · " + base.at : ""} · ${tpl.name}</div>
+      <div class="cvhead">
+        <div class="cvpreview">${cover(tpl, base, 12, "big")}
+          <div class="cap">${base.name}${base.at ? " · " + base.at : ""} · ${tpl.name}</div>
+        </div>
+        <div class="cvtext">
+          <div class="fd">
+            <span class="fl">大字</span>
+            <input data-bind="B4.big" data-live value="${String(bigTx).replace(/"/g, "&quot;")}"
+                   placeholder="封面主打的那句话" />
+          </div>
+          <div class="fd">
+            <span class="fl">小字</span>
+            <input data-bind="B4.small" data-live value="${String(smallTx).replace(/"/g, "&quot;")}"
+                   placeholder="价格 / 时间 / 补充" />
+          </div>
+          <div class="hint">大字里打 <b>|</b> 可以手动换行</div>
+          <div class="hint" style="margin-top:6px">改完立刻看左边，不用保存</div>
+        </div>
       </div>
 
       <div class="sec-h" style="margin:14px 2px 9px"><span class="h2">底图</span>
         <span class="more">用你自己的画面</span></div>
       <div class="bsets">
         ${D.coverBases().map(baseCard).join("")}
-        <div class="bset add" data-go="B4.2" data-label="再传一张照片">
+        <div class="bset add" data-go="B4.2" data-label="上传本地图片">
           <div class="th add">＋</div>
-          <div class="tx"><b>再传一张</b><span>从相册选</span></div>
+          <div class="tx"><b>上传本地图片</b><span>从相册选一张</span></div>
         </div>
       </div>
 
@@ -87,7 +108,7 @@ window.PAGES["B4"].render = function (ctx) {
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 112px" data-go="B4.1" data-label="不加字直接用这张画面">不加字，直接发</div>
+      <div class="btn line" style="flex:0 0 112px" data-go="B4.1" data-label="不加字直接用这张画面">不加字</div>
       <div class="btn" data-go="B4.1" data-label="用这张封面发布">✓ 用「${tpl.name}」发布</div>
     </div>
   </div>`;

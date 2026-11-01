@@ -56,13 +56,19 @@ window.PAGES["B1.1"].render = function (ctx) {
       </div>
 
       <div class="sec-h" style="margin:16px 2px 9px"><span class="h2">脚本结构</span>
-        <span class="more">可以不选</span></div>
-      <div class="optr" style="margin:0 2px">${D.structs().map((x) =>
-        `<span class="optb ${st && st.id === x.id ? "on" : ""}" data-set="B1.1.struct=${x.id}">${x.short}</span>`).join("")}</div>
-      <div class="note" style="margin:8px 2px 0;display:flex;gap:8px;align-items:flex-start">
-        <span style="flex:1">${autoStruct ? "不指定 —— AI 按主题自己挑一个最合适的" : st.note}</span>
+        <span class="more">分几段，每段讲什么</span></div>
+      <!-- 结构不是一个"风格名"，是一副骨架：几段、每段说什么。
+           所以每一项都要把段数和链路写出来，用户选的是"这条片子怎么走"。 -->
+      <div class="slist">${D.structs().map((x) =>
+        `<div class="sitem${st && st.id === x.id ? " on" : ""}" data-set="B1.1.struct=${x.id}">
+          <span class="sn">${x.parts} 段</span>
+          <span class="sk">${x.name}</span>
+          ${st && st.id === x.id ? `<span class="ck">✓</span>` : ""}
+        </div>`).join("")}</div>
+      <div class="note" style="margin:9px 2px 0;display:flex;gap:8px;align-items:flex-start">
+        <span style="flex:1">${autoStruct ? "不指定 —— AI 按主题自己挑一副骨架" : st.note}</span>
         <span style="flex:0 0 auto;color:var(--brand);font-weight:700;cursor:pointer"
-          data-set="B1.1.struct=${autoStruct ? "open" : "auto"}">${autoStruct ? "指定一个 ›" : "不选 ›"}</span>
+          data-set="B1.1.struct=${autoStruct ? "s4" : "auto"}">${autoStruct ? "指定一个 ›" : "不选 ›"}</span>
       </div>
 
       <div class="sec-h" style="margin:16px 2px 9px"><span class="h2">讲多长</span></div>

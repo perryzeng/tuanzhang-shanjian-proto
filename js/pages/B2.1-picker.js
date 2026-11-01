@@ -9,7 +9,7 @@ window.PAGES["B2.1"].render = function (ctx) {
   const isSeries = kind === "series";
   const day = ctx.day || 5;
   const cid = ctx.c || "cp_1";
-  const d = D.draft(kind, { doc: ctx.doc, day: day, src: ctx.src });
+  const d = D.draft(kind, { doc: ctx.doc, day: day, src: ctx.src, struct: ctx.struct });
   const seg = d.segments.filter((s) => s.id === ctx.seg)[0] || d.missSegs[0] || d.cur;
   const tab = ctx.tab || "rec";
   const q = ctx.q || "";
@@ -26,7 +26,8 @@ window.PAGES["B2.1"].render = function (ctx) {
   /* 回哪去要说准：系列的槽属于 D2，其余都属于结构化脚本框 B2 */
   const backQ = isSeries
     ? "D2?c=" + cid + "&d=" + day
-    : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
+    : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "")
+      + (ctx.struct ? "&struct=" + ctx.struct : "");
   const useQ = backQ + "&seg=" + seg.id + "&asset=" + sel;
 
   const TABS = [
@@ -35,6 +36,18 @@ window.PAGES["B2.1"].render = function (ctx) {
     ["my", "我的出镜 " + D.pool("my").length],
     ["stock", "图库 " + D.pool("stock").length]
   ];
+
+  /* 库里没有合适的，就把手机上的一段传上来当素材。
+     它排在网格第一格，因为这是"找不到"时唯一的出路，不能藏在页面底部。 */
+  const upSel = sel === "up";
+  const upTile = `<div class="mat up${upSel ? " on" : ""}" data-set="B2.1.pick=up">
+      <div class="upbox">
+        ${upSel
+          ? `<span class="fname">IMG_2043.MOV</span><span class="fmeta">竖屏 · 52 秒</span>`
+          : `<span class="pl">＋</span><span class="lb">上传本地</span><span class="fmeta2">视频或图片</span>`}
+      </div>
+      <div class="cap">${upSel ? "已选这条" : "从手机选"}</div>
+    </div>`;
 
   const meta = (a) => a.kind === "pip" ? a.srcTx + " · 画中画" : a.srcTx + " · " + a.dur + "s";
 
@@ -108,14 +121,15 @@ window.PAGES["B2.1"].render = function (ctx) {
             ${TABS.map(([k, tx]) => `<b class="${tab === k ? "on" : ""}" data-set="B2.1.tab=${k}">${tx}</b>`).join("")}
           </div>`}
 
-          ${list.length ? `<div class="mgrid">${list.map(mat).join("")}</div>` : empty}
+          ${list.length ? `<div class="mgrid">${upTile}${list.map(mat).join("")}</div>`
+            : `<div class="mgrid">${upTile}</div>${empty}`}
           <div class="xs" style="margin-top:12px;text-align:center">这一页只负责选素材 · 库里没有再自己拍</div>
         </div>
 
         <div class="sheet-f">
-          <div class="btn" data-go="${useQ}" data-label="用这个片段">${selItem
-            ? "用「" + selItem.label + "」换掉这段画面"
-            : "先选一个片段"}</div>
+          <div class="btn" data-go="${useQ}" data-label="用这个片段">${upSel
+            ? "用我上传的这段换掉画面"
+            : selItem ? "用「" + selItem.label + "」换掉这段画面" : "先选一个片段"}</div>
         </div>
       </div>
     </div>

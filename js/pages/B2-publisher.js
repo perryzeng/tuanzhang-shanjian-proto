@@ -22,6 +22,8 @@ window.PAGES["B2"].render = function (ctx) {
   const editId = ctx.edit || "";
   const d = D.draft(kind, {
     doc: ctx.doc, day: ctx.day, src: src,
+    /* 选了结构就按结构的段数铺开——不然那几项在开工页只是装饰 */
+    struct: ctx.struct,
     fill: ctx.only ? false : true,
     autoFill: ctx.auto === "1",
     pick: (ctx.seg && ctx.asset) ? { seg: ctx.seg, asset: ctx.asset } : null
@@ -34,9 +36,12 @@ window.PAGES["B2"].render = function (ctx) {
   const pvSeg = playing ? byId(playing) : null;
 
   /* 每个槽都带着"这一段 + 从哪来"，否则换完就掉回默认草稿 */
+  /* struct 必须一路带着：换完素材回来要是丢了它，段落会退回默认那 5 段，
+     用户会看到"我换的那段不见了"。 */
   const pickGo = (id) => "B2.1?seg=" + id + "&kind=" + kind + (src ? "&src=" + src : "")
-    + (ctx.doc ? "&doc=" + ctx.doc : "");
-  const cfgQ = "?from=B2&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
+    + (ctx.doc ? "&doc=" + ctx.doc : "") + (ctx.struct ? "&struct=" + ctx.struct : "");
+  const cfgQ = "?from=B2&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "")
+    + (ctx.struct ? "&struct=" + ctx.struct : "");
 
   /* 来源只说一句话，数字交给下面的小标题 */
   const srcLine = (function () {
@@ -91,13 +96,12 @@ window.PAGES["B2"].render = function (ctx) {
       p.bindKey = "B2.vo_" + s.id;
       p.editbox = ctx.vo === "ai" && s.voAlt ? s.voAlt : voText;
 
-      /* 进了编辑态，这一段的**画面和文案是一起改的**，所以两边各给各的动作：
-         画面——「修改」调这一条（B2.5）、「替换」换一条（B2.1）；
-         文案——「AI 换个说法」出另一版。
-         最后只有一个出口：「确定这一段」，把它当"整段定稿"，不是"确定这段文案"。 */
+      /* 画面这一侧暂时只留一件事：**换一段**（进素材选择器）。
+         "调整这一条"（从哪开始、怎么铺满、要不要原声）先不做——它把编辑态
+         拆成两个入口，用户得先想清楚"我是要换还是要调"。等换素材这条路走顺了再说。
+         文案那一侧的 AI 按钮挪到台词框下面，两边不再并排。 */
       p.slotOps = okShot
-        ? [{ tx: "修改", go: "B2.5?seg=" + s.id + "&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "") },
-           { tx: "替换", go: pickGo(s.id) }]
+        ? [{ tx: "换一段", go: pickGo(s.id) }]
         : [{ tx: "选素材", go: pickGo(s.id) }];
 
       p.editOps = [[ctx.vo === "ai" ? "cold" : "hot",

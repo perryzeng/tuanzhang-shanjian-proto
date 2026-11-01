@@ -174,13 +174,16 @@
          用 data-bind 只写状态、不重渲染，否则每敲一个字光标就跳走。 */
       vo = `<div class="editbox"><textarea data-bind="${p.bindKey || ""}" rows="3"
               placeholder="写下这一段要说的第一句话…">${p.editbox}</textarea></div>`;
-      if (p.meta) { vo += `<div class="pmeta" style="margin-top:7px">${p.meta}</div>`; metaDone = true; }
+      /* 顺序：文本框 → AI 按钮 → 时长说明。
+         AI 按钮必须紧贴文本框，它改的就是这段字；放到时长说明后面，
+         看起来就像个和文案无关的悬浮按钮。 */
       if (p.editOps) {
         vo += `<div class="editops">${p.editOps.map(([cls, tx, act]) => {
           const attr = !act ? "" : (/=/.test(act) ? ` data-set="${act}"` : ` data-go="${act}" data-label="${tx}"`);
           return `<span class="op ${cls}"${attr}>${tx}</span>`;
         }).join("")}</div>`;
       }
+      if (p.meta) { vo += `<div class="pmeta" style="margin-top:8px">${p.meta}</div>`; metaDone = true; }
     } else if (p.vo) {
       vo = `<div class="vo"><span>${p.vo}</span><span class="edit"${p.voEditAct ? ` data-set="${p.voEditAct}"` : ""}>改</span></div>`;
     } else if (p.pending) {

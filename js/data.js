@@ -555,13 +555,61 @@ window.DATA = {
     }
   },
 
-  /* 结构模板：不是排版，是"先说什么后说什么"。
-     同一个主题换结构，片子会是完全不同的两条——所以这一项也得让人选。 */
+  /* 脚本结构：**几段 + 每段说什么**。
+     不是"四个字的风格名"，是这副骨架——用户看一眼就知道这条片子会怎么走，
+     而且段数本身就决定了他要拍几段、要几个画面。
+     每套结构自带台词，选了谁，下一屏就按谁的段数和台词铺开（B2 不再固定 5 段）。 */
   structs: [
-    { id: "open", short: "开箱带货", name: "开箱 → 成分 → 价格", note: "手里有实物可拍时最稳，新客也跟得上", conf: "ai" },
-    { id: "why", short: "讲清原理", name: "问题 → 原理 → 用法", note: "讲知识的路子，适合账号还没人认识", conf: "ask" },
-    { id: "proof", short: "晒单复购", name: "晒单 → 复购理由", note: "老客多、手里有反馈截图时最好用", conf: "ask" },
-    { id: "vs", short: "对比测评", name: "对比 → 我的选择", note: "有明确的对比对象，讲清差别再落到它", conf: "ask" }
+    { id: "s3", parts: 3, name: "钩子 → 是什么 → 价格",
+      note: "最快。发过同款的人用这条，半分钟讲完",
+      segs: [
+        { name: "开场钩子", role: "hook", dur: 7, needTags: ["person", "broll"],
+          vo: "磷虾油到底值不值得买？三句话说清。" },
+        { name: "是什么", role: "what", dur: 12, needTags: ["product", "hand"],
+          vo: "它是从磷虾里提的油，磷脂型 Omega-3，比鱼油好吸收。" },
+        { name: "开团 · 价格", role: "cta", dur: 9, needTags: ["textcard", "cta"],
+          vo: "今晚 8 点开团，一盒 89，点我头像进来。" }
+      ] },
+    { id: "s4", parts: 4, name: "钩子 → 是什么 → 凭什么信 → 怎么买",
+      note: "最常见的带货结构，新客老客都跟得上",
+      segs: [
+        { name: "开场钩子", role: "hook", dur: 7, needTags: ["person"],
+          vo: "别急着买磷虾油，先看我这条再决定。" },
+        { name: "是什么", role: "what", dur: 11, needTags: ["product"],
+          vo: "它就是磷脂型 Omega-3，每粒 500mg。" },
+        { name: "凭什么信", role: "proof", dur: 12, needTags: ["proof"],
+          vo: "我自己吃了三个月，还有 37 个老客回购。" },
+        { name: "怎么买", role: "cta", dur: 9, needTags: ["textcard", "cta"],
+          vo: "今晚 8 点开团，点我头像进，价在群里。" }
+      ] },
+    { id: "s5", parts: 5, name: "钩子 → 拆问题 → 讲原理 → 给证据 → 说价格",
+      note: "讲透一条。账号还没人认识的时候，靠这个立信任",
+      segs: [
+        { name: "开场钩子", role: "hook", dur: 7, needTags: ["person"],
+          vo: "补 Omega-3，为什么有人吃了半年也没感觉？" },
+        { name: "拆问题", role: "problem", dur: 10, needTags: ["person", "explain"],
+          vo: "多半是买成了普通鱼油，吸收率差一大截。" },
+        { name: "讲原理", role: "why", dur: 13, needTags: ["ingredient"],
+          vo: "磷虾油是磷脂型，直接进细胞膜，不用身体再转化一次。" },
+        { name: "给证据", role: "proof", dur: 11, needTags: ["proof"],
+          vo: "我吃了三个月，睡眠和状态都稳了，老客也是这么说的。" },
+        { name: "说价格", role: "cta", dur: 9, needTags: ["textcard", "cta"],
+          vo: "今晚 8 点开团，一盒 89，点我头像进来。" }
+      ] },
+    { id: "s5o", parts: 5, name: "开箱 → 成分 → 含量 → 用法 → 价格",
+      note: "手里有实物、能拍开箱时最稳，画面最好凑",
+      segs: [
+        { name: "开箱", role: "hook", dur: 9, needTags: ["product", "unbox"],
+          vo: "刚到的这一箱，我当场拆给你看。" },
+        { name: "成分", role: "what", dur: 9, needTags: ["ingredient"],
+          vo: "翻过来看配料表：磷虾油，磷脂型 Omega-3。" },
+        { name: "含量", role: "detail", dur: 8, needTags: ["product", "hand"],
+          vo: "每粒 500mg，一天两粒就够了。" },
+        { name: "用法", role: "how", dur: 8, needTags: ["person", "explain"],
+          vo: "饭后吃，别空腹；连着吃一个月再看变化。" },
+        { name: "价格", role: "cta", dur: 9, needTags: ["textcard", "cta"],
+          vo: "今晚 8 点开团，一盒 89，点我头像进来。" }
+      ] }
   ],
 
   /* 讲多长：只说短 / 中 / 长，不报秒数。
@@ -653,18 +701,20 @@ window.DATA = {
   /* big 里的 `|` 是**手动断行**。
      中文没有空格，交给浏览器自动折行会断在词中间（"一天不 / 到 3 块"），
      而封面标题的断句本来就是排版的一部分——所以由文案自己定哪里换行。 */
+  /* 六款都是数据里跑出来"点得动"的版式：大字压底 / 顶标题 / 居中描边 /
+     分屏对比 / 价签色条 / 左侧卖点。名字按信息流里的实际叫法来，不按设计术语。 */
   coverStyles: [
-    { k: "bottom", name: "大字压底", big: "一天不到|3 块", small: "今晚 8 点开团",
+    { k: "bottom", name: "爆款大字", big: "一天不到|3 块", small: "今晚 8 点开团",
       note: "最常用：画面留给你，字收在下方 1/3" },
-    { k: "top", name: "顶部标题", big: "磷虾油|怎么选", small: "3 步不踩坑",
+    { k: "top", name: "顶部标题党", big: "磷虾油|怎么选", small: "3 步不踩坑",
       note: "画面主体在中间时用，字压顶部不挡脸" },
-    { k: "center", name: "居中描边", big: "孩子|能吃吗？", small: "一次讲清楚",
+    { k: "center", name: "疑问居中", big: "孩子|能吃吗？", small: "一次讲清楚",
       note: "疑问句最搭；白字加黑边，什么背景都看得清" },
-    { k: "split", name: "上下分栏", big: "鱼油 vs|磷虾油", small: "差在一个吸收率",
+    { k: "split", name: "分屏对比", big: "鱼油 vs|磷虾油", small: "差在一个吸收率",
       note: "对比内容专用：上留画面，下留结论" },
-    { k: "bar", name: "底部色条", big: "37 个|老客回购", small: "原话都在评论区",
+    { k: "bar", name: "价签色条", big: "37 个|老客回购", small: "原话都在评论区",
       note: "压一条实色带，字最稳，也最像广告" },
-    { k: "left", name: "左侧三行", big: "每粒 500mg", small: "磷脂型更好吸收",
+    { k: "left", name: "左侧卖点", big: "每粒 500mg", small: "磷脂型更好吸收",
       note: "信息量大时用，左下三行放得下三个卖点" }
   ],
 
@@ -970,6 +1020,24 @@ window.DERIVE = (function () {
     return d;
   }
 
+  /* 选中的结构 → 一份草稿：段数、段名、台词、画面全按这副骨架来。
+     这是"结构"这个词唯一有意义的实现——选了四段，下一屏就该是四段；
+     只把结构名记住、段落还是固定五段，等于那三个选项是装饰。 */
+  function draftByStruct(id) {
+    const st = structOf(id);
+    if (!st || !st.segs) return window.DATA.draft;
+    const base = window.DATA.draft;
+    return {
+      ...base, id: "df_" + st.id, struct: st.id, title: base.title,
+      segments: st.segs.map((x, i) => ({
+        id: "sg" + (i + 1), role: x.role || "seg", name: x.name, dur: x.dur, vo: x.vo,
+        needTags: x.needTags || needTagsOf(x.name), lock: x.lock || null, hint: x.hint || "",
+        shots: fitShots(x.needTags || needTagsOf(x.name), x.dur)
+      })),
+      curSeg: "sg1"
+    };
+  }
+
   /* 抽取出来的一份文案 → 一份草稿（画面全新配，所以才叫「要文案」） */
   function draftFromExtract() {
     const x = window.DATA.extract;
@@ -985,16 +1053,8 @@ window.DERIVE = (function () {
     /* 导入脚本 / 视频抽取：都不进 DATA.draft，而是现拼一份草稿出来 */
     let d = (k === "script" && opts.src === "extract") ? draftFromExtract()
       : (k === "script" && opts.doc) ? draftFromScript(opts.doc, opts.fill)
+      : (k === "script" && opts.struct && opts.struct !== "auto") ? draftByStruct(opts.struct)
       : window.DATA[DRAFT_OF[k]];
-    /* 从素材选择器回来会带「这一段换成这个素材」，立刻反映到画面槽上——
-       换完看到的就是换完的样子，不另外弹一个"已替换"的提示 */
-    if (opts.pick && opts.pick.seg && opts.pick.asset) {
-      const a = window.DATA.assets.filter((x) => x.id === opts.pick.asset)[0];
-      if (a) {
-        d = { ...d, segments: d.segments.map((s) => s.id !== opts.pick.seg ? s
-          : { ...s, shots: [{ id: "pk_" + a.id, asset: a.id, dur: Math.min(a.dur || 3, s.dur) }] }) };
-      }
-    }
     /* AI 写完的脚本，画面先留空——让团长自己挑一遍，比 AI 猜完再逐段否掉快。
        点"一键配齐"（autoFill）才按语义一次铺满。 */
     if (k === "script" && opts.src === "ai" && !opts.autoFill) {
@@ -1006,6 +1066,24 @@ window.DERIVE = (function () {
          用户会以为功能坏了。 */
       d = { ...d, segments: d.segments.map((x) => (x.shots && x.shots.some((sh) => sh.asset) ? x
         : { ...x, shots: fitShots(x.needTags || needTagsOf(x.name), x.dur) })) };
+    }
+
+    /* 从素材选择器回来会带「这一段换成这个素材」，立刻反映到画面槽上——
+       换完看到的就是换完的样子，不另外弹一个"已替换"的提示。
+       **必须放在 ai 清空和一键配齐之后**：否则 AI 稿一进来画面又被清空一次，
+       用户刚选的那段素材当场消失（这个顺序错过一次，表现为"换完没反应"）。 */
+    if (opts.pick && opts.pick.seg && opts.pick.asset) {
+      /* asset=up 是"刚从手机传上来的这一段"，不在素材库里，
+         所以现造一个只有画面信息的 shot（有 label/bg 才画得出来）。 */
+      const up = opts.pick.asset === "up";
+      const a = up ? null : window.DATA.assets.filter((x) => x.id === opts.pick.asset)[0];
+      if (up || a) {
+        d = { ...d, segments: d.segments.map((s) => s.id !== opts.pick.seg ? s
+          : { ...s, shots: [up
+            ? { id: "pk_up", asset: "up", label: "我上传的 · IMG_2043", from: "my",
+                bg: "linear-gradient(150deg,#0E1B3D,#2C5BFF)", dur: s.dur }
+            : { id: "pk_" + a.id, asset: a.id, dur: Math.min(a.dur || 3, s.dur) }] }) };
+      }
     }
 
     /* 系列里还没轮到的那一天：结构在，台词和画面都还没生成 */
@@ -1110,7 +1188,9 @@ window.DERIVE = (function () {
   /* ---------- 开工前那几项（B1.1） ---------- */
   function brief() { return window.DATA.brief; }
   function structs() { return window.DATA.structs; }
+  /* auto = 不指定，让 AI 按主题挑。返回 null，调用方自己决定怎么显示。 */
   function structOf(id) {
+    if (id === "auto") return null;
     return window.DATA.structs.filter((x) => x.id === id)[0] || window.DATA.structs[0];
   }
   function tones() { return window.DATA.tones; }

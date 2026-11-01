@@ -58,10 +58,9 @@ window.PAGES["D2"].render = function (ctx) {
     if (editing) {
       p.bindKey = "D2.vo_" + s.id;
       p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : voText;
-      /* 和 B2 同一套：画面给「修改 / 替换」，文案给 AI 换说法，最后一起「确定」 */
+      /* 和 B2 同一套：画面只给「换一段」，文案给 AI 换说法，最后一起「确定」 */
       p.slotOps = okShot
-        ? [{ tx: "修改", go: "B2.5?seg=" + s.id + "&kind=series&day=" + day },
-           { tx: "替换", go: pickGo(s.id) }]
+        ? [{ tx: "换一段", go: pickGo(s.id) }]
         : [{ tx: "选素材", go: pickGo(s.id) }];
       p.editOps = [[voVer === "ai" ? "cold" : "hot",
         voVer === "ai" ? "↺ 用原来的" : "✦ 按这天的主题换个说法",
