@@ -18,19 +18,21 @@ window.PAGES["D1.3"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const product = ctx.product || "磷虾油";
   const typed = ctx.topic || "";
-  const pick = ctx.days || "";               // "" 未选 | "7" | "10" | "14" | "ai"
+  const pick = ctx.days || "";               // "" 未选 | "ai" | "2" | "3" | "5" | "custom"
   const gen = ctx.gen === "1" && !!pick;     // 生成过才列条
   /* 从创作页进来的（不是从 D1 列表），返回就回创作页，别把人扔进他不认识的地方 */
   const backGo = ctx.from === "B1" ? "B1" : "D1";
 
-  /* 「AI 决定」= 从主题里读一个数（"磷虾油 10 天" → 10），读不出就 10 条。
-     读出来的数要落在合理区间（3~21），否则"100 天"这种会把页撑爆。 */
+  /* 「AI 默认」= 从主题里读一个数（"磷虾油 10 天" → 10），读不出就 5 条（跟选项里的 5 对齐）。
+     读出来的数要落在合理区间（2~21），否则"100 天"这种会把页撑爆。 */
   const aiN = (function () {
     const m = String(typed).match(/(\d+)\s*(天|条|集|期)/);
-    const v = m ? +m[1] : 10;
-    return v >= 3 && v <= 21 ? v : 10;
+    const v = m ? +m[1] : 5;
+    return v >= 2 && v <= 21 ? v : 5;
   })();
-  const n = pick === "ai" ? aiN : (+pick || 0);
+  /* 自定义：给一个默认值 6，用户输入后就按他写的来，仍夹在 2~21 */
+  const cus = Math.max(2, Math.min(21, +(ctx.custom || 0) || 6));
+  const n = pick === "ai" ? aiN : pick === "custom" ? cus : (+pick || 0);
 
   const topics = gen ? D.planTopics(product, n) : [];
   const toCampaign = { "磷虾油": "cp_1", "换季免疫": "cp_2", "老客复购": "cp_3" }[product] || "cp_1";
@@ -63,10 +65,19 @@ window.PAGES["D1.3"].render = function (ctx) {
         <div class="cbot"><span class="hint">${typed ? "AI 按你说的排" : "这是示例，可以改成你的说法"}</span></div>
       </div>
 
-      ${C.sec("分几个视频", pick ? (pick === "ai" ? "AI 按主题定：约 " + n + " 条" : "一个主题拆成 " + n + " 条片子") : "必选 · 决定 AI 排几条")}
-      <div class="chips">
-        ${chip("7", "7 条")}${chip("10", "10 条")}${chip("14", "14 条")}${chip("ai", "AI 决定")}
+      ${C.sec("分几个视频", pick
+        ? (pick === "ai" ? "AI 按主题定：约 " + n + " 条" : "一个主题拆成 " + n + " 条片子")
+        : "必选 · 决定 AI 排几条")}
+      <div class="chips tight">
+        ${chip("ai", "AI 默认")}${chip("2", "2 条")}${chip("3", "3 条")}${chip("5", "5 条")}${chip("custom", "自定义")}
       </div>
+      <!-- 自定义不弹窗、不换页：点开就在下面长出一个输入框，填完直接生效。
+           条数写"条视频"而不是"条"——这一页前面刚说过"分几个视频"，这里不能又省略掉宾语。 -->
+      ${pick === "custom" ? `<div class="cnumbox">
+        <input type="number" data-bind="D1.3.custom" data-live min="2" max="21"
+               value="${ctx.custom != null ? ctx.custom : 6}" placeholder="6" />
+        <span>条视频 · 可填 2 ~ 21</span>
+      </div>` : ""}
 
       <div style="margin-top:12px">${cta}</div>
 

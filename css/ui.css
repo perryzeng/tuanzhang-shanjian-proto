@@ -100,6 +100,18 @@
 .chip{flex:0 0 auto;height:32px;padding:0 14px;border-radius:var(--r-pill);background:#fff;box-shadow:inset 0 0 0 1px var(--line);
       font-size:12.5px;color:var(--text-2);display:flex;align-items:center;cursor:pointer}
 .chip.on{background:var(--g-brand);color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(44,91,255,.24)}
+/* 五选一的条数（AI 默认 / 2 / 3 / 5 / 自定义）：chip 收窄一点，一行放得下五个。
+   放不下就会横滑，而横滑等于第五个"自定义"永远看不见。 */
+.chips.tight{gap:6px}
+.chips.tight .chip{padding:0 12px;font-size:12.5px;height:31px}
+/* 自定义条数：点开就在原地长出来，不弹窗不换页 */
+.cnumbox{display:flex;align-items:center;gap:9px;margin-top:9px;background:var(--surface);
+         border-radius:12px;box-shadow:var(--sh-1);padding:8px 12px}
+.cnumbox input{width:58px;border:0;outline:0;background:var(--bg-2);border-radius:8px;
+               padding:7px 6px;font-family:inherit;font-size:15px;font-weight:700;
+               color:var(--text);text-align:center;-moz-appearance:textfield}
+.cnumbox input::-webkit-outer-spin-button,.cnumbox input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.cnumbox span{font-size:11px;color:var(--text-3);line-height:1.4}
 .pill{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 12px;border-radius:var(--r-pill);background:#fff;
       box-shadow:inset 0 0 0 1px var(--line);font-size:12px;color:var(--text-2);cursor:pointer}
 .pill.on{background:var(--brand);color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(44,91,255,.24)}
