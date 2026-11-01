@@ -103,10 +103,7 @@ window.PAGES["B2.1"].render = function (ctx) {
           </div>`}
 
           ${list.length ? `<div class="mgrid">${list.map(mat).join("")}</div>` : empty}
-          <div class="row" style="gap:8px;margin-top:12px">
-            <div class="btn line" style="height:38px;font-size:13px" data-go="B2.2" data-label="去随手拍">＋ 随手拍 3 秒</div>
-            <div class="btn line" style="height:38px;font-size:13px" data-go="B2.3" data-label="画中画配置">▣ 画中画</div>
-          </div>
+          <div class="xs" style="margin-top:12px;text-align:center">这一页只负责选素材 · 库里没有再自己拍</div>
         </div>
 
         <div class="sheet-f">

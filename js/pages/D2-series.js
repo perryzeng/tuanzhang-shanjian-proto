@@ -24,6 +24,8 @@ window.PAGES["D2"].render = function (ctx) {
   const focus = d.segments.filter((s) => s.id === ctx.seg)[0] || d.cur;
   const pending = !!d.pendDay;
   const playing = ctx.pv || "";
+  const paused = ctx.pause === "1";
+  const pvSeg = playing ? d.segments.filter((x) => x.id === playing)[0] : null;
 
   const pickGo = (id) => "B2.1?seg=" + id + "&kind=series&day=" + day;
   const backGo = "D1.2?c=" + c.id + "&d=" + day;
@@ -48,9 +50,8 @@ window.PAGES["D2"].render = function (ctx) {
     const on = playing === s.id;
     const p = {
       no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit",
-      play: { on: on, act: on ? "D2.pv=" : "D2.pv=" + s.id }
+      play: { on: on, act: on ? "D2.pv=&D2.pause=" : "D2.pv=" + s.id + "&D2.pause=" }
     };
-    if (on) p.playing = s.dur;
 
     if (mode === "edit" && isFocus) {
       p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : s.vo;
@@ -90,6 +91,16 @@ window.PAGES["D2"].render = function (ctx) {
   const sub = mode === "edit"
     ? "正在改第 " + (focus.idx + 1) + " 段" + (focus.fixed ? "（每天固定，改一次全季生效）" : "")
     : "Day " + day + "/" + d.series.total + " · " + plan.topic;
+
+  const player = pvSeg ? C.player({
+    no: pvSeg.idx + 1, name: pvSeg.name, dur: pvSeg.dur,
+    bg: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
+    label: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).label || "待补画面",
+    cap: pvSeg.vo || "",
+    closeAct: "D2.pv=&D2.pause=",
+    pauseAct: paused ? "D2.pause=" : "D2.pause=1",
+    paused: paused
+  }) : "";
 
   return `<div class="app">
     ${C.sb()}
@@ -132,5 +143,6 @@ window.PAGES["D2"].render = function (ctx) {
     <div class="actionbar">
       <div class="btn ${primary.cls}" data-go="${primary.go}" data-label="${primary.t}">${primary.t}</div>
     </div>
+    ${player}
   </div>`;
 };

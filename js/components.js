@@ -139,9 +139,7 @@
     const tags = (p.tags || []).map(([c, t]) => `<span class="tag ${c}">${t}</span>`).join("");
     const sl = p.slot || {};
     const slot = `<div class="slot ${sl.miss ? "miss" : sl.empty ? "empty" : "fill"}"${sl.bg ? ` style="background:${sl.bg}"` : ""}${sl.go ? ` data-go="${sl.go}" data-label="${sl.label || "换画面"}"` : ""}>
-        ${sl.empty || sl.miss ? `<span class="ic">＋</span>` : ""}
-        <b>${sl.label || "选画面"}</b>
-        ${sl.empty || sl.miss ? "" : `<i>替换</i>`}
+        ${sl.empty ? `<span class="ic">＋</span>` : sl.miss ? `<span class="ic">＋</span><b>${sl.label}</b>` : `<b>${sl.label}</b><i>替换</i>`}
       </div>`;
 
     let vo = "";
@@ -179,6 +177,29 @@
       <div class="part-b">${slot}<div class="pvo">${orig}${vo}${playing}${ops}${note}${meta}</div></div>
     </div>`;
   };
+
+  /* 分片播放器：点 ▶ 直接在这一段上播，不占常驻空间。
+     为什么是弹层而不是顶部长驻预览：常驻那块占 1/5 屏却只显示一段，
+     和下面的 part 卡重复；弹层只在"要看"的时候出现，看完就收。
+     o = { no, name, bg, label, dur, closeAct, pauseAct, paused } */
+  C.player = (o) => `<div class="pl">
+      <div class="pl-hd">
+        <span>第 ${o.no} 段 · ${o.name}</span>
+        <span class="plx" data-set="${o.closeAct}">×</span>
+      </div>
+      <div class="pl-mid">
+        <div class="pl-screen" style="background:${o.bg}">
+          ${o.label ? `<span class="pl-lab">${o.label}</span>` : ""}
+          ${o.cap ? `<div class="pl-cap">${o.cap}</div>` : ""}
+          <div class="pl-bar"><i style="animation-duration:${o.dur}s;animation-play-state:${o.paused ? "paused" : "running"}"></i></div>
+          <div class="pl-tc"><span>00:00</span><span>00:${(o.dur < 10 ? "0" : "") + o.dur}</span></div>
+        </div>
+      </div>
+      <div class="pl-ft">
+        <span class="pl-btn" data-set="${o.pauseAct}">${o.paused ? "▶" : "❚❚"}</span>
+        <span class="pl-tip">台词配音 + 画面 · ${o.dur} 秒</span>
+      </div>
+    </div>`;
 
   C.fold = (o) =>
     `<div class="fold"${o.set ? ` data-set="${o.set}"` : (o.go ? ` data-go="${o.go}" data-label="${o.name || "展开"}"` : "")}>

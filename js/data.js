@@ -849,12 +849,17 @@ window.DERIVE = (function () {
   }
 
   /* 脚本库的一份脚本 → 一份草稿 */
-  function draftFromScript(id) {
+  function draftFromScript(id, fill) {
     const sc = script(id);
-    return draftFromLines(sc.lines, {
+    const d = draftFromLines(sc.lines, {
       id: "df_" + sc.id, title: sc.title, product: sc.product,
       src: "import", docId: sc.id, who: sc.who, ok: sc.compliance
     });
+    /* 只导入文案：台词照搬，画面全部留空，等你自己配。
+       这时候每个 part 是"空槽"而不是"缺素材"——缺是指该有却缺了，
+       空是指还没开始配，两者提示语和门禁都不一样。 */
+    if (fill === false) d.segments = d.segments.map((x) => ({ ...x, shots: [] }));
+    return d;
   }
 
   /* 抽取出来的一份文案 → 一份草稿（画面全新配，所以才叫「要文案」） */
@@ -871,7 +876,7 @@ window.DERIVE = (function () {
     const k = DRAFT_OF[kind] ? kind : "script";
     /* 导入脚本 / 视频抽取：都不进 DATA.draft，而是现拼一份草稿出来 */
     let d = (k === "script" && opts.src === "extract") ? draftFromExtract()
-      : (k === "script" && opts.doc) ? draftFromScript(opts.doc)
+      : (k === "script" && opts.doc) ? draftFromScript(opts.doc, opts.fill)
       : window.DATA[DRAFT_OF[k]];
     /* 从素材选择器回来会带「这一段换成这个素材」，立刻反映到画面槽上——
        换完看到的就是换完的样子，不另外弹一个"已替换"的提示 */
@@ -922,6 +927,8 @@ window.DERIVE = (function () {
     const total = segs.reduce((n, s) => n + s.dur, 0);
     segs.forEach((s) => { s.code = mmss(s.start + 4) + " / " + mmss(total); });
     const missSegs = segs.filter((s) => s.missN > 0);
+    /* 空槽（一个画面都没有）和缺素材是两件事，但都挡住发布 */
+    const emptySegs = segs.filter((s) => !s.shots.length);
     const curIdx = Math.max(0, segs.map((s) => s.id).indexOf(d.curSeg));
     const cur = segs[curIdx];
     /* 二创安全度：服务端按「画面相似度 + 文案相似度」算，这里按已改段数做前端估算，
@@ -935,13 +942,16 @@ window.DERIVE = (function () {
       pendDay, pendTopic,
       segCount: segs.length, durTotal: total,
       missCount: missSegs.reduce((n, s) => n + s.missN, 0),
-      missSegs, changed, needChange,
+      missSegs, emptySegs,
+      emptyCount: emptySegs.length,
+      needCount: missSegs.length + emptySegs.length,
+      changed, needChange,
       safety: k === "remix" ? Math.min(95, 38 + changed * 6) : null,
       code: mmss(cur.start + 4) + " / " + mmss(total),
       track: segs.map((s) => [s.dur, ""]),
       /* 缺素材不阻断「生成预览」，但阻断「发布」——预览/发布是两道门 */
       canPreview: true,
-      canPublish: missSegs.length === 0
+      canPublish: missSegs.length === 0 && emptySegs.length === 0
     };
   }
 

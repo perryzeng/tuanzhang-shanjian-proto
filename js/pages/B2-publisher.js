@@ -20,12 +20,16 @@ window.PAGES["B2"].render = function (ctx) {
   const src = ctx.src || "";
   const d = D.draft(kind, {
     doc: ctx.doc, day: ctx.day, src: src,
+    /* only=1 表示"只导入文案"：台词照搬，画面留空 */
+    fill: ctx.only ? false : true,
     pick: (ctx.seg && ctx.asset) ? { seg: ctx.seg, asset: ctx.asset } : null
   });
   const miss = d.missSegs[0];
   const byId = (id) => d.segments.filter((s) => s.id === id)[0];
   const focus = byId(ctx.seg) || (mode === "fix" && miss ? miss : d.cur);
   const playing = ctx.pv || "";
+  const paused = ctx.pause === "1";
+  const pvSeg = playing ? byId(playing) : null;
 
   /* 每个槽都带着"这一段 + 从哪来"，否则换完就掉回默认草稿 */
   const pickGo = (id) => "B2.1?seg=" + id + "&kind=" + kind + "&src=" + src
@@ -69,7 +73,7 @@ window.PAGES["B2"].render = function (ctx) {
 
     const p = {
       no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && mode === "edit",
-      play: { on: on, act: on ? "B2.pv=" : "B2.pv=" + s.id }
+      play: { on: on, act: on ? "B2.pv=&B2.pause=" : "B2.pv=" + s.id + "&B2.pause=" }
     };
     if (s.orig) p.orig = s.orig;
 
@@ -85,12 +89,12 @@ window.PAGES["B2"].render = function (ctx) {
     }
     /* 缺口段的槽上已经写着缺什么，就不再多一行"画面还缺" */
     p.meta = badShot ? "" : D.slotMeta(s);
-    if (on) p.playing = s.dur;
     if (mode === "edit" && isFocus && !editable) p.note = "品牌方锁定的必播口播，台词不可改，只能调顺序";
 
     if (s.missN) {
       p.ops = D.resolveFix(s).filter((o) => o.ok).slice(0, 3)
-        .map((o) => ({ t: o.tx, go: o.go, cls: o.key === "aigen" ? "hot" : "" }));
+        .map((o) => ({ t: o.tx, go: o.go, cls: o.key === "aigen" ? "hot" : "" }))
+        .concat([{ t: "＋ 现拍", go: "B2.2", cls: "" }]);
     } else if (isFocus && mode !== "edit" && s.vo && !on) {
       p.ops = [{ t: "✦ AI 重写这段", cls: "hot" }, { t: "＋ 画中画", go: "B2.3" }];
     }
@@ -118,7 +122,11 @@ window.PAGES["B2"].render = function (ctx) {
       ${kind === "remix"
         ? `<span style="color:var(--warn);font-weight:700">安全度 ${d.safety}</span>`
         : `<span style="color:var(--success);font-weight:700">合规 ✓</span>`}
-      <span style="flex:1"></span>${d.missCount ? `<span class="tag r">缺 ${d.missCount} 段画面</span>` : `<span class="tag g">可以发</span>`}</div>`;
+      <span style="flex:1"></span>${d.missCount
+        ? `<span class="tag r">缺 ${d.missCount} 段画面</span>`
+        : d.emptyCount
+          ? `<span class="tag o">${d.emptyCount} 段没配</span>`
+          : `<span class="tag g">可以发</span>`}</div>`;
 
   /* 下一步不再是"直接生成"：先选模板和声音，再生成。
      模板决定节奏与字幕，声音决定谁在说——这两件事必须在生成前定，
@@ -148,6 +156,16 @@ window.PAGES["B2"].render = function (ctx) {
       ? "缺 " + d.missCount + " 段画面 · 补齐才能发布"
       : srcLine;
 
+  const player = pvSeg ? C.player({
+    no: pvSeg.idx + 1, name: pvSeg.name, dur: pvSeg.dur,
+    bg: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)",
+    label: (pvSeg.shots.filter((x) => !x.miss)[0] || {}).label || "待补画面",
+    cap: pvSeg.vo || "",
+    closeAct: "B2.pv=&B2.pause=",
+    pauseAct: paused ? "B2.pause=" : "B2.pause=1",
+    paused: paused
+  }) : "";
+
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
@@ -165,5 +183,6 @@ window.PAGES["B2"].render = function (ctx) {
     </div>
 
     ${bar}
+    ${player}
   </div>`;
 };

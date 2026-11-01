@@ -42,17 +42,18 @@ window.PAGES["B1.3"].render = function (ctx) {
       ${lines}
 
       <div class="card plain">
-        <div class="xs" style="line-height:1.7">
-          引入后：台词原样带过去，画面按每段语义重新配。
-          ${s.scope === "team" ? "别人的自称会自动换成你的。" : ""}
-          改台词不扣生成额度。
+        <div class="xs" style="line-height:1.75">
+          <b style="color:var(--text)">两种引入方式</b><br>
+          · <b style="color:var(--text)">只导入文案</b>：台词照搬，画面全部留空，进去自己配（想用自己的素材时选这个）<br>
+          · <b style="color:var(--text)">文案 + 素材</b>：画面也按每段语义配好，进去就能直接生成
+          ${s.scope === "team" ? "<br>别人的自称会自动换成你的。" : ""}
         </div>
       </div>
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 112px" data-go="B2?kind=script&src=struct" data-label="只借结构">只借结构</div>
-      <div class="btn" data-go="B2?kind=script&src=import&doc=${s.id}" data-label="引入这份脚本">引入这份 · 配画面</div>
+      <div class="btn line" style="flex:0 0 118px" data-go="B2?kind=script&src=import&doc=${s.id}&only=1" data-label="只导入文案">只导入文案</div>
+      <div class="btn" data-go="B2?kind=script&src=import&doc=${s.id}" data-label="文案加素材">文案 + 素材</div>
     </div>
   </div>`;
 };
