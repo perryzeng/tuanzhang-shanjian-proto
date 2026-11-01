@@ -316,11 +316,12 @@ window.DATA = {
     updatedAt: "2026-11-01T13:10:00+08:00",
     curSeg: "se02",
     compliance: { ok: true, hits: [], checkedAt: "2026-11-01T13:10:00+08:00" },
-    series: { name: "磷虾油 10 天战役", day: 5, total: 10, topic: "信任背书", owner: "总部 · 运营中心" },
+    series: { name: "磷虾油 10 天战役", day: 5, total: 10, topic: "信任背书", owner: "总部 · 运营中心",
+              yesterday: { day: 4, topic: "谁适合谁不适合", vo: "第 4 天讲的是谁适合——今天换个角度，讲我为什么敢一直推。" } },
     segments: [
       {
         id: "se01", role: "trust", name: "我是谁 · 立信任", dur: 8,
-        vo: "我是阿珍，做大健康选品 5 年。", needTags: ["person", "broll"], lock: null,
+        vo: "我是阿珍，做大健康选品 5 年。", needTags: ["person", "broll"], lock: null, fixed: true,
         hint: "每天开头都用这段，观众才记得住你",
         shots: [{ id: "ss_101", asset: "as_518", dur: 8, pip: true }]
       },
@@ -344,7 +345,7 @@ window.DATA = {
       },
       {
         id: "se05", role: "cta", name: "CTA · 开团", dur: 6,
-        vo: "今晚 8 点开团，点我头像进。", needTags: ["cta", "textcard"], lock: null,
+        vo: "今晚 8 点开团，点我头像进。", needTags: ["cta", "textcard"], lock: null, fixed: true,
         hint: "结尾花字卡写清开团时间和价格",
         shots: [{ id: "ss_501", asset: "as_507", dur: 3 }, { id: "ss_502", asset: "as_508", dur: 3 }]
       }
@@ -712,12 +713,6 @@ window.DERIVE = (function () {
   /* 三种来源 → 三份草稿，共用同一套段落结构与派生逻辑。
      这就是"三个发布器合成一个"的数据基础：换的是来源，不是编辑器。 */
   const DRAFT_OF = { script: "draft", remix: "draftRemix", series: "draftSeries" };
-  const KINDS = [
-    { k: "script", ic: "✎", tx: "AI 脚本" },
-    { k: "remix", ic: "⧉", tx: "二创" },
-    { k: "series", ic: "▤", tx: "系列" }
-  ];
-
   /* 从脚本库引入的一段话，需要配什么画面——按段名猜语义标签。
      这是引入脚本时唯一要做的一次推断：台词是现成的，画面从零配。 */
   const NEED_OF = [
@@ -792,9 +787,18 @@ window.DERIVE = (function () {
     opts = opts || {};
     const k = DRAFT_OF[kind] ? kind : "script";
     /* 导入脚本 / 视频抽取：都不进 DATA.draft，而是现拼一份草稿出来 */
-    const d = (k === "script" && opts.src === "extract") ? draftFromExtract()
+    let d = (k === "script" && opts.src === "extract") ? draftFromExtract()
       : (k === "script" && opts.doc) ? draftFromScript(opts.doc)
       : window.DATA[DRAFT_OF[k]];
+    /* 从素材选择器回来会带「这一段换成这个素材」，立刻反映到画面槽上——
+       换完看到的就是换完的样子，不另外弹一个"已替换"的提示 */
+    if (opts.pick && opts.pick.seg && opts.pick.asset) {
+      const a = window.DATA.assets.filter((x) => x.id === opts.pick.asset)[0];
+      if (a) {
+        d = { ...d, segments: d.segments.map((s) => s.id !== opts.pick.seg ? s
+          : { ...s, shots: [{ id: "pk_" + a.id, asset: a.id, dur: Math.min(a.dur || 3, s.dur) }] }) };
+      }
+    }
     /* 系列里还没轮到的那一天：结构在，台词和画面都还没生成 */
     const pendDay = (k === "series" && opts.day && +opts.day !== d.series?.day) ? +opts.day : 0;
     let acc = 0;
@@ -802,7 +806,9 @@ window.DERIVE = (function () {
       const start = acc;
       acc += s.dur;
       let shotTotal = 0, missN = 0;
-      const shots = (pendDay ? [] : s.shots).map((sh) => {
+      /* 每天固定的段（开场立信任 / 结尾 CTA）不随日期变空，只有当天那两段要现写 */
+      const blank = pendDay && !s.fixed;
+      const shots = (blank ? [] : s.shots).map((sh) => {
         const a = sh.asset ? window.DATA.assets.filter((x) => x.id === sh.asset)[0] : null;
         const miss = sh.state === "miss";
         const dur = sh.dur != null ? sh.dur : (a ? a.dur : 0);
@@ -823,7 +829,7 @@ window.DERIVE = (function () {
       if (missN) tags.push(["r", "缺素材"]);
       if (s.suggest) tags.push([s.suggest === "务必改" ? "r" : "o", s.suggest]);
       return {
-        ...(pendDay ? { ...s, vo: "", voAlt: null, shots: [] } : s),
+        ...(blank ? { ...s, vo: "", voAlt: null, shots: [] } : s),
         no: (i + 1 < 10 ? "0" : "") + (i + 1), idx: i,
         start, shots, shotTotal, missN, tags,
         fit: Math.round((s.dur - shotTotal) * 10) / 10,
@@ -856,6 +862,16 @@ window.DERIVE = (function () {
     };
   }
 
+  /* 一个 part 的画面槽说明：素材比台词短就循环，长就截尾。
+     这句话必须写在槽下面——它决定了用户看到成片时"画面够不够用"。 */
+  function slotMeta(s) {
+    const sh = s.shots.filter((x) => !x.miss)[0];
+    if (!sh) return s.missN ? "画面还缺" : "还没配画面 · 点加号选";
+    const r = Math.ceil(s.dur / Math.max(1, sh.dur));
+    const tail = r > 1 ? "循环 " + r + " 次" : (sh.dur > s.dur ? "截到 " + s.dur + "s" : "刚好铺满");
+    return "素材 " + sh.dur + "s · 台词 " + s.dur + "s · " + tail;
+  }
+
   /* 数字口径统一在这里格式化，页面不再各写一套 */
   function plays(n) {
     return n >= 10000 ? (n / 10000).toFixed(1).replace(/\.0$/, "") + "万" : String(n);
@@ -879,7 +895,7 @@ window.DERIVE = (function () {
   }
 
   return { mustDo, todayPost, banners, teamVideos, newbieCases, plays, leftText, reason, meta, now,
-           draft, recommend, resolveFix, mmss, pool, KINDS,
+           draft, recommend, resolveFix, mmss, pool,
            scripts, script, scriptTabs, extract,
-           campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds };
+           campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta };
 })();

@@ -132,6 +132,47 @@
     </div>`;
   };
 
+  /* 结构化脚本框里的一个 part：左边一个画面槽，右边一段台词。
+     这是全产品唯一的「脚本长什么样」——AI 写的、导入的、视频抽的、系列的，
+     落到这里都是同一个样子：一段话 + 一个槽。所以发布链路能统一。 */
+  C.part = (p) => {
+    const tags = (p.tags || []).map(([c, t]) => `<span class="tag ${c}">${t}</span>`).join("");
+    const sl = p.slot || {};
+    const slot = `<div class="slot ${sl.miss ? "miss" : sl.empty ? "empty" : "fill"}"${sl.bg ? ` style="background:${sl.bg}"` : ""}${sl.go ? ` data-go="${sl.go}" data-label="${sl.label || "换画面"}"` : ""}>
+        ${sl.empty || sl.miss ? `<span class="ic">＋</span>` : ""}
+        <b>${sl.label || "选画面"}</b>
+        ${sl.empty || sl.miss ? "" : `<i>替换</i>`}
+      </div>`;
+
+    let vo = "";
+    if (p.editbox != null) {
+      vo = `<div class="editbox">${p.editbox}</div>`;
+      if (p.editOps) {
+        vo += `<div class="editops">${p.editOps.map(([cls, tx, act]) => {
+          const attr = !act ? "" : (/=/.test(act) ? ` data-set="${act}"` : ` data-go="${act}" data-label="${tx}"`);
+          return `<span class="op ${cls}"${attr}>${tx}</span>`;
+        }).join("")}</div>`;
+      }
+    } else if (p.vo) {
+      vo = `<div class="vo"><span>${p.vo}</span>${p.edit === false ? "" :
+        `<span class="edit"${p.editSet ? ` data-set="${p.editSet}"` : ""}>改</span>`}</div>`;
+    } else if (p.pending) {
+      vo = `<div class="vo"><span style="color:var(--text-4)">台词待生成</span></div>`;
+    }
+    const orig = p.orig ? `<div class="orig"><b>原文案</b><span>${p.orig}</span></div>` : "";
+    const ops = (p.ops && p.ops.length)
+      ? `<div class="ops">${p.ops.map((o) =>
+          `<span class="op ${o.cls || ""}"${o.go ? ` data-go="${o.go}" data-label="${o.t}"` : ""}>${o.t}</span>`).join("")}</div>`
+      : "";
+    const meta = p.meta ? `<div class="pmeta">${p.meta}</div>` : "";
+    const note = p.note ? `<div class="note">${p.note}</div>` : "";
+
+    return `<div class="part${p.on ? " on" : ""}">
+      <div class="part-h"><span class="pn">${p.no}</span><span class="pt">${p.name}</span>${tags}<span class="pd">${p.dur}</span></div>
+      <div class="part-b">${slot}<div class="pvo">${orig}${vo}${ops}${note}${meta}</div></div>
+    </div>`;
+  };
+
   C.fold = (o) =>
     `<div class="fold"${o.set ? ` data-set="${o.set}"` : (o.go ? ` data-go="${o.go}" data-label="${o.name || "展开"}"` : "")}>
       <span class="seg-no">${o.no}</span>
@@ -257,13 +298,6 @@
       `<div class="chk ${c.done ? "done" : ""}">
         <span class="bx">${c.done ? "✓" : ""}</span><span>${c.tx}</span>
         ${c.done ? "" : `<span class="go2" data-go="${c.go}" data-label="${c.tx}">去完成 ›</span>`}
-      </div>`).join("")}</div>`;
-
-  /* 发布器来源切换：三个发布器合成一个，切的是"从哪来"，不是换页面 */
-  C.pseg = (list, active) =>
-    `<div class="pseg">${list.map((x) =>
-      `<div class="ps ${x.k === active ? "on" : ""}" data-set="B2.kind=${x.k}">
-        <span class="ic">${x.ic}</span><b>${x.tx}</b>
       </div>`).join("")}</div>`;
 
   window.C = C;

@@ -76,7 +76,7 @@ window.PAGES["D1"].render = function () {
 
     <div class="actionbar">
       <div class="eto" style="width:56px" data-go="T1" data-label="定时推送"><span style="font-size:13px">⏱</span><b>定时</b></div>
-      <div class="btn" data-go="B2?kind=series&day=${run.day}" data-label="开始做今天这条">开始做今天这条 · Day ${run.day}</div>
+      <div class="btn" data-go="D2?c=${run.id}&d=${run.day}" data-label="开始做今天这条">开始做今天这条 · Day ${run.day}</div>
     </div>
   </div>`;
 };

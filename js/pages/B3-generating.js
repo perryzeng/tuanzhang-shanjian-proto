@@ -1,12 +1,14 @@
-window.PAGES["B3"].render = function () {
+window.PAGES["B3"].render = function (ctx) {
   const C = window.C;
+  /* 从系列进来就回系列，别把用户扔到另一个编辑器 */
+  const backGo = ctx.from === "D2" ? "D2?c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5) : "B2";
   const step = (cls, ic, tx, side) =>
     `<div class="gstep ${cls}"><span class="dot">${ic}</span><span style="flex:1">${tx}</span><span>${side || ""}</span></div>`;
 
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <span class="back" data-go="B2" data-label="返回发布器">‹</span>
+      <span class="back" data-go="${backGo}" data-label="返回发布器">‹</span>
       <div class="ttl">生成中<small>可以退出去做别的，好了会通知你</small></div>
     </div>
 

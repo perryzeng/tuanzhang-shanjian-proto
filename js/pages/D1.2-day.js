@@ -60,7 +60,7 @@ window.PAGES["D1.2"].render = function (ctx) {
       <div class="eto" style="width:56px" data-go="D1.1?c=${c.id}" data-label="看日程"><span style="font-size:13px">▤</span><b>日程</b></div>
       ${p.state === "done"
         ? `<div class="btn line" data-go="B4.1" data-label="看这条的数据">已发布 · 看数据</div>`
-        : `<div class="btn" data-go="B2?kind=series&day=${p.n}" data-label="去创作这条">去创作这条 · Day ${p.n}</div>`}
+        : `<div class="btn" data-go="D2?c=${c.id}&d=${p.n}" data-label="去创作这条">去创作这条 · Day ${p.n}</div>`}
     </div>
   </div>`;
 };

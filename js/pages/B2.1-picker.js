@@ -4,13 +4,20 @@ window.PAGES["B2.1"].prd = "PRD §6.7～6.9 · 素材选择与语义匹配";
 window.PAGES["B2.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const kind = ctx.kind || "script";
-  const d = D.draft(kind, { doc: ctx.doc, day: ctx.day, src: ctx.src });
+  const isSeries = kind === "series";
+  const day = ctx.day || 5;
+  const cid = ctx.c || "cp_1";
+  const d = D.draft(kind, { doc: ctx.doc, day: day, src: ctx.src });
   const seg = d.segments.filter((s) => s.id === ctx.seg)[0] || d.missSegs[0] || d.cur;
-  /* 回发布器要带上「从哪来」，否则回来会变成另一份草稿 */
-  const backQ = "B2?kind=" + kind + (ctx.doc ? "&src=import&doc=" + ctx.doc : "") + (ctx.day ? "&day=" + ctx.day : "");
   const tab = ctx.tab || "rec";
   const list = D.recommend(seg, tab);
   const sel = ctx.pick || (seg.shots[0] || {}).asset || (list[0] && list[0].id);
+  /* 回哪去要说准：系列的槽属于 D2，其余都属于结构化脚本框 B2。
+     而且回去时带上「换成哪个素材」，换完看到的就是换完的样子。 */
+  const backQ = isSeries
+    ? "D2?c=" + cid + "&d=" + day
+    : "B2?kind=" + kind + "&src=" + (ctx.src || "") + (ctx.doc ? "&doc=" + ctx.doc : "");
+  const useQ = backQ + "&seg=" + seg.id + "&asset=" + sel;
   const selItem = list.filter((a) => a.id === sel)[0] ||
     window.DATA.assets.filter((a) => a.id === sel)[0] || null;
 
@@ -40,20 +47,23 @@ window.PAGES["B2.1"].render = function (ctx) {
       这一栏还没有素材<br><span style="font-size:11.5px">拍一段只要 3 秒，也可以在团队库里要</span></div>`;
 
   /* 上方段落列表：只露出进入点之前的段，让人知道自己在整条片子的哪儿 */
+  /* 背后那层只做"我在整条脚本的哪儿"的定位，用和脚本框一样的 part 卡片（压暗） */
   const above = d.segments
     .filter((s) => s.idx <= seg.idx)
-    .map((s) => C.seg({
-      no: s.no, name: s.name, dur: s.dur + "s", tags: s.tags, vo: s.vo,
-      clips: s.shots.map((x) => x.miss
-        ? { add: true, need: true, label: "缺" + x.label }
-        : { bg: x.bg, label: x.label, pip: x.pip })
-    })).join("");
+    .map((s) => {
+      const sh = s.shots.filter((x) => !x.miss)[0];
+      return C.part({
+        no: s.no, name: s.name, dur: s.dur + "s", tags: s.tags, vo: s.vo, edit: false,
+        slot: sh ? { label: sh.label, bg: sh.bg } : { empty: true, label: "加画面" },
+        meta: D.slotMeta(s)
+      });
+    }).join("");
 
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
       <span class="back" data-go="${backQ}" data-label="返回发布器">‹</span>
-      <div class="ttl">发布器 · ${d.title}<small>给第 ${seg.idx + 1} 段配画面</small></div>
+      <div class="ttl">${d.title}<small>给第 ${seg.idx + 1} 段配画面</small></div>
     </div>
 
     ${C.estage({
@@ -103,8 +113,8 @@ window.PAGES["B2.1"].render = function (ctx) {
         </div>
 
         <div class="sheet-f">
-          <div class="btn" data-go="${backQ}" data-label="用这个片段">${selItem
-            ? "用「" + selItem.label + "」· 替换第 1 个画面"
+          <div class="btn" data-go="${useQ}" data-label="用这个片段">${selItem
+            ? "用「" + selItem.label + "」换掉这段画面"
             : "先选一个片段"}</div>
         </div>
       </div>
