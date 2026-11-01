@@ -844,6 +844,15 @@ window.DATA = {
     teamTasks: [
       { id: "tk_1", t: "本周 3 条待发", sub: "2 条今天到期（开团 / 晒单）", at: "今天 18:00 截止", go: "E4" }
     ],
+    /* 团队 tab 顶上的四宫格：公告 / 动态 / 任务 / 成员。
+       素材库解决的是"东西在哪"，这四格解决的是"团队有什么动向"——
+       团长进团队库，一半是来找素材，一半是来看有没有新通知和新爆款。 */
+    teamQuad: [
+      { k: "notice", n: 2, tx: "公告", go: "E5" },
+      { k: "feed", n: 6, tx: "动态", go: "E1" },
+      { k: "task", n: 3, tx: "任务", go: "E4" },
+      { k: "member", n: 12, tx: "成员", go: "E1" }
+    ],
     folders: {
       "mine.script": [
         { id: "fd_s1", name: "开团话术", n: 3 },
@@ -873,6 +882,73 @@ window.DATA = {
         { id: "fd_tw1", name: "团队爆款", n: 2 }
       ]
     },
+    /* 脚本正文：单独一张表，不塞进 items。
+       列表只需要"标题 + 几段几秒"，正文只有点进去看的时候才要——
+       塞一起会让列表数据变重，也不方便以后单独做版本管理。 */
+    scriptBodies: {
+      li_s1: [
+        { n: "开场提问", vo: "磷虾油到底值不值得买？先说结论：看成分表，别看广告。" },
+        { n: "成分讲解", vo: "每粒 500mg，这个量在同类里算高的；关键是它用的是磷脂型，吸收比普通鱼油好。" },
+        { n: "使用感受", vo: "我妈吃了三个月，最明显的是睡眠，以前半夜老醒，现在能睡整觉。" },
+        { n: "价格与团期", vo: "今晚 8 点开团，3 盒 99，比平时便宜 40 块，就这一天。" },
+        { n: "收尾引导", vo: "链接在我头像里，拍完记得进群，群里有吃法。" }
+      ],
+      li_s2: [
+        { n: "开头泼冷水", vo: "先别买。这个磷虾油我劝你想清楚再下单。" },
+        { n: "停一拍", vo: "因为它确实有点贵，一盒的钱能买三瓶普通鱼油。" },
+        { n: "翻回来", vo: "但如果你妈跟我妈一样，半夜老醒、白天没精神，那这钱花得值。" },
+        { n: "收尾引导", vo: "今晚 8 点开团，想试的先进群看看别人怎么说。" }
+      ],
+      li_s4: [
+        { n: "抛问题", vo: "500mg 到底算不算高？我给你一个参照。" },
+        { n: "给参照", vo: "市面上多数是 300mg 左右，500mg 已经属于第一梯队。" },
+        { n: "讲原理", vo: "但含量高不等于吸收好，磷脂型才是关键，它不用经过肝脏转化。" },
+        { n: "收尾引导", vo: "所以买的时候看两个数：含量、还有是不是磷脂型。" }
+      ],
+      li_s5: [
+        { n: "开场提问", vo: "总有人问：跟鱼油比，到底差在哪？" },
+        { n: "讲差异", vo: "差在吸收路径。鱼油是甘油三酯型，要先过肝脏；磷虾油是磷脂型，直接进细胞。" },
+        { n: "给证据", vo: "同样吃 500mg，血药浓度能差一倍多，这不是玄学，有临床数据。" },
+        { n: "使用感受", vo: "我自己换过来之后，最明显的是不腥，吃完不打嗝。" },
+        { n: "收尾引导", vo: "想换的今晚 8 点，团价 3 盒 99。" }
+      ],
+      li_s6: [
+        { n: "开场提醒", vo: "上一盒是不是快吃完了？" },
+        { n: "给理由", vo: "这个东西不能断，断了两周体内的水平就掉回去了，前面白吃。" },
+        { n: "收尾引导", vo: "老客直接拍 3 盒，比单买省 40，我给你们留了库存。" }
+      ],
+      li_s7: [
+        { n: "开场提问", vo: "一盒吃完了，该说点什么？" },
+        { n: "讲变化", vo: "先说自己的变化，别说产品多好——他信的是你，不是广告。" },
+        { n: "给下一步", vo: "然后告诉他：接着吃要连着，别断；顺手把团期说了。" },
+        { n: "收尾引导", vo: "最后一句给个动作：链接在头像，或者直接问我。" }
+      ],
+      li_s3: [
+        { n: "开场提醒", vo: "开团还剩 3 小时。" },
+        { n: "给紧迫", vo: "这价格一个月就这一次，过了就回原价。" },
+        { n: "收尾引导", vo: "还在犹豫的先进群，群里我把成分表拍给你看。" }
+      ],
+      li_ts1: [
+        { n: "品牌开场", vo: "这是 XX 品牌的官方口径，我只讲三个点。" },
+        { n: "成分", vo: "磷脂型磷虾油，每粒 500mg，原料来自南极海域。" },
+        { n: "资质", vo: "检测报告在群公告里，随时可查。" },
+        { n: "价格", vo: "团价以群公告为准，不要口头承诺更低的价格。" },
+        { n: "收尾", vo: "有问题进群问，我不私聊报价。" }
+      ],
+      li_ts2: [
+        { n: "开场", vo: "有人问团价，我统一说一次。" },
+        { n: "说明", vo: "3 盒 99，只在这个链接、只到今天 24 点。" },
+        { n: "收尾", vo: "别的地方更便宜的，我不保证是同一个批次。" }
+      ],
+      li_ts3: [
+        { n: "开场立信任", vo: "我是谁，我为什么讲这个。" },
+        { n: "开箱", vo: "当着镜头拆一盒，让人看清里面长什么样。" },
+        { n: "讲卖点", vo: "只讲三个，多了记不住。" },
+        { n: "给证据", vo: "检测报告 / 老客反馈，挑一个。" },
+        { n: "收尾引导", vo: "价格 + 时间 + 一句动作。" }
+      ]
+    },
+
     /* at：几天前（1 = 今天），排序"最新"用；hot：使用/播放热度，"最热"用；pick：精选 */
     items: {
       "mine.script": [
@@ -1441,12 +1517,28 @@ window.DERIVE = (function () {
   /* 素材库取数：身份域（我的/团队）+ 类别（脚本/视频素材/作品）+ 排序 + 文件夹 + 搜索词。
      顺序很重要——**先筛后排**：文件夹和搜索是"只看这些"，排序是"这些怎么摆"；
      反过来先排再筛，精选档就会变成"全库里挑几条"而不是"这一摞里挑几条"。 */
+  /* 脚本正文与单条脚本：详情页要按 id 取，不想从某一类里翻 */
+  function scriptBody(id) {
+    return window.DATA.library.scriptBodies[id] || [];
+  }
+  function libItem(id) {
+    const all = window.DATA.library.items;
+    for (const k in all) {
+      const f = all[k].filter((x) => x.id === id)[0];
+      if (f) return f;
+    }
+    return null;
+  }
+
   function lib(side, kind, opt) {
     opt = opt || {};
     const L = window.DATA.library;
     const sd = side === "team" ? "team" : "mine";
     const key = sd + "." + kind;
-    let items = (L.items[key] || []).slice();
+    /* moved：这一页里刚做过的"移动到文件夹"，覆盖数据里的原始归属。
+       原型改不了后端，但"整理"这件事必须当场看得见——移完还留在原处，等于没移。 */
+    const mv = opt.moved || {};
+    let items = (L.items[key] || []).slice().map((x) => (mv[x.id] ? { ...x, fd: mv[x.id] } : x));
     if (opt.fd) items = items.filter((x) => x.fd === opt.fd);
     const q = String(opt.q || "").trim();
     if (q) items = items.filter((x) => (x.name + " " + x.sub).indexOf(q) >= 0);
@@ -1512,6 +1604,6 @@ window.DERIVE = (function () {
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics,
            templates, template, voices, voice, covers, cover, coverBases, coverBase, coverFromTopic, myPhotos,
-           viewers, leads, logs, shareStat, heatLevels, heat, comments, makeComments, lib, search, drafts,
+           viewers, leads, logs, shareStat, heatLevels, heat, comments, makeComments, lib, scriptBody, libItem, search, drafts,
            brief, briefOf, structs, structOf, tones, tone, lens, len };
 })();
