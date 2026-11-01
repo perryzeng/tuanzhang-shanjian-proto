@@ -1,0 +1,1 @@
+# 纯静态站，跳过 Jekyll 处理（构建更快，也不会因为个别文件报 Page build failed）
