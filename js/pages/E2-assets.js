@@ -178,7 +178,7 @@ window.PAGES["E2"].render = function (ctx) {
     const show = its.slice(0, hero ? 3 : 2);
     const body = k === "script"
       ? `<div class="modb col">${show.map((x) => `<span class="mrow"><i class="d"></i>${x.name}</span>`).join("") || `<span class="mem">暂无脚本</span>`}</div>`
-      : `<div class="modb">${show.map((x) => `<span class="mth" style="background:${x.bg || KBG[k]}">${x.pick ? `<span>精选</span>` : ""}</span>`).join("") || `<span class="mem">暂无</span>`}</div>`;
+      : `<div class="modb">${show.map((x) => `<span class="mth" style="background:${x.bg || KBG[k]}">${x.img ? `<img src="${x.img}" alt="">` : ""}${x.pick ? `<span>精选</span>` : ""}</span>`).join("") || `<span class="mem">暂无</span>`}</div>`;
     const cap = hero && show[0] ? `<div class="modcap">最新 · ${show[0].name}</div>` : "";
     return `<div class="mod${hero ? " hero" : ""}" data-set="${qs()}&${pid}.open=${k}&${pid}.tab=log&${pid}.q=" data-label="${TITLE[k]}">
       <div class="modh"><span class="mi" style="background:${KBG[k]}">${FICON[k]}</span>
@@ -247,6 +247,7 @@ window.PAGES["E2"].render = function (ctx) {
       ? `data-set="${qs(toggle(x.id))}"`
       : x.go ? `data-go="${x.go}" data-label="${x.name}"` : `data-label="${x.name}"`}>
       <div class="im" style="aspect-ratio:3/4;background:${x.bg || KBG[kind]}">
+        ${x.img ? `<img src="${x.img}" alt="">` : ""}
         ${sel ? `<span class="ck on-im${picked.indexOf(x.id) >= 0 ? " on" : ""}"></span>` : ""}
         ${x.pick ? `<span class="pickmark">精选</span>` : ""}
         <span class="cnt">${x.sub.split(" · ")[0]}</span>

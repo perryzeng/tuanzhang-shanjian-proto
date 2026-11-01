@@ -383,6 +383,7 @@
     /* 文案默认取自**这条片子要讲的事**，不是版式里那几句示例——
        版式只决定字压在哪，不该替他决定说什么。改过就以他改的为准。
        没传 topic（B4 独立进来）就退回到创作首页那个输入框里的话。 */
+    if (!base.img && window.IMG) base.img = window.IMG.text;
     const topic = ctx.topic || ((window.STATE || {}).B1 || {}).topic || "";
     const auto = D.coverFromTopic(topic);
     const bigTx = (ctx.big != null && ctx.big !== "") ? ctx.big : auto.big;
@@ -394,7 +395,7 @@
         ? `<div class="bb"><b>${brk(t.big)}</b><i>${t.small}</i></div>`
         : `<b>${brk(t.big)}</b><i>${t.small}</i>`);
     const shot = (t, b, fs) => `<div class="cv" style="font-size:${fs}px">
-        <div class="src" style="background:${b.bg}"></div>
+        <div class="src" style="background:${b.bg}">${b.img ? `<img src="${b.img}" alt="">` : ""}</div>
         <div class="lay ${t.k}${String(t.big).indexOf("|") >= 0 ? " brk" : ""}">${lay(t)}</div>
       </div>`;
     const cur = { ...style, big: bigTx, small: smallTx };

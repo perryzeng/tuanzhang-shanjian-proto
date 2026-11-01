@@ -38,6 +38,7 @@ window.PAGES["E2.3"].render = function (ctx) {
 
     <div class="body">
       <div class="asset-pv" style="background:${bg}">
+        ${it.img ? `<img src="${it.img}" alt="">` : ""}
         <span class="ply">▶</span>
         ${dur ? `<span class="dur">${dur}</span>` : ""}
         ${pick ? `<span class="picktag" style="position:absolute;right:10px;top:10px">精选</span>` : ""}

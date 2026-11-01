@@ -83,8 +83,9 @@ window.PAGES["B2.4"].render = function (ctx) {
   };
 
   const card = (t) => `<div class="tcard${t.id === tplId ? " sel" : ""}" data-set="B2.4.tpl=${t.id}">
-      <div class="tvis" style="--c1:${t.c1};--c2:${t.c2}">
+      <div class="tvis${t.img ? " hasimg" : ""}" style="--c1:${t.c1};--c2:${t.c2}">
         <div class="fbg"></div>
+        ${t.img ? `<img class="timg" src="${t.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block">` : ""}
         <span class="tt">${t.tag}</span>
         ${SHAPE[t.shape] || ""}
         ${t.id === tplId ? `<span class="tk">✓</span>` : ""}

@@ -30,6 +30,11 @@ window.PAGES["F1"].render = function (ctx) {
     { bg: G("#2C5BFF", "#5B8CFF"), cap: "私域秘籍\n照抄就出单", hot: true, uses: "4,100", likes: "1.2万" },
     { bg: G("#00B389", "#00C2FF"), cap: "哈喽\nHello everyone", hot: false, uses: "3,300", likes: "7,600" }
   ];
+  const VIMGS = ["assets/gen/t-shot.jpg", "assets/gen/t-text.jpg", "assets/gen/t-compare.jpg", "assets/gen/p-product.jpg", "assets/gen/p-still.jpg", "assets/gen/p-person.jpg"];
+  const CIMGS = ["assets/gen/p-product.jpg", "assets/gen/p-still.jpg", "assets/gen/p-person.jpg", "assets/gen/p-unbox.jpg", "assets/gen/p-brand.jpg", "assets/gen/t-text.jpg"];
+  VIDEO.forEach((v, i) => { v.img = VIMGS[i % VIMGS.length]; });
+  COVERS.forEach((c, i) => { c.img = CIMGS[i % CIMGS.length]; });
+
   const SCRIPTS = [
     { title: "磷虾油 3 段式 · 信任版", by: "阿玲", tag: "口播", uses: "128", likes: "3.2万" },
     { title: "开箱带货结构 · 5 段骨架", by: "总部", tag: "开箱", uses: "96", likes: "1.8万" },
@@ -45,6 +50,7 @@ window.PAGES["F1"].render = function (ctx) {
   /* 视频模板卡（热门 / 视频模板共用） */
   const vcard = (t) => `<div class="ttile">
       <div class="tcov" style="background:${t.bg}">
+        ${t.img ? `<img src="${t.img}" alt="">` : ""}<span class="tscrim"></span>
         ${t.tag ? `<span class="tctag">${t.tag}</span>` : ""}
         <span class="tcdur">${t.dur}</span>
         <div class="tcovtx">${t.cap}</div>
@@ -61,6 +67,7 @@ window.PAGES["F1"].render = function (ctx) {
       const f = VIDEO[0];
       return `<div class="tfeature" data-go="F3" data-label="本周爆款 · ${f.title}">
         <div class="tfimg" style="background:${f.bg}">
+          ${f.img ? `<img src="${f.img}" alt="">` : ""}<span class="tscrim"></span>
           <span class="tfbadge">🔥 本周爆款</span>
           <div class="tfcap">${f.cap}</div>
           <span class="tfmeta">▶ 8.6 万播放 · 已用 128 次</span>
@@ -73,6 +80,7 @@ window.PAGES["F1"].render = function (ctx) {
     video: () => `<div class="ttgrid">${VIDEO.map(vcard).join("")}</div>`,
     cover: () => `<div class="cvgrid">${COVERS.map((c) => `<div class="cvcard" data-go="F3" data-label="封面 · ${c.cap.replace(/\n/g, "")}">
         <div class="cvim" style="background:${c.bg}">
+          ${c.img ? `<img src="${c.img}" alt="">` : ""}<span class="tscrim"></span>
           ${c.hot ? `<span class="cvhot">爆款</span>` : ""}
           <div class="cvtxt">${c.cap}</div>
         </div>

@@ -50,8 +50,9 @@ window.PAGES["A1"].render = function () {
   }));
 
   /* ---------- 团队最新 / 平台精选 ---------- */
-  const teamCards = A.teamVideos(3).map((v) => ({
-    bg: v.bg, who: v.who.slice(-1), whoBg: v.whoBg,
+  const TEAM_IMG = ["assets/gen/p-still.jpg", "assets/gen/p-person.jpg", "assets/gen/p-unbox.jpg"];
+  const teamCards = A.teamVideos(3).map((v, i) => ({
+    bg: v.bg, img: TEAM_IMG[i % TEAM_IMG.length], who: v.who.slice(-1), whoBg: v.whoBg,
     plays: A.plays(v.plays), title: v.title,
     sub: v.who + " · " + v.ago, go: v.go
   }));
@@ -85,6 +86,7 @@ window.PAGES["A1"].render = function () {
       <div class="crail">
         ${(D.creations || []).map((c) => `<div class="crc" data-go="E2?open=work&tab=latest" data-label="${c.name}">
           <div class="crim" style="background:${c.bg}">
+            ${c.img ? `<img src="${c.img}" alt="">` : ""}
             ${c.kind === "draft" ? `<span class="crdraft">草稿 · 未完成</span>` : ""}
           </div>
           <div class="crt">${c.name}</div>
