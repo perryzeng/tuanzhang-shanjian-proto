@@ -51,7 +51,10 @@ window.PAGES["B2"].render = function (ctx) {
     if (src === "import") return "已粘贴脚本 · 画面待确认";
     if (src === "struct") return "只借了结构 · 台词按你的话重写";
     if (src === "extract") return "来自抽取的视频文案 · 已清 " + D.extract().cleanedN + " 处原作者痕迹";
-    if (src === "ai") return "AI 刚写完 · " + d.product + " · 台词可逐段改";
+    /* AI 这条把刚在 B1.1 选的口吻和时长写进来——选完得看到生效了，
+       否则用户会怀疑那几项只是走个过场 */
+    if (src === "ai") return "AI 刚写完 · " + d.product + " · "
+      + D.tone(ctx.tone).name + " · " + (ctx.dur || 45) + " 秒";
     return d.product + " · 素材库 " + window.DATA.assets.length + " 段";
   })();
 

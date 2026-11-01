@@ -518,6 +518,61 @@ window.DATA = {
               "老带新怎么开口", "售后怎么处理", "年度复盘", "下一轮预告"]
   },
 
+  /* ---------- 开工前先让 AI 复述一遍 ----------
+     为什么值得花这几十秒：AI 猜错商品或猜错听众，五段台词全废，
+     重生一次又要扣一次额度。所以写之前把它"听懂了什么"摊开给人改。
+
+     conf = ai   AI 有把握，直接给结论（仍然可改）
+     conf = ask  影响整条结构，必须人点头——**一定要给选项，不能只写在纸上**，
+                 写成只读的一行字，用户只会往下滑，猜错了才知道要回来改。 */
+  brief: {
+    product: { conf: "ai", label: "商品", value: "磷虾油", note: "从你那句话里读出来的" },
+    audience: {
+      conf: "ask", label: "讲给谁", value: "both", note: "决定开头 3 秒要不要先解释这是什么",
+      opts: [
+        { id: "old", tx: "老客为主" },
+        { id: "new", tx: "新客为主" },
+        { id: "both", tx: "两类都要" }
+      ]
+    },
+    focus: {
+      conf: "ask", label: "这次的重点", value: "price", note: "一条只讲一件事，多了记不住",
+      opts: [
+        { id: "price", tx: "开团·价格" },
+        { id: "ingredient", tx: "成分·含量" },
+        { id: "how", tx: "怎么吃" },
+        { id: "why", tx: "为什么选它" }
+      ]
+    },
+    price: {
+      conf: "ask", label: "带不带价格", value: "yes", note: "健康品类的价必须和团价一字不差",
+      opts: [
+        { id: "yes", tx: "要，说清团价" },
+        { id: "soft", tx: "只说有团价" },
+        { id: "no", tx: "不提价" }
+      ]
+    }
+  },
+
+  /* 结构模板：不是排版，是"先说什么后说什么"。
+     同一个主题换结构，片子会是完全不同的两条——所以这一项也得让人选。 */
+  structs: [
+    { id: "open", short: "开箱带货", name: "开箱 → 成分 → 价格", note: "手里有实物可拍时最稳，新客也跟得上", conf: "ai" },
+    { id: "why", short: "讲清原理", name: "问题 → 原理 → 用法", note: "讲知识的路子，适合账号还没人认识", conf: "ask" },
+    { id: "proof", short: "晒单复购", name: "晒单 → 复购理由", note: "老客多、手里有反馈截图时最好用", conf: "ask" },
+    { id: "vs", short: "对比测评", name: "对比 → 我的选择", note: "有明确的对比对象，讲清差别再落到它", conf: "ask" }
+  ],
+
+  /* 口吻：跟 B2.4 的"谁在说"（音色）不是一件事。
+     这里是**怎么写**，那里是**谁的声音念**。写完的台词换个音色还是那些字，
+     换个口吻就是另一篇稿子——所以必须在这里定。 */
+  tones: [
+    { id: "pro", name: "专业可信", note: "像一个做了五年选品的人在讲：讲依据、给数字、不夸大" },
+    { id: "humor", name: "幽默调侃", note: "先逗一句再讲正事，适合刷到就走、没耐心的人" },
+    { id: "warm", name: "亲切唠嗑", note: "像跟邻居聊天，适合私域里的老客和宝妈群" },
+    { id: "sharp", name: "犀利真实", note: "先把不好的一面说出来，反而更容易被信" }
+  ],
+
   /* ---------- 生成设置：网感模板 ----------
      模板决定"这条片子长什么样"：切得多快、字幕什么样式、什么转场、BGM 什么调性。
      内置 6 款，按真实投放效果排；接真接口：GET /templates?scene=script|series
@@ -1009,6 +1064,23 @@ window.DERIVE = (function () {
     return list.sort((a, b) => (b.at > a.at ? 1 : -1));
   }
 
+  /* ---------- 开工前那几项（B1.1） ---------- */
+  function brief() { return window.DATA.brief; }
+  function structs() { return window.DATA.structs; }
+  function structOf(id) {
+    return window.DATA.structs.filter((x) => x.id === id)[0] || window.DATA.structs[0];
+  }
+  function tones() { return window.DATA.tones; }
+  function tone(id) {
+    return window.DATA.tones.filter((x) => x.id === id)[0] || window.DATA.tones[0];
+  }
+  /* 用户改过的选值优先，没改就用 AI 的默认值 */
+  function briefOf(ctx) {
+    const b = window.DATA.brief, out = {};
+    Object.keys(b).forEach((k) => { out[k] = (ctx && ctx[k]) || b[k].value; });
+    return out;
+  }
+
   /* ---------- 生成设置 / 封面 ---------- */
   function templates() { return window.DATA.templates; }
   function template(id) { return window.DATA.templates.filter((x) => x.id === id)[0] || window.DATA.templates[0]; }
@@ -1053,5 +1125,6 @@ window.DERIVE = (function () {
            scripts, script, scriptTabs, extract,
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics, partSkeleton,
-           templates, template, voices, voice, covers, search, drafts };
+           templates, template, voices, voice, covers, search, drafts,
+           brief, briefOf, structs, structOf, tones, tone };
 })();
