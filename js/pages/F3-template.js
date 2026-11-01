@@ -49,12 +49,12 @@ window.PAGES["F3"].render = function () {
       </div>
 
       <div class="card plain" style="margin-top:12px">
-        <div class="xs" style="line-height:1.7">趣剪辑会把 3 段拆进编辑器，脚本和素材按模板先配好，你再逐段换。</div>
+        <div class="xs" style="line-height:1.7">去剪辑会把 3 段拆进编辑器，脚本和素材按模板先配好，你再逐段换。</div>
       </div>
     </div>
 
     <div class="actionbar">
-      <div class="btn ai" data-go="B2?kind=script&src=tpl&struct=s3&tpl=tp_trust" data-label="趣剪辑">趣剪辑</div>
+      <div class="btn ai" data-go="B2?kind=script&src=tpl&struct=s3&tpl=tp_trust" data-label="去剪辑">去剪辑</div>
     </div>
   </div>`;
 };

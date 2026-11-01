@@ -102,9 +102,8 @@ window.PAGES["F1"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ t: "同行都在拍，一键做同款" })}
 
-    <div class="body" style="padding-bottom:100px">
+    <div class="body" style="padding-top:8px;padding-bottom:100px">
       <div class="gsearch"><span class="mag">⌕</span><span>搜模板、脚本、封面、主题</span></div>
       <div class="chips" style="margin-bottom:14px">${chips}</div>
       ${bodyOf[tab]()}
