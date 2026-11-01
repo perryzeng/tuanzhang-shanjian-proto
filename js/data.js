@@ -1087,6 +1087,20 @@ window.DATA = {
   ]
 };
 
+/* 素材/资料统一补「使用次数 / 点赞数」——列表里每一条都要能看到这两个数。
+   原型期由 hot 派生，接真接口后由后端直接返回 uses / likes，字段名不变。 */
+(function fillStats() {
+  const L = window.DATA.library.items;
+  Object.keys(L).forEach((k) => L[k].forEach((x) => {
+    if (x.uses == null) x.uses = Math.max(6, Math.round((x.hot || 50) * 1.5));
+    if (x.likes == null) x.likes = Math.round((x.hot || 50) * 360);
+  }));
+  (window.DATA.assets || []).forEach((a, i) => {
+    if (a.uses == null) a.uses = 18 + ((i * 13) % 70);
+    if (a.likes == null) a.likes = 900 + i * 470;
+  });
+})();
+
 /* ------------------------------------------------------------------
    派生逻辑：页面只拿 DERIVE 的结果，不自己算、不自己排
    以后换真接口，这段逻辑搬去后端即可，输出结构不变。 */

@@ -15,12 +15,12 @@ window.PAGES["F1"].render = function (ctx) {
   const tab = TABS.some((t) => t[0] === ctx.tab) ? ctx.tab : "hot";
 
   const VIDEO = [
-    { bg: G("#FF7A9C", "#FF3D6E"), cap: "美业人必看\n好业绩的关键", title: "经典 · 可换色", dur: "0:32", by: "小晓说房", av: "晓", avbg: G("#FF7A45", "#FF3D6E"), tag: "爆款" },
-    { bg: G("#7C5CFF", "#B08CFF"), cap: "明星同款\n高级红 · 双语", title: "高级红 · 双语", dur: "0:28", by: "阿北选款小店", av: "北", avbg: G("#7C5CFF", "#2C5BFF"), tag: "" },
-    { bg: G("#FFB648", "#FF7A45"), cap: "包包脸速退！\n私域运营", title: "素雅姜红", dur: "0:41", by: "阿黎妈咪", av: "黎", avbg: G("#F5A623", "#FFC85B"), tag: "" },
-    { bg: G("#00C2FF", "#2C5BFF"), cap: "开小拍\n一镜到底", title: "秀丽 · 可换色", dur: "0:35", by: "美甲小贝", av: "贝", avbg: G("#00A8E8", "#00C2FF"), tag: "" },
-    { bg: G("#5B8CFF", "#8FB0FF"), cap: "私域秘籍\n照抄就出单", title: "营销口播 v3", dur: "0:30", by: "阿玲", av: "玲", avbg: G("#2C5BFF", "#5B8CFF"), tag: "团队" },
-    { bg: G("#00B389", "#00C2FF"), cap: "哈喽\nHello everyone", title: "开场双语钩子", dur: "0:18", by: "小雨", av: "雨", avbg: G("#00B389", "#00C2FF"), tag: "" }
+    { bg: G("#FF7A9C", "#FF3D6E"), cap: "美业人必看\n好业绩的关键", title: "经典 · 可换色", dur: "0:32", by: "小晓说房", av: "晓", avbg: G("#FF7A45", "#FF3D6E"), tag: "爆款", uses: "1.2万", likes: "3.4万" },
+    { bg: G("#7C5CFF", "#B08CFF"), cap: "明星同款\n高级红 · 双语", title: "高级红 · 双语", dur: "0:28", by: "阿北选款小店", av: "北", avbg: G("#7C5CFF", "#2C5BFF"), tag: "", uses: "6,200", likes: "2.1万" },
+    { bg: G("#FFB648", "#FF7A45"), cap: "包包脸速退！\n私域运营", title: "素雅姜红", dur: "0:41", by: "阿黎妈咪", av: "黎", avbg: G("#F5A623", "#FFC85B"), tag: "", uses: "8,600", likes: "1.8万" },
+    { bg: G("#00C2FF", "#2C5BFF"), cap: "开小拍\n一镜到底", title: "秀丽 · 可换色", dur: "0:35", by: "美甲小贝", av: "贝", avbg: G("#00A8E8", "#00C2FF"), tag: "", uses: "5,400", likes: "9,800" },
+    { bg: G("#5B8CFF", "#8FB0FF"), cap: "私域秘籍\n照抄就出单", title: "营销口播 v3", dur: "0:30", by: "阿玲", av: "玲", avbg: G("#2C5BFF", "#5B8CFF"), tag: "团队", uses: "4,100", likes: "1.2万" },
+    { bg: G("#00B389", "#00C2FF"), cap: "哈喽\nHello everyone", title: "开场双语钩子", dur: "0:18", by: "小雨", av: "雨", avbg: G("#00B389", "#00C2FF"), tag: "", uses: "3,300", likes: "7,600" }
   ];
   const COVERS = [
     { bg: G("#FF7A9C", "#FF3D6E"), cap: "美业人必看\n好业绩的关键", hot: true, uses: "1.2万", likes: "3.4万" },
@@ -50,6 +50,7 @@ window.PAGES["F1"].render = function (ctx) {
         <div class="tcovtx">${t.cap}</div>
       </div>
       <div class="ttcap">${t.title}</div>
+      <div class="ttmeta">用 ${t.uses} · ♥ ${t.likes}</div>
       <div class="ttft"><span class="tav" style="background:${t.avbg}">${t.av}</span>
         <span class="tname">${t.by}</span>
         <span class="tdo" data-go="F3" data-label="做同款 · ${t.title}">做同款</span></div>

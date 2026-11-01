@@ -58,7 +58,7 @@ window.PAGES["B2.1"].render = function (ctx) {
         <span style="background:rgba(0,0,0,.38);border-radius:5px;padding:2px 5px">${meta(a)}</span>
         ${on ? `<span style="position:absolute;right:5px;top:5px;width:16px;height:16px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center">✓</span>` : ""}
       </div>
-      <div class="cap">${a.label}</div>
+      <div class="cap">${a.label}<span style="display:block;font-size:9px;color:var(--text-4);margin-top:2px">用 ${D.plays(a.uses)} · ♥ ${D.plays(a.likes)}</span></div>
     </div>`;
   };
 

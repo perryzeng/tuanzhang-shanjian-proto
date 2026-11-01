@@ -33,7 +33,8 @@ window.PAGES["E2.3"].render = function (ctx) {
 
       <div class="metaline">
         <span>作者 ${it.by || "—"}</span><i>·</i>
-        <span>用过 ${Math.round(it.hot / 8)} 次</span>
+        <span>使用 ${D.plays(it.uses)} 次</span><i>·</i>
+        <span>♥ ${D.plays(it.likes)}</span>
         ${folderName ? `<i>·</i><span>在「${folderName}」</span>` : ""}
         ${it.pick ? `<span class="picktag">精选</span>` : ""}
       </div>

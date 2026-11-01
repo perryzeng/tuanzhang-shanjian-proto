@@ -215,7 +215,9 @@ window.PAGES["E2"].render = function (ctx) {
       : `data-go="E2.2?id=${x.id}" data-label="${x.name}"`}>
       ${sel ? `<span class="ck${picked.indexOf(x.id) >= 0 ? " on" : ""}"></span>` : ""}
       <span class="ic">≡</span>
-      <div class="tx"><b>${x.name}</b><span>${x.by || "—"} · ${x.sub} · ${x.at === 1 ? "今天" : x.at + " 天前"}</span></div>
+      <div class="tx"><b>${x.name}</b>
+        <span>${x.by || "—"} · ${x.sub} · ${x.at === 1 ? "今天" : x.at + " 天前"}</span>
+        <span style="display:block;font-size:9px;color:var(--text-3);margin-top:2px">使用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>
       ${sel ? "" : `<span class="go">›</span>`}
     </div>`;
 
@@ -227,7 +229,7 @@ window.PAGES["E2"].render = function (ctx) {
         ${x.pick ? `<span class="pickmark">精选</span>` : ""}
         <span class="cnt">${x.sub.split(" · ")[0]}</span>
       </div>
-      <div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span></div>
+      <div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span><span style="display:block;font-size:8.5px;color:var(--text-4);margin-top:1px">用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>
     </div>`;
 
   const tileGo = (x) => (kind === "asset" ? "E2.3?id=" + x.id : (x.go || "B4.1?id=" + x.id));
