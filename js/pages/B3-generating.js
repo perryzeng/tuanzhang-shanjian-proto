@@ -38,7 +38,7 @@ window.PAGES["B3"].render = function (ctx) {
     </div>
 
     <div style="padding:0 16px 26px;display:flex;flex-direction:column;gap:9px">
-      <div class="btn" data-go="B4" data-label="生成完成 · 选封面">生成完成 · 选封面</div>
+      <div class="btn" data-go="B4.1" data-label="生成完成 · 看成品">生成完成 · 看成品</div>
       <div class="btn gray" data-go="A1" data-label="先去忙">先去忙，好了推送到首页</div>
     </div>
   </div>`;

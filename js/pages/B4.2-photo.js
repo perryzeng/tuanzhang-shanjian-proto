@@ -5,12 +5,16 @@ window.PAGES["B4.2"].states = [
 
 /* 封面底图从哪来。两种：现拍/现传，或者用相册里以前传过的。
    为什么不做成"只有上传"：团长手机里本来就躺着一堆产品图、自拍、开箱照，
-   他九成会从里面挑，重新拍一张反而慢。 */
+   他九成会从里面挑，重新拍一张反而慢。
+
+   这一页被两处调用：B2.4（生成前那一步）和 B4（单独做封面）。
+   挑完要回到**来的那一页**，否则用户点完会莫名其妙跳到另一个流程里。 */
 window.PAGES["B4.2"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
+  const pid = ctx.from === "B2.4" ? "B2.4" : "B4";
   const sel = ctx.ph || "";
 
-  const ph = (p) => `<div class="phcell${sel === p.id ? " sel" : ""}" data-go="B4?base=photo&ph=${p.id}" data-label="用这张当封面底图">
+  const ph = (p) => `<div class="phcell${sel === p.id ? " sel" : ""}" data-go="${pid}?base=photo&ph=${p.id}" data-label="用这张当封面底图">
       <div class="im" style="background:${p.bg}"></div>
       <div class="tx"><b>${p.label}</b><span>${p.at}</span></div>
       ${sel === p.id ? `<span class="ck">✓</span>` : ""}
@@ -18,7 +22,7 @@ window.PAGES["B4.2"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "选一张照片", sub: "当封面的底图", back: "B4", act: "相册" })}
+    ${C.ab({ title: "选一张照片", sub: "当封面的底图", back: pid, act: "相册" })}
 
     <div class="body">
       <div class="card pay" style="display:flex;align-items:center;gap:11px;cursor:pointer">

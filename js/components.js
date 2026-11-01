@@ -358,6 +358,86 @@
         ${c.done ? "" : `<span class="go2" data-go="${c.go}" data-label="${c.tx}">去完成 ›</span>`}
       </div>`).join("")}</div>`;
 
+  /* ---------- 封面编辑器：底图 × 版式 ----------
+     生成前那一页（B2.4）和"单独做一张封面"（B4）用的是同一套东西，
+     所以抽成组件——两处各写一遍迟早会长得不一样。
+
+     pid 决定状态写回哪一页：所有点选都走 data-set，不跳页、不丢其它已选项。
+     compact=1 时预览缩到 92px、版式缩略缩到 58px，好塞进 B2.4 的分段里。 */
+  C.coverKit = (o) => {
+    const D = window.DERIVE, pid = o.pid, ctx = o.ctx || {}, compact = !!o.compact;
+
+    /* 底图：视频首帧，或者相册里挑的那张 */
+    let base = D.coverBase(ctx.base);
+    if (base.k === "photo" && ctx.ph) {
+      const ph = D.myPhotos().filter((x) => x.id === ctx.ph)[0];
+      if (ph) base = { ...base, bg: ph.bg, name: ph.label, from: "相册 · 竖版" };
+    }
+    /* 文案默认取自**这条片子要讲的事**，不是版式里那几句示例——
+       版式只决定字压在哪，不该替他决定说什么。改过就以他改的为准。
+       没传 topic（B4 独立进来）就退回到创作首页那个输入框里的话。 */
+    const topic = ctx.topic || ((window.STATE || {}).B1 || {}).topic || "";
+    const auto = D.coverFromTopic(topic);
+    const bigTx = (ctx.big != null && ctx.big !== "") ? ctx.big : auto.big;
+    const smallTx = (ctx.small != null && ctx.small !== "") ? ctx.small : auto.small;
+    const style = D.cover(ctx.cv);
+    const lay = (t) => (t.k === "split"
+      ? `<span class="ss">${t.small}</span><div class="bb"><b>${brk(t.big)}</b></div>`
+      : t.k === "bar"
+        ? `<div class="bb"><b>${brk(t.big)}</b><i>${t.small}</i></div>`
+        : `<b>${brk(t.big)}</b><i>${t.small}</i>`);
+    const shot = (t, b, fs) => `<div class="cv" style="font-size:${fs}px">
+        <div class="src" style="background:${b.bg}"></div>
+        <div class="lay ${t.k}${String(t.big).indexOf("|") >= 0 ? " brk" : ""}">${lay(t)}</div>
+      </div>`;
+    const cur = { ...style, big: bigTx, small: smallTx };
+
+    /* 六张缩略卡共用**同一张底图、同一句话**，只有排法不同——
+       否则用户看到的是"六个封面"，而不是"我这张封面，六种排法"。 */
+    const tile = (t) => `<div class="cvt${t.k === style.k ? " sel" : ""}" data-set="${pid}.cv=${t.k}">
+        ${shot({ ...t, big: bigTx, small: smallTx }, base, compact ? 4.6 : 5.4)}
+        <span class="nm">${t.name}</span>
+        ${t.k === style.k ? `<span class="ck">✓</span>` : ""}
+      </div>`;
+
+    const hasPh = base.k === "photo" && ctx.ph;
+    const baseTile = (b, canPick) => `<div class="bset${b.k === base.k ? " sel" : ""}"
+        ${canPick ? `data-set="${pid}.base=${b.k}"` : `data-go="B4.2?from=${pid}" data-label="选择封面"`}>
+        <div class="th${canPick ? "" : " add"}"${canPick ? ` style="background:${b.bg}"` : ""}>${canPick ? "" : "＋"}</div>
+        <div class="tx"><b>${canPick ? b.name : "选择封面"}</b>
+          <span>${canPick ? b.from : "从相册选一张"}</span></div>
+        ${canPick && b.k === base.k ? `<span class="tick">✓</span>` : ""}
+      </div>`;
+
+    return `<div class="ckit${compact ? " sm" : ""}">
+      <div class="ck-head">
+        <div class="ck-pv">${shot(cur, base, compact ? 9.2 : 12)}
+          <div class="cap">${base.name}${base.at ? " · " + base.at : ""}</div>
+        </div>
+        <div class="ck-fields">
+          <div class="fd"><span class="fl">主标题</span>
+            <input data-bind="${pid}.big" data-live value="${String(bigTx).replace(/"/g, "&quot;")}"
+                   placeholder="封面主打那句" /></div>
+          <div class="fd"><span class="fl">副标题</span>
+            <input data-bind="${pid}.small" data-live value="${String(smallTx).replace(/"/g, "&quot;")}"
+                   placeholder="价格 / 时间" /></div>
+          <div class="ck-tip">打 <b>|</b> 手动换行 · 改完立刻见</div>
+        </div>
+      </div>
+
+      <div class="bsets" style="margin-top:10px">
+        ${baseTile(D.coverBase("frame"), true)}
+        ${hasPh ? baseTile(base, true) : baseTile({ k: "photo" }, false)}
+      </div>
+
+      <div class="ctray" style="margin-top:9px">${D.covers().map(tile).join("")}</div>
+    </div>`;
+  };
+
+  /* 主标题里允许用 | 手动断行：中文自动折行常断在词中间（"一天不 / 到 3 块"），
+     手动断比自动断靠谱。 */
+  const brk = (x) => String(x).replace(/\|/g, "<br>");
+
   window.C = C;
   window.G = G;
 })();

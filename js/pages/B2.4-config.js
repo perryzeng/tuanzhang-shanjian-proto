@@ -1,108 +1,147 @@
-window.PAGES["B2.4"].prd = "PRD §6.14 · 选模板与声音（模板货架 + 音色）";
+window.PAGES["B2.4"].prd = "PRD §6.14 · 定模板 / 声音 / 封面（一页定完，点生成）";
+window.PAGES["B2.4"].states = [
+  { k: "", n: "默认：镜头快切 + 亲和女声 + 首帧封面（都能直接改）" }
+];
 
-/* 模板选择做成了"货架"：横向滑的大卡，一张卡就是这条片子出来长什么样。
-   为什么不做成 6 个文字卡：团长选模板靠"看着像不像我要的效果"，
-   不是读"每 1.5 秒切一次"这种描述。卡上直接排大标题 + 小字，眼睛一扫就知道什么味儿。
+/* 生成前只剩三件事，一页问完：**片子怎么剪 / 谁在念 / 长什么样**。
 
-   声音放在下面——先定"长什么样"，再定"谁在说"。顺序不能反：
-   模板决定节奏，节奏决定配音该多快。 */
+   为什么把封面并进来：上一版封面单独占一页（B4），用户在"选模板"和"选封面"
+   之间来回跳，跳完还不知道自己改的是哪一步。这三件事本质是同一件事——
+   "这条片子最后是什么样"，拆成两页反而更难理解。
+
+   结构上做了减法：
+   · 模板去掉了 6 个分类 tab（我的/热门/双语/双11/日记）——8 款横滑一屏能扫完，
+     分类是给几百款模板用的，8 款分类等于让用户多点一次；
+   · 声音从 5 个缩到 3 个，一行一个，不再有试听弹窗；
+   · 每段都标了序号 ①②③，一眼知道走到第几步、还剩几步。
+
+   模板卡画的不是"渐变图 + 大标题"，而是**版式示意**：三格切、大字条、分屏 ✕✓、
+   进度条……团长选模板靠"看着像不像我要的效果"，不靠读"每 1.5 秒切一次"。
+   卡下面再给一句实例（eg），用他见过的场景说话，不用术语。 */
 window.PAGES["B2.4"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
-  const from = ctx.from === "D2" ? "D2" : "B2";
+  const from = ctx.from === "D2" ? "D2" : (ctx.from === "C3" ? "C3" : "B2");
   const kind = ctx.kind === "remix" ? "remix" : "script";
   const tplId = ctx.tpl || "tp_fast";
   const vid = ctx.voice || "v_f1";
-  const tab = ctx.tab || "hot";
   const v = D.voice(vid);
-  const list = D.templates().filter((t) => t.cat === tab);
   const tpl = D.template(tplId);
 
   const isSeries = from === "D2";
   const d = isSeries
     ? D.draft("series", { day: ctx.d || 5 })
     : D.draft(kind, { doc: ctx.doc, src: ctx.src, day: ctx.day });
-  const plan = isSeries ? D.dayPlan(D.campaign(ctx.c), ctx.d || 5) : null;
+
+  /* 摘要条只讲这一条片子是什么，不重复下面的选择 */
   const summary = isSeries
-    ? d.series.name + " · Day " + (ctx.d || 5) + " · " + (plan ? plan.topic : "")
+    ? d.series.name + " · Day " + (ctx.d || 5)
     : d.title;
 
-  /* "我的"排第一：收藏过的模板是复用率最高的，空着也要给个位置 */
-  const TABS = [["mine", "我的"], ["hot", "热门"], ["bi", "双语"], ["new", "最新"], ["sale", "双 11"], ["diary", "视频日记"]];
+  const carry = (isSeries
+    ? "&c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5)
+    : "&kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : ""));
 
-  const backGo = isSeries
-    ? "D2?c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5)
-    : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
-  const genGo = "B3?from=" + from
-    + (isSeries ? "&c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5)
-      : "&kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : ""))
-    + "&tpl=" + tplId + "&voice=" + vid;
+  const backGo = from === "D2" ? "D2?c=" + (ctx.c || "cp_1") + "&d=" + (ctx.d || 5)
+    : from === "C3" ? "C3"
+      : "B2?kind=" + kind + (ctx.src ? "&src=" + ctx.src : "") + (ctx.doc ? "&doc=" + ctx.doc : "");
+  const genGo = "B3?from=" + from + carry + "&tpl=" + tplId + "&voice=" + vid;
 
-  /* 一张模板卡 = 这条片子出来长什么样 */
+  /* 分段小标题：序号 + 一句人话。三段的问法是"为什么"，不是"叫什么" */
+  const step = (n, t, s) => `<div class="sth"><i>${n}</i><b>${t}</b><span>${s}</span></div>`;
+
+  /* 版式示意：用小块画出来，扫一眼就知道这条片子长什么样。
+     颜色只做底板，真正的信息在"字压在哪、画面怎么分"。 */
+  const SHAPE = {
+    /* 三格切：两条分割线 + 底部一句大字 */
+    grid3: `<i class="fline" style="top:32%"></i><i class="fline" style="top:65%"></i>
+      <b class="fbar" style="left:7px;right:7px;bottom:8px;text-align:center">说一句 换一镜</b>`,
+    /* 大字口播：三行白字，一行比一行短 */
+    big: `<b class="fbar" style="left:8px;right:18px;top:38px">我妈吃了</b>
+      <b class="fbar" style="left:8px;right:32px;top:56px">三个月</b>
+      <b class="fbar" style="left:8px;right:50px;top:74px">真有用</b>`,
+    /* 左右对比：中间竖线，左 ✕ 右 ✓ */
+    split: `<i class="fvl"></i><i class="fdim"></i>
+      <em class="fgl" style="left:16px;top:40px">✕</em><em class="fgl" style="right:16px;top:40px">✓</em>
+      <b class="fbar" style="left:7px;right:7px;bottom:8px;text-align:center">差在吸收率</b>`,
+    /* 先反着说：一个大问号 + 底部一句 */
+    ask: `<em class="fgl" style="left:0;right:0;top:26px;text-align:center;font-size:34px">?</em>
+      <b class="fbar" style="left:7px;right:7px;bottom:8px;text-align:center">先别买</b>`,
+    /* 图片往上滑：三张叠着的白卡 */
+    slide: `<i class="fsheet" style="top:34px;left:9px;right:9px;transform:rotate(-5deg)"></i>
+      <i class="fsheet" style="top:42px;left:9px;right:9px;transform:rotate(3deg)"></i>
+      <i class="fsheet" style="top:50px;left:9px;right:9px"></i>
+      <b class="fbar" style="left:7px;right:7px;bottom:8px;text-align:center">6 张图够</b>`,
+    /* 真人在讲：头像 + 肩，底下两行小字幕 */
+    face: `<i class="fhead"></i><i class="fbody"></i>
+      <b class="fbar thin" style="left:16px;right:16px;bottom:16px"></b>
+      <b class="fbar thin" style="left:24px;right:24px;bottom:8px"></b>`,
+    /* 中英双语：中文一行、英文一行 */
+    duo: `<b class="fbar" style="left:8px;right:8px;top:44px;text-align:center">每粒 500mg</b>
+      <b class="fbar thin" style="left:8px;right:8px;top:74px;text-align:center">500mg softgel</b>`,
+    /* 促销大字：价格 + 倒计时条 */
+    sale: `<em class="fgl" style="left:0;right:0;top:34px;text-align:center;font-size:15px;letter-spacing:-.5px">¥99 / 3 盒</em>
+      <b class="fcd">距结束 02:14</b>`
+  };
+
   const card = (t) => `<div class="tcard${t.id === tplId ? " sel" : ""}" data-set="B2.4.tpl=${t.id}">
-      <div class="tc" style="background:linear-gradient(150deg,${t.c1},${t.c2})">
+      <div class="tvis" style="--c1:${t.c1};--c2:${t.c2}">
+        <div class="fbg"></div>
         <span class="tt">${t.tag}</span>
-        <div class="tx"><b>${t.big}</b><span>${t.sub}</span></div>
+        ${SHAPE[t.shape] || ""}
         ${t.id === tplId ? `<span class="tk">✓</span>` : ""}
       </div>
       <div class="tn">${t.name}</div>
       <div class="tr">${t.rate}</div>
     </div>`;
 
+  /* 声音：一行一个，谁在念 + 一句差别。不铺开写解释，选完在下面给一句提示 */
   const voiceRow = (x) => `<div class="vrow${x.id === vid ? " on" : ""}" data-set="B2.4.voice=${x.id}">
       <span class="rd"></span>
-      <span class="vw">
-        <b>${x.name}${x.tag ? ` <span class="tag b" style="margin-left:4px">${x.tag}</span>` : ""}</b>
-        <i>${x.sub}</i>
-      </span>
-      ${x.k === "ai" ? `<span class="vact">▶ 试听</span>` : `<span class="vact" style="color:var(--text-3)">要录</span>`}
+      <span class="vw"><b>${x.name}${x.tag ? `<em class="vtag">${x.tag}</em>` : ""}</b>
+        <i>${x.sub}</i></span>
+      ${x.k === "ai" ? `<span class="vact">▶ 听一句</span>` : `<span class="vact off">要录</span>`}
     </div>`;
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "选模板与声音", sub: "第 2 步 · 定完就生成", back: backGo })}
+    ${C.ab({ title: "定模板 · 声音 · 封面", sub: "第 2 步 · 定完就开始剪", back: backGo })}
 
     <div class="body" style="padding:0 0 26px">
       <div style="padding:0 16px">
-        <div class="card" style="padding:11px 13px;display:flex;align-items:center;gap:10px">
-          <div style="width:26px;height:44px;border-radius:6px;flex:0 0 26px;background:linear-gradient(150deg,${tpl.c1},${tpl.c2})"></div>
-          <div style="flex:1;min-width:0">
-            <div class="h3" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${summary}</div>
-            <div class="xs" style="margin-top:2px">${d.segCount} 个 part · ${d.durTotal} 秒 · ${tpl.name} · ${v.name}</div>
-          </div>
+        <div class="cfgbrief">
+          <b>${summary}</b>
+          <span>${d.segCount} 段 · 约 ${d.durTotal} 秒 · ${tpl.name} · ${v.name}</span>
         </div>
       </div>
 
-      <div class="tshelf">
-        <div class="ttabs">
-          ${TABS.map(([k, tx]) => `<span class="t1${tab === k ? " on" : ""}" data-set="B2.4.tab=${k}">${tx}</span>`).join("")}
-        </div>
-        <div class="trow">
-          ${list.length ? list.map(card).join("") : `<div class="xs" style="padding:18px 4px;line-height:1.7">${tab === "mine" ? "还没有收藏的模板<br>用着顺手的点一下右上角收藏，下次就在这里" : "这个分类还没有模板"}</div>`}
-        </div>
-      </div>
-
+      ${step(1, "选模板", "这条片子怎么剪")}
+      <div class="trow">${D.templates().map(card).join("")}</div>
       <div style="padding:0 16px">
-        <div class="card plain" style="margin-top:2px">
-          <div class="xs" style="line-height:1.7">
-            <b style="color:var(--text)">${tpl.name}</b> · ${tpl.desc}<br>
-            ${tpl.bits.join(" · ")}
-          </div>
+        <div class="pickread">
+          <div class="pr-h"><b>${tpl.name}</b><span>${tpl.rate}</span></div>
+          <div class="pr-d">${tpl.desc}</div>
+          <div class="pr-eg">比如：${tpl.eg}</div>
+          <div class="pr-bits">${tpl.bits.map((b) => `<span>${b}</span>`).join("")}</div>
         </div>
+      </div>
 
-        ${C.sec("谁在说")}
-        <div class="card" style="padding:2px 16px 6px">
-          ${D.voices().map(voiceRow).join("")}
-        </div>
-        <div class="card plain" style="margin-top:10px">
-          <div class="xs" style="line-height:1.7">${v.k === "self"
-            ? "用自己的声音，观众听到的是真人，信任最高；需要你按分段念一遍，大约 3 分钟。"
-            : "AI 配音不用出声，改台词直接重配；但声音不是你本人，老客听得出差别。"}</div>
-        </div>
+      ${step(2, "选声音", "谁在念这段词")}
+      <div style="padding:0 16px">
+        <div class="card" style="padding:2px 15px 4px">${D.voices().map(voiceRow).join("")}</div>
+        <div class="note" style="margin:7px 2px 0">${v.k === "self"
+          ? "自己念信任最高，但要按分段录一遍（约 3 分钟），改词还得重录。"
+          : "AI 配音不用出声，改完台词直接重配；老客听得出不是你本人。"}</div>
+      </div>
+
+      ${step(3, "封面", "不改也能直接用")}
+      <div style="padding:0 16px">
+        ${C.coverKit({ pid: "B2.4", ctx: { ...ctx, topic: summary }, compact: true })}
+        <div class="okline"><b>✓</b> 封面字已过合规：没有「最 / 第一 / 治疗」这类词</div>
       </div>
     </div>
 
     <div class="actionbar">
-      <div class="btn ai" data-go="${genGo}" data-label="生成">✦ 生成 · ${tpl.name}</div>
+      <div class="btn ai" data-go="${genGo}" data-label="生成视频">✦ 生成视频 · 约 ${d.durTotal} 秒</div>
     </div>
   </div>`;
 };

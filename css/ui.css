@@ -831,11 +831,12 @@
              radial-gradient(46% 30% at 78% 84%,rgba(255,255,255,.13),transparent 72%)}
 .cv .lay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;line-height:1.2}
 /* balance 很关键：不加的话长标题会断在词中间（"一天不 / 到 3 块"），
-   加了之后两行长度自动拉匀（"一天不到 / 3 块"）——中文封面尤其明显。 */
-/* keep-all：中文默认逐字折行，宽一点窄一点就断在词中间。
-   封面标题的断句由文案用 `|` 指定（渲染成 <br>），所以这里禁止浏览器自作主张。 */
-.cv .lay b{display:block;font-size:1.95em;font-weight:800;letter-spacing:-.02em;line-height:1.14;
-           word-break:keep-all;overflow-wrap:normal}
+   加了之后两行长度自动拉匀（"一天不到 / 3 块"）——中文封面尤其明显。
+   keep-all 只用在"用户自己打了 | 指定断句"的时候：
+   没指定就允许浏览器折行 + 拉匀，否则一行放不下会直接溢出（封面就废了）。 */
+.cv .lay b{display:block;font-size:1.58em;font-weight:800;letter-spacing:-.02em;line-height:1.14;
+           word-break:break-word;text-wrap:balance}
+.cv .lay.brk b{word-break:keep-all;overflow-wrap:normal}
 .cv .lay i{display:block;font-style:normal;font-size:.92em;opacity:.92;margin-top:.34em}
 
 .cv .lay.bottom{padding:1em .85em;background:linear-gradient(0deg,rgba(5,10,24,.86),rgba(5,10,24,.16) 56%,transparent)}
@@ -845,13 +846,13 @@
 .cv .lay.split{justify-content:space-between;padding:0}
 .cv .lay.split .ss{padding:.95em 1.05em;font-size:.9em;opacity:.95;background:linear-gradient(180deg,rgba(5,10,24,.82),transparent)}
 .cv .lay.split .bb{padding:1.05em;background:rgba(5,10,24,.88);min-height:44%;display:flex;flex-direction:column;justify-content:flex-end}
-.cv .lay.split .bb b{font-size:1.9em}
+.cv .lay.split .bb b{font-size:1.55em}
 .cv .lay.bar{justify-content:flex-end;padding:0}
 .cv .lay.bar .bb{width:100%;padding:.9em 1.05em;background:rgba(5,10,24,.9);border-top:.18em solid #2C5BFF}
-.cv .lay.bar .bb b{font-size:1.7em}
+.cv .lay.bar .bb b{font-size:1.5em}
 .cv .lay.left{justify-content:flex-end;align-items:flex-start;text-align:left;padding:1em .85em;
               background:linear-gradient(90deg,rgba(5,10,24,.88),rgba(5,10,24,.08) 74%)}
-.cv .lay.left b{font-size:1.72em}
+.cv .lay.left b{font-size:1.5em}
 
 /* 预览 + 文字输入并排：字要在左边立刻看到效果，所以输入框不能放得太远 */
 .cvhead{display:flex;gap:12px;align-items:flex-start}
@@ -1032,33 +1033,110 @@
               color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;cursor:pointer;
               box-shadow:0 4px 12px rgba(44,91,255,.24)}
 
-/* ========== 模板货架（选模板与声音） ========== */
-.tshelf{margin:14px 0 10px}
-.ttabs{display:flex;align-items:center;gap:14px;padding:0 16px 10px;overflow-x:auto;scrollbar-width:none}
-.ttabs::-webkit-scrollbar{display:none}
-.ttabs .tf{font-size:12.5px;color:var(--text-4);flex:0 0 auto}
-.ttabs .t1{font-size:13.5px;font-weight:600;color:var(--text-3);flex:0 0 auto;position:relative;padding-bottom:5px;cursor:pointer}
-.ttabs .t1.on{color:var(--text);font-weight:700}
-.ttabs .t1.on:after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
-                    width:16px;height:2.5px;border-radius:2px;background:var(--brand)}
+/* ========== 生成设置：一句话摘要 + 三段式 ========== */
+.cfgbrief{background:var(--surface);border-radius:14px;box-shadow:var(--sh-1);padding:10px 13px}
+.cfgbrief b{display:block;font-size:13px;font-weight:700;letter-spacing:-.2px;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cfgbrief span{display:block;font-size:10.5px;color:var(--text-3);margin-top:3px}
 
-.trow{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 6px;scrollbar-width:none}
+/* 分段小标题：①②③ + 这一问的是什么。用序号是因为这三件事是有先后的：
+   先定怎么剪，才知道配音该多快；定了画面，才知道封面字压在哪。 */
+.sth{display:flex;align-items:center;gap:8px;padding:0 16px;margin:20px 0 9px}
+.sth i{width:19px;height:19px;border-radius:50%;background:var(--brand-weak);color:var(--brand-ink);
+       font-size:10.5px;font-weight:800;font-style:normal;display:flex;align-items:center;
+       justify-content:center;flex:0 0 19px}
+.sth b{font-size:14.5px;font-weight:700;letter-spacing:-.2px}
+.sth span{font-size:11px;color:var(--text-4);margin-left:-2px}
+
+/* ========== 模板卡：用版式示意代替文案 ==========
+   上一版卡上是"渐变图 + 一段大标题"，八张摆一起只有颜色不同，
+   团长看不出"这个模板剪出来是什么样"。现在卡上直接画出画面怎么分、
+   字压在哪儿——切成三格、三行大白字、左右分屏 ✕✓、叠起来的图…… */
+.trow{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 4px;scrollbar-width:none}
 .trow::-webkit-scrollbar{display:none}
-.tcard{flex:0 0 118px;cursor:pointer}
-.tcard .tc{position:relative;height:158px;border-radius:12px;overflow:hidden;color:#fff;
-           display:flex;flex-direction:column;justify-content:flex-end;padding:9px 8px;
-           box-shadow:0 0 0 2px transparent}
-.tcard.sel .tc{box-shadow:0 0 0 2.5px var(--brand),0 8px 20px rgba(44,91,255,.24)}
-.tcard .tt{position:absolute;left:7px;top:7px;font-size:8.5px;font-weight:700;background:rgba(0,0,0,.32);
-           border-radius:5px;padding:1.5px 6px}
-.tcard .tx{position:relative}
-.tcard .tx b{display:block;font-size:13px;font-weight:800;line-height:1.2;letter-spacing:-.3px;
-             text-shadow:0 2px 8px rgba(0,0,0,.45);-webkit-line-clamp:2;display:-webkit-box;
-             -webkit-box-orient:vertical;overflow:hidden}
-.tcard .tx span{display:block;font-size:8.5px;opacity:.92;margin-top:4px;line-height:1.3;
-                text-shadow:0 1px 4px rgba(0,0,0,.4)}
-.tcard .tk{position:absolute;right:7px;bottom:7px;width:17px;height:17px;border-radius:50%;
-           background:#fff;color:var(--brand);font-size:10px;font-weight:700;display:flex;
-           align-items:center;justify-content:center}
-.tcard .tn{font-size:12px;font-weight:600;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tcard{flex:0 0 100px;cursor:pointer}
+.tcard .tvis{position:relative;height:150px;border-radius:12px;overflow:hidden;
+             box-shadow:0 0 0 2px transparent;transition:box-shadow .12s}
+.tcard.sel .tvis{box-shadow:0 0 0 2.5px var(--brand),0 8px 20px rgba(44,91,255,.22)}
+.tcard .fbg{position:absolute;inset:0;background:linear-gradient(155deg,var(--c1),var(--c2))}
+.tcard .fbg:after{content:"";position:absolute;inset:0;
+  background:radial-gradient(130% 70% at 50% 0%,rgba(255,255,255,.24),transparent 62%)}
+.tcard .tt{position:absolute;left:6px;top:6px;z-index:3;font-size:8px;font-weight:700;color:#fff;
+           background:rgba(8,14,32,.42);border-radius:5px;padding:1.5px 5px;letter-spacing:.2px}
+.tcard .tk{position:absolute;right:6px;top:6px;z-index:3;width:16px;height:16px;border-radius:50%;
+           background:#fff;color:var(--brand);font-size:9px;font-weight:800;
+           display:flex;align-items:center;justify-content:center}
+/* 示意件：白条 = 大字，白线 = 分格，白卡 = 图片 */
+.tcard .fbar{position:absolute;z-index:2;display:block;background:rgba(255,255,255,.96);
+             color:#0E1B3D;font-size:7.5px;font-weight:800;line-height:1.25;
+             padding:2px 4px;border-radius:3px;letter-spacing:-.1px}
+.tcard .fbar.thin{height:4px;padding:0;background:rgba(255,255,255,.85)}
+.tcard .fline{position:absolute;left:0;right:0;height:1.5px;background:rgba(255,255,255,.55);z-index:2}
+.tcard .fvl{position:absolute;left:50%;top:8px;bottom:26px;width:1.5px;background:rgba(255,255,255,.7);z-index:2}
+.tcard .fdim{position:absolute;left:0;top:0;bottom:0;width:50%;background:rgba(8,14,32,.26);z-index:1}
+.tcard .fgl{position:absolute;z-index:2;color:#fff;font-style:normal;font-weight:900;
+            text-shadow:0 2px 8px rgba(0,0,0,.35)}
+.tcard .fsheet{position:absolute;height:56px;border-radius:5px;z-index:2;
+               background:rgba(255,255,255,.88);box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.tcard .fhead{position:absolute;left:50%;top:30px;width:30px;height:30px;margin-left:-15px;z-index:2;
+              border-radius:50%;background:rgba(255,255,255,.9)}
+.tcard .fbody{position:absolute;left:50%;top:62px;width:52px;height:34px;margin-left:-26px;z-index:2;
+              border-radius:16px 16px 4px 4px;background:rgba(255,255,255,.85)}
+.tcard .fcd{position:absolute;left:6px;right:6px;bottom:8px;z-index:2;text-align:center;
+            background:rgba(8,14,32,.55);color:#fff;font-size:7.5px;font-weight:700;
+            padding:3px 0;border-radius:4px}
+.tcard .tn{font-size:12px;font-weight:700;margin-top:7px;white-space:nowrap;overflow:hidden;
+           text-overflow:ellipsis;letter-spacing:-.2px}
+.tcard.sel .tn{color:var(--brand-ink)}
 .tcard .tr{font-size:9.5px;color:var(--text-3);margin-top:2px}
+
+/* 选中模板后的人话解释：名字 + 一句效果 + 一句实例 + 三个特征。
+   实例那句是关键——"1.5 秒一切"没人看得懂，"30 秒切 20 个画面"一听就明白。 */
+.pickread{background:var(--surface);border-radius:14px;box-shadow:var(--sh-1);padding:12px 13px}
+.pickread .pr-h{display:flex;align-items:baseline;gap:8px}
+.pickread .pr-h b{font-size:13px;font-weight:700}
+.pickread .pr-h span{margin-left:auto;font-size:10px;font-weight:700;color:var(--brand-ink);
+                     background:var(--brand-weak);border-radius:999px;padding:2px 7px}
+.pickread .pr-d{font-size:11.5px;color:var(--text-2);margin-top:5px;line-height:1.5}
+.pickread .pr-eg{font-size:11.5px;color:var(--text-2);margin-top:6px;line-height:1.6;
+                 background:var(--bg-2);border-radius:9px;padding:7px 9px}
+.pickread .pr-bits{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.pickread .pr-bits span{font-size:10px;color:var(--text-3);background:var(--bg-2);
+                        border-radius:999px;padding:3px 8px}
+
+/* 声音：一行一个，不展开解释 */
+.vrow .vw b{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
+.vrow .vw i{display:block;font-style:normal;font-size:10.5px;color:var(--text-3);margin-top:2px}
+.vrow .vtag{font-style:normal;font-size:9px;font-weight:700;color:var(--brand-ink);
+            background:var(--brand-weak);border-radius:4px;padding:1px 5px}
+.vrow .vact{font-size:10.5px;font-weight:600;color:var(--brand);flex:0 0 auto;margin-left:auto}
+.vrow .vact.off{color:var(--text-4);font-weight:500}
+
+.okline{display:flex;align-items:flex-start;gap:6px;margin-top:9px;font-size:10.5px;
+        color:#2F7F68;line-height:1.5}
+.okline b{color:#0B8C68;font-size:11px}
+
+/* ========== 封面编辑器（B2.4 内嵌 / B4 独立共用） ========== */
+.ckit{margin-top:2px}
+.ck-head{display:flex;gap:12px;align-items:flex-start}
+.ck-pv{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
+.ck-pv .cv{width:92px;height:164px;border-radius:13px;box-shadow:0 10px 26px rgba(20,40,110,.2)}
+.ck-pv .cap{margin-top:6px;font-size:9px;color:var(--text-4);text-align:center;line-height:1.4}
+.ck-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;padding-top:1px}
+.ck-fields .fd{background:var(--surface);border-radius:11px;box-shadow:var(--sh-1);padding:7px 10px}
+.ck-fields .fl{display:block;font-size:9px;font-weight:700;color:var(--text-4);letter-spacing:.2px}
+.ck-fields input{width:100%;border:0;outline:0;background:transparent;font-family:inherit;
+                 font-size:13px;font-weight:600;color:var(--text);padding:2px 0 0;line-height:1.35}
+.ck-fields input::placeholder{font-weight:400;color:var(--text-4)}
+.ck-tip{font-size:9px;color:var(--text-4);line-height:1.5;padding-left:2px}
+.ck-tip b{color:var(--text-2)}
+/* 六种排法要**一屏看完**——看不到第六种，用户就只会在前三个里挑。
+   52px × 6 + 间距正好塞满 375 的屏宽，不用横滑。 */
+.ckit .ctray{gap:6px}
+.ckit .cvt{flex:0 0 52px}
+.ckit .cvt .cv{width:52px;height:94px}
+.ckit .cvt .nm{font-size:9px}
+
+/* 旧的"模板货架"（分类 tab + 渐变大卡）已随 B2.4 改版删除：
+   8 款横滑一屏看得完，分类 tab 只是多让用户点一次。 */
+

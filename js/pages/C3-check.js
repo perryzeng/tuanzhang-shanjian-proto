@@ -50,7 +50,7 @@ window.PAGES["C3"].render = function () {
 
     <div class="actionbar">
       <div class="btn line" style="flex:0 0 118px" data-go="B2?kind=remix" data-label="回去再改一段">再改 1 段</div>
-      <div class="btn" data-go="B4" data-label="生成并去字幕封面">生成 · 下一步</div>
+      <div class="btn" data-go="B2.4?from=C3" data-label="生成并去定模板封面">生成 · 下一步</div>
     </div>
   </div>`;
 };
