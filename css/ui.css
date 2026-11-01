@@ -354,7 +354,7 @@
 .dk-main .dd{font-size:10.5px;line-height:1.5;opacity:.86;margin-top:6px;position:relative}
 .dk-main .db{margin-top:auto;height:32px;border-radius:999px;background:#fff;color:var(--brand-ink);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;position:relative}
 .dk-side{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px}
-.dk{background:#fff;border-radius:16px;box-shadow:var(--sh-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:10.5px;color:var(--text-2);padding:8px 2px;font-weight:500}
+.dk{background:#fff;border-radius:16px;box-shadow:var(--sh-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:10.5px;color:var(--text-2);padding:8px 2px;font-weight:500;line-height:1.25;text-align:center}
 .dk .i{width:27px;height:27px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
 
 /* 今天必须做：横滑任务卡（最多 3 张） */

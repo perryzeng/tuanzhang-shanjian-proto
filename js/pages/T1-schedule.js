@@ -28,13 +28,13 @@ window.PAGES["T1"].render = function () {
       ${C.sec("内容从哪来")}
       <div class="card" style="padding:14px">
         <div class="chips" style="margin-bottom:12px">
-          <span class="chip on">跟当前战役</span>
+          <span class="chip on">跟当前系列</span>
           <span class="chip">自选模板</span>
           <span class="chip">我的历史爆款</span>
         </div>
-        <div class="li" style="margin:0;box-shadow:none;background:var(--brand-weak-2)" data-go="D1" data-label="当前战役">
-          <div class="im" style="background:var(--g-brand)">战役</div>
-          <div class="tx"><b>磷虾油战役 · Day 5/10</b><span>今天主题：信任背书</span></div>
+        <div class="li" style="margin:0;box-shadow:none;background:var(--brand-weak-2)" data-go="D1" data-label="当前系列">
+          <div class="im" style="background:var(--g-brand)">系列</div>
+          <div class="tx"><b>磷虾油系列 · Day 5/10</b><span>今天主题：信任背书</span></div>
           <span class="tag b">已选</span>
         </div>
       </div>

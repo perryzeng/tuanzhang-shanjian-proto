@@ -11,6 +11,8 @@ window.PAGES["D1.3"].render = function (ctx) {
   const days = +(ctx.days || 10);
   const parts = +(ctx.parts || 5);
   const typed = ctx.topic || "";
+  /* 从创作页进来的（不是从 D1 列表），返回就回创作页，别把人扔进他不认识的地方 */
+  const backGo = ctx.from === "B1" ? "B1" : "D1";
 
   const topics = D.planTopics(product, days);
   const skel = D.partSkeleton(parts);
@@ -18,7 +20,7 @@ window.PAGES["D1.3"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "新建系列", sub: "说清做什么，剩下的 AI 排", back: "D1", act: "存草稿" })}
+    ${C.ab({ title: "新建 SOP 主题", sub: "说清做什么，剩下的 AI 排", back: backGo, act: "存草稿" })}
 
     <div class="body">
       <div class="composer">
@@ -68,7 +70,7 @@ window.PAGES["D1.3"].render = function (ctx) {
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 104px" data-go="D1" data-label="先不做">先不做</div>
+      <div class="btn line" style="flex:0 0 104px" data-go="${backGo}" data-label="先不做">先不做</div>
       <div class="btn" data-go="D1.1?c=${toCampaign}" data-label="生成日程">生成日程 · ${days} 天 × ${parts} 趴</div>
     </div>
   </div>`;

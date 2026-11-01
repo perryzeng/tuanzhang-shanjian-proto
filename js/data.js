@@ -93,7 +93,7 @@ window.DATA = {
       title: "评论区回 5 条「孩子能吃吗」",
       reason: "断签会掉连续天数，当前已连 4 天",
       deadline: "2026-11-01T23:59:59+08:00",
-      owner: "SOP 战役",
+      owner: "SOP 主题系列",
       cta: { tx: "去打卡", go: "D1" }
     },
     {
@@ -309,14 +309,14 @@ window.DATA = {
      总部定主题和节奏，团长只填自己的话；素材与话术按天备好 */
   draftSeries: {
     id: "df_3102",
-    title: "磷虾油战役 · Day 5 信任背书",
+    title: "磷虾油系列 · Day 5 信任背书",
     kind: "series",
     productId: "p_krill", product: "磷虾油",
     status: "draft",
     updatedAt: "2026-11-01T13:10:00+08:00",
     curSeg: "se02",
     compliance: { ok: true, hits: [], checkedAt: "2026-11-01T13:10:00+08:00" },
-    series: { name: "磷虾油 10 天战役", day: 5, total: 10, topic: "信任背书", owner: "总部 · 运营中心",
+    series: { name: "磷虾油 10 天系列", day: 5, total: 10, topic: "信任背书", owner: "总部 · 运营中心",
               yesterday: { day: 4, topic: "谁适合谁不适合", vo: "第 4 天讲的是谁适合——今天换个角度，讲我为什么敢一直推。" } },
     segments: [
       {
@@ -463,7 +463,7 @@ window.DATA = {
      today 只有「正在跑的那个战役的今天」才有，其余天进去由 AI 按主题现写。 */
   campaigns: [
     {
-      id: "cp_1", name: "磷虾油 10 天战役", product: "磷虾油",
+      id: "cp_1", name: "磷虾油 10 天系列", product: "磷虾油",
       owner: "总部 · 运营中心", total: 10, day: 5, startAt: "10-28", status: "running",
       joined: 86, mine: 4,
       topics: ["为什么选这款", "成分怎么讲", "含量看哪里", "谁适合谁不适合", "信任背书", "老客晒单", "常见问题答疑", "团价怎么算", "拍一单看看", "收官复盘"],
@@ -479,7 +479,7 @@ window.DATA = {
       }
     },
     {
-      id: "cp_2", name: "换季免疫 7 天战役", product: "换季免疫",
+      id: "cp_2", name: "换季免疫 7 天系列", product: "换季免疫",
       owner: "总部 · 运营中心", total: 7, day: 0, startAt: "11-05", status: "soon",
       joined: 0, mine: 0,
       topics: ["换季最容易忽略的一件事", "谁最需要补", "孩子能吃吗", "怎么吃不浪费", "我家的做法", "顾客真实反馈", "收官 · 团价"]

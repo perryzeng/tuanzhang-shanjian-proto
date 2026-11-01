@@ -75,9 +75,9 @@ window.PAGES["A1"].render = function () {
           { ic: "✎", tx: "AI 脚本", go: "B1", bg: G("#2C5BFF", "#5B8CFF") },
           { ic: "▤", tx: "AI 素材", go: "E2", bg: G("#2C5BFF", "#00C2FF") },
           { ic: "◫", tx: "AI 封面", go: "B4", bg: G("#7C5CFF", "#B08CFF") },
-          /* 第四个位换成系列：它是"节奏型"创作的唯一入口，
+          /* 第四个位是系列：它是"节奏型"创作的唯一入口，点进去是 D1 落地页。
              我的出镜（E2.1）仍可从 E2 素材库里进，不占首页黄金位 */
-          { ic: "≡", tx: "SOP 系列", go: "D1", bg: G("#7C5CFF", "#B08CFF") }
+          { ic: "≡", tx: "SOP<br>主题系列", label: "SOP 主题系列", go: "D1", bg: G("#7C5CFF", "#B08CFF") }
         ]
       })}
 

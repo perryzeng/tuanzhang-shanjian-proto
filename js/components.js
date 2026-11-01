@@ -262,7 +262,7 @@
         <div class="db">${o.main.btn || "开始剪"} <span style="font-size:11px">›</span></div>
       </div>
       <div class="dk-side">${o.tools.map((t) =>
-        `<div class="dk" data-go="${t.go}" data-label="${t.tx}">
+        `<div class="dk" data-go="${t.go}" data-label="${t.label || t.tx.replace(/<[^>]+>/g, "")}">
           <div class="i" style="background:${t.bg}">${t.ic}</div><span>${t.tx}</span>
         </div>`).join("")}</div>
     </div>`;

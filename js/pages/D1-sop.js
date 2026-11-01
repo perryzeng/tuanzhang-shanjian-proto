@@ -57,7 +57,7 @@ window.PAGES["D1"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ k: "系列", t: "SOP 战役", act: `<span class="btn-pill line">怎么玩</span>` })}
+    ${C.ph({ k: "系列", t: "SOP 主题系列", act: `<span class="btn-pill line">怎么玩</span>` })}
 
     <div class="body">
       <div class="card" style="background:var(--g-deep);color:#fff;box-shadow:0 12px 26px rgba(20,40,110,.24)"
@@ -88,12 +88,12 @@ window.PAGES["D1"].render = function () {
         <div class="xs" style="margin-top:11px;text-align:center">再发 1 条就解锁「稳定输出」勋章 · 本月目标 ${st.monthTarget} 集</div>
       </div>
 
-      ${C.sec("进行中", "共 " + D.campaigns("running").length + " 场")}
+      ${C.sec("进行中", "共 " + D.campaigns("running").length + " 个")}
       ${D.campaigns("running").map(campCard).join("")}
 
-      ${soon.length ? C.sec("即将开始", soon.length + " 场") + soon.map(campCard).join("") : ""}
+      ${soon.length ? C.sec("即将开始", soon.length + " 个") + soon.map(campCard).join("") : ""}
 
-      ${past.length ? C.sec("已结束", past.length + " 场 · 可复用") + past.map(campCard).join("") : ""}
+      ${past.length ? C.sec("已结束", past.length + " 个 · 可复用") + past.map(campCard).join("") : ""}
 
       <div class="card plain" style="margin-top:2px">
         <div class="xs" style="line-height:1.75">
@@ -105,7 +105,7 @@ window.PAGES["D1"].render = function () {
     </div>
 
     <div class="actionbar">
-      <div class="btn line" style="flex:0 0 118px" data-go="D1.3" data-label="新建战役">＋ 新建</div>
+      <div class="btn line" style="flex:0 0 118px" data-go="D1.3" data-label="新建主题">＋ 新建</div>
       <div class="btn" data-go="D2?c=${run.id}&d=${run.day}" data-label="开始做今天这条">开始做今天这条 · Day ${run.day}</div>
     </div>
   </div>`;

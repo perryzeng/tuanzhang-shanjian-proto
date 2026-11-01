@@ -18,7 +18,7 @@ window.PAGES["E1"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ph({ k: "团队", t: "86 人在跑同一场战役", av: "团" })}
+    ${C.ph({ k: "团队", t: "86 人在跑同一个主题系列", av: "团" })}
 
     <div class="body">
       <div class="card" style="background:var(--g-brand);box-shadow:var(--sh-2);color:#fff">

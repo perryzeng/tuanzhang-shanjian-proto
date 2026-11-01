@@ -14,7 +14,7 @@ window.PAGES["E4"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "任务派发", sub: "磷虾油战役 · Day 5", back: "E1", act: "新建" })}
+    ${C.ab({ title: "任务派发", sub: "磷虾油系列 · Day 5", back: "E1", act: "新建" })}
 
     <div class="body">
       <div class="hero">

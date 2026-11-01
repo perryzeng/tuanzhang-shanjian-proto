@@ -40,19 +40,19 @@ window.PAGES["B1"].render = function (ctx) {
 
       ${C.sec("其他发布器")}
       <div class="pubs">
-        <div class="pubrow" data-go="C1?for=remix" data-label="视频二创">
+        <div class="pubrow" data-go="C1?for=remix" data-label="本地视频二创">
           <div class="pi" style="background:${G("#00A8E8", "#00C2FF")}">▷</div>
           <div class="pt">
-            <b>视频二创</b>
+            <b>本地视频二创</b>
             <span>上传本地视频，抽出文案和画面，改成你的再发</span>
           </div>
           <span class="pg">›</span>
         </div>
-        <div class="pubrow" data-go="D1" data-label="主题系列">
+        <div class="pubrow" data-go="D1.3?from=B1" data-label="新建 SOP 主题系列">
           <div class="pi" style="background:${G("#7C5CFF", "#B08CFF")}">≡</div>
           <div class="pt">
-            <b>主题系列</b>
-            <span>定几天几趴，AI 排好每天主题，一天发一条</span>
+            <b>SOP 主题系列</b>
+            <span>新建一个主题：定几天几趴，AI 排好每天讲什么</span>
           </div>
           <span class="pg">›</span>
         </div>

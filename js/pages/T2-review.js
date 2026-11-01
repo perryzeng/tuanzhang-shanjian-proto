@@ -16,7 +16,7 @@ window.PAGES["T2"].render = function () {
       <div class="card" style="background:var(--brand-weak);box-shadow:none;display:flex;align-items:center;gap:11px">
         <div style="width:36px;height:36px;border-radius:12px;background:var(--g-tech);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 36px">✦</div>
         <div style="flex:1">
-          <div style="font-size:13px;font-weight:600;color:var(--brand-ink)">今天按战役主题生成了 5 条</div>
+          <div style="font-size:13px;font-weight:600;color:var(--brand-ink)">今天按系列主题生成了 5 条</div>
           <div class="xs" style="margin-top:3px;color:#3A5BA8">主题：信任背书 · 都用你的声音和照片画中画</div>
         </div>
       </div>
