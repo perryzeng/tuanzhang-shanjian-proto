@@ -1946,6 +1946,29 @@
 .tstat-i b{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.25}
 .tstat-i .lb{font-size:9.5px;color:var(--text-4)}
 
+/* 我的 · 账号卡 */
+.acct{position:relative;overflow:hidden;border-radius:20px;padding:16px;color:#fff;
+  background:linear-gradient(140deg,#2A1E5C 0%,#5B4BE0 58%,#7C6CFF 100%);
+  box-shadow:0 14px 30px rgba(60,40,140,.28)}
+.acct:after{content:"";position:absolute;right:-46px;top:-56px;width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.2),transparent 70%);pointer-events:none}
+.acct .row,.acct .acct-pt{position:relative;z-index:1}
+.acct-av{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex:0 0 46px}
+.acct-av.brand{background:var(--g-brand);color:#fff}
+.acct-n{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.acct-s{font-size:11px;opacity:.76;margin-top:3px}
+.acct-edit{font-size:11px;font-weight:600;background:rgba(255,255,255,.16);border-radius:999px;
+  padding:5px 12px;cursor:pointer;white-space:nowrap}
+.acct-pt{margin-top:14px;background:rgba(255,255,255,.12);border-radius:14px;padding:11px 13px;
+  display:flex;align-items:center;cursor:pointer}
+.acct-pt .ptl{display:flex;align-items:baseline;gap:6px}
+.acct-pt .ptl span{font-size:10.5px;opacity:.76}
+.acct-pt .ptl b{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.acct-pt .ptg{margin-left:auto;font-size:11px;font-weight:700;opacity:.92}
+.logout{margin-top:18px;text-align:center;font-size:12.5px;font-weight:600;color:#FF5C6E;
+  padding:12px;background:#fff;border-radius:14px;box-shadow:var(--sh-1);cursor:pointer}
+
 /* 脚本段画面槽：图片打底 */
 .slot{position:relative;overflow:hidden}
 .slot>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
