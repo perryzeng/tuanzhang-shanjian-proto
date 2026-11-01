@@ -207,6 +207,11 @@ window.PAGES["E2"].render = function (ctx) {
     return `<div class="feedhd">好友动态<span>${friends.length}</span></div>${cards}`;
   })();
 
+  /* 全局搜索入口（我的 / 好友）：点开进 E2.5，跨 脚本·素材·作品 搜 */
+  const searchEntry = side === "team" ? ""
+    : `<div class="gsearch" style="cursor:pointer" data-go="E2.5${side === "friend" ? "?f=" + encodeURIComponent(friendName) : ""}" data-label="搜索素材">
+        <span class="mag">⌕</span><span>搜脚本、素材、作品</span></div>`;
+
   /* ---------- 钻取：动态 / 最新 / 精选 / 目录 ---------- */
   const ALL = D.lib(side, kind, { moved });
   const allItems = ALL.items.filter((x) => !delSet[x.id]);
@@ -335,8 +340,8 @@ window.PAGES["E2"].render = function (ctx) {
         ? `${teamSw}${bannerCard}${noticeCard}${taskList}${mods}
            <div class="feedhd">整个团队的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
         : side === "friend"
-          ? `${mods}<div class="feedhd">${friendName}的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
-          : `${mods}${friendSection}`)}
+          ? `${searchEntry}${mods}<div class="feedhd">${friendName}的动态<span>${flow.length}</span></div>${flow.length ? flow.map(thread).join("") : empty}`
+          : `${searchEntry}${mods}${friendSection}`)}
     </div>
 
     ${sel && canOrganize ? `<div class="selbar">
@@ -363,4 +368,79 @@ window.PAGES["E2"].render = function (ctx) {
 window.PAGES["E2.4"].prd = "PRD §6.21.3 · 好友视图（某个好友的素材库 + 本人动态）";
 window.PAGES["E2.4"].render = function (ctx) {
   return window.PAGES["E2"].render(Object.assign({}, ctx, { __pid: "E2.4", __side: "friend", __friend: ctx.f || "" }));
+};
+
+/* 全局搜索（我的 / 好友）：跨 脚本·素材·作品 搜，结果按类型分组。
+   入口在素材页/好友视图的搜索条；range 由 ?f= 决定（不带 f = 我的）。 */
+window.PAGES["E2.5"].prd = "PRD §6.21.5 · 搜索（我的 / 好友 的全局搜索）";
+window.PAGES["E2.5"].render = function (ctx) {
+  const C = window.C, D = window.DERIVE;
+  const friendName = ctx.f || "";
+  const domain = friendName ? "friend" : "mine";
+  const q = (ctx.q || "").trim();
+  const back = friendName ? "E2.4?f=" + encodeURIComponent(friendName) : "E2";
+  const scope = friendName ? friendName + "的素材库" : "我的素材库";
+
+  const KINDS = [["script", "脚本"], ["asset", "素材"], ["work", "作品"]];
+  const qq = q.toLowerCase();
+  const hitsOf = (k) => q ? D.lib(domain, k, {}).items.filter((x) =>
+    ((x.name || "") + " " + (x.sub || "") + " " + (x.by || "")).toLowerCase().indexOf(qq) >= 0) : [];
+  const total = KINDS.reduce((s, [k]) => s + hitsOf(k).length, 0);
+
+  const HOT = ["磷虾油", "开团话术", "素颜出镜", "成分", "复购", "信任背书"];
+  const hot = `<div class="card" style="padding:15px 14px">
+      <div class="s" style="margin-bottom:11px">搜索范围 · ${scope}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${HOT.map((h) => `<span class="chip" data-set="E2.5.q=${h}">${h}</span>`).join("")}
+      </div>
+      <div class="s" style="margin-top:14px;line-height:1.7">试试搜「开团」「成分」「素颜」，脚本、素材、作品会一起找出来。</div>
+    </div>`;
+
+  const srow = (x) => `<div class="srow" data-go="E2.2?id=${x.id}" data-label="${x.name}">
+      <span class="ic">≡</span>
+      <div class="tx"><b>${x.name}</b><span>${x.by || "—"} · ${x.sub}</span>
+        <span style="display:block;font-size:9px;color:var(--text-3);margin-top:2px">使用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>
+      <span class="go">›</span></div>`;
+
+  const tile = (x, k) => {
+    const go = k === "asset" ? "E2.3?id=" + x.id : (x.go || "B4.1?id=" + x.id);
+    return `<div class="tile" data-go="${go}" data-label="${x.name}">
+      <div class="im" style="aspect-ratio:3/4;background:${x.bg || "linear-gradient(150deg,#2C5BFF,#5B8CFF)"}">
+        ${x.pick ? `<span class="pickmark">精选</span>` : ""}<span class="cnt">${x.sub.split(" · ")[0]}</span>
+      </div>
+      <div class="cap"><b>${x.name}</b><span class="by">${x.by || ""}</span>
+        <span style="display:block;font-size:8.5px;color:var(--text-4);margin-top:1px">用 ${D.plays(x.uses)} · ♥ ${D.plays(x.likes)}</span></div>
+    </div>`;
+  };
+
+  const groups = KINDS.map(([k, tx]) => {
+    const arr = hitsOf(k);
+    if (!arr.length) return "";
+    const body = k === "script"
+      ? `<div class="card" style="padding:2px 14px;border-radius:14px">${arr.map(srow).join("")}</div>`
+      : `<div class="g3">${arr.map((x) => tile(x, k)).join("")}</div>`;
+    return `<div class="feedhd" style="margin-top:14px">${tx}<span>${arr.length}</span></div>${body}`;
+  }).join("");
+
+  const empty = `<div class="emptybox"><span class="ei">⌕</span><b>没找到「${q}」</b>
+      <span>换个词试试：磷虾油 / 开团 / 素颜 / 成分</span></div>`;
+
+  const results = q
+    ? `<div class="s" style="margin:12px 2px 2px">「${q}」找到 ${total} 条</div>${total ? groups : empty}`
+    : hot;
+
+  return `<div class="app">
+    ${C.sb()}
+    <div class="ab" style="gap:8px;align-items:center">
+      <span class="act" data-go="${back}" data-label="返回" style="margin-left:2px">‹</span>
+      <div class="gsearch" style="flex:1;margin:0;height:38px">
+        <span class="mag">⌕</span>
+        <input data-bind="E2.5.q" data-live value="${q.replace(/"/g, "&quot;")}" placeholder="搜脚本、素材、作品" />
+        ${q ? `<span class="clr" data-set="E2.5.q=">✕</span>` : ""}
+      </div>
+    </div>
+    <div class="body" style="padding-bottom:90px">
+      ${results}
+    </div>
+  </div>`;
 };
