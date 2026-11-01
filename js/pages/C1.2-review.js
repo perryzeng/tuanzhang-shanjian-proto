@@ -7,6 +7,9 @@ window.PAGES["C1.2"].prd = "PRD §6.2 / §6.4 · 抽取结果与两条去向";
 window.PAGES["C1.2"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const x = D.extract();
+  /* 从「视频二创」进来的，默认就是想连画面一起还原——把这个出口放在主按钮上；
+     从「导入视频」进来的，默认是要文案。同一个岔口，默认值跟着入口意图走。 */
+  const forRemix = ctx.for === "remix";
 
   const lines = x.lines.map((l, i) => C.seg({
     no: l.no, name: l.name, dur: l.dur + "s",
@@ -42,8 +45,11 @@ window.PAGES["C1.2"].render = function (ctx) {
     </div>
 
     <div class="actionbar" style="flex-wrap:wrap">
-      <div class="btn line" style="flex:1;min-width:0;font-size:13.5px" data-go="B2?kind=remix" data-label="连画面一起还原">连画面还原 · 二创</div>
-      <div class="btn" style="flex:1.2;min-width:0;font-size:13.5px" data-go="B2?kind=script&src=extract" data-label="要文案，配我的画面">要文案 · 配我的画面</div>
+      ${forRemix
+        ? `<div class="btn line" style="flex:1;min-width:0;font-size:13.5px" data-go="B2?kind=script&src=extract" data-label="要文案，配我的画面">只取文案</div>
+           <div class="btn" style="flex:1.2;min-width:0;font-size:13.5px" data-go="B2?kind=remix" data-label="连画面一起还原">连画面还原 · 二创</div>`
+        : `<div class="btn line" style="flex:1;min-width:0;font-size:13.5px" data-go="B2?kind=remix" data-label="连画面一起还原">连画面还原 · 二创</div>
+           <div class="btn" style="flex:1.2;min-width:0;font-size:13.5px" data-go="B2?kind=script&src=extract" data-label="要文案，配我的画面">要文案 · 配我的画面</div>`}
       <div style="width:100%;display:flex;justify-content:center;margin-top:2px">
         <span class="xs" style="color:var(--brand);font-weight:600" data-go="B1.2?scope=my" data-label="存进脚本库">存进我的脚本库，以后直接用 ›</span>
       </div>

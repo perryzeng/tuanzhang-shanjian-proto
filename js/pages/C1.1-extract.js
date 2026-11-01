@@ -7,6 +7,8 @@ window.PAGES["C1.1"].render = function (ctx) {
   const C = window.C, D = window.DERIVE;
   const x = D.extract();
   const from = ctx.src === "local" ? "本地相册" : "链接 · 抖音";
+  /* 这里要的是"整段查询串"，不是 & 片段——拼错了会变成 #/C1.2&for=remix 这种坏路由 */
+  const fq = ctx.for === "remix" ? "?for=remix" : "";
 
   const step = (cls, ic, tx, side) =>
     `<div class="gstep ${cls}"><span class="dot">${ic}</span><span style="flex:1">${tx}</span><span>${side || ""}</span></div>`;
@@ -14,7 +16,7 @@ window.PAGES["C1.1"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <span class="back" data-go="C1" data-label="返回导入视频">‹</span>
+      <span class="back" data-go="C1${fq}" data-label="返回导入视频">‹</span>
       <div class="ttl">正在抽取文案<small>${from} · 可以退出去做别的</small></div>
     </div>
 
@@ -38,7 +40,7 @@ window.PAGES["C1.1"].render = function (ctx) {
     </div>
 
     <div style="padding:0 16px 26px;display:flex;flex-direction:column;gap:9px">
-      <div class="btn" data-go="C1.2" data-label="好了，看结果">好了，看结果</div>
+      <div class="btn" data-go="C1.2${fq}" data-label="好了，看结果">好了，看结果</div>
       <div class="btn gray" data-go="B1" data-label="先去忙">先去忙，好了通知我</div>
     </div>
   </div>`;

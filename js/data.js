@@ -965,6 +965,27 @@ window.DERIVE = (function () {
     return "素材 " + sh.dur + "s · 台词 " + s.dur + "s · " + tail;
   }
 
+  /* ---------- 草稿箱 ----------
+     首页右上角那个「草稿 N」点进来就是这里。
+     只做一件事：让人一眼看出"哪条卡住了、卡在哪"，点进去接着做。
+     排序：越新的越上面；同一天内按"还没配完的段数"排，缺得多的往前放。 */
+  function drafts() {
+    const s = draft("script"), r = draft("remix"), se = draft("series");
+    const t = (x) => (x.updatedAt || "").slice(11, 16);
+    const list = [
+      { id: s.id, kind: "script", tag: "脚本", title: s.title,
+        meta: s.segCount + " 段 · 已配 " + (s.segCount - s.missSegs.length) + "/" + s.segCount + " 段画面",
+        warn: s.needCount > 0, at: t(s), go: "B2?kind=script" },
+      { id: r.id, kind: "remix", tag: "二创", title: r.title,
+        meta: "已改 " + r.changed + "/" + r.segCount + " 段 · 安全度 " + r.safety,
+        warn: r.needCount > 0, at: t(r), go: "B2?kind=remix" },
+      { id: se.id, kind: "series", tag: "系列", title: se.title,
+        meta: se.series.name + " · Day " + se.series.day + "/" + se.series.total + " · " + se.segCount + " 段",
+        warn: false, at: t(se), go: "D2?c=" + campaign("cp_1").id + "&d=" + se.series.day }
+    ];
+    return list.sort((a, b) => (b.at > a.at ? 1 : -1));
+  }
+
   /* ---------- 生成设置 / 封面 ---------- */
   function templates() { return window.DATA.templates; }
   function template(id) { return window.DATA.templates.filter((x) => x.id === id)[0] || window.DATA.templates[0]; }
@@ -1009,5 +1030,5 @@ window.DERIVE = (function () {
            scripts, script, scriptTabs, extract,
            campaigns, campaign, campaignDays, dayPlan, seriesDay, topicSeeds, slotMeta,
            planTopics, partSkeleton,
-           templates, template, voices, voice, covers, search };
+           templates, template, voices, voice, covers, search, drafts };
 })();

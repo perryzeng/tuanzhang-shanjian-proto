@@ -7,6 +7,10 @@ window.PAGES["C1"].prd = "PRD §6.2 · 导入视频（本地 / 链接二选一�
 window.PAGES["C1"].render = function (ctx) {
   const C = window.C, G = window.G;
   const src = ctx.src === "link" ? "link" : "local";
+  /* for=remix 是从"视频二创"那条路进来的：目的不是要文案，是要连画面一起还原。
+     同一个导入页，两种意图，出口在 C1.2 那个岔口上默认值不同。 */
+  const forRemix = ctx.for === "remix";
+  const fq = forRemix ? "&for=remix" : "";
   const imports = window.DATA.imports;
 
   const st = (x) => x.state === "fail"
@@ -30,7 +34,11 @@ window.PAGES["C1"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "导入视频", sub: "抽出口播文案，变成你的脚本", back: "B1" })}
+    ${C.ab({
+      title: forRemix ? "导入视频 · 二创" : "导入视频",
+      sub: forRemix ? "连画面一起还原，发前要过安全度" : "抽出口播文案，变成你的脚本",
+      back: "B1"
+    })}
 
     <div class="body">
       <div class="pick2">
@@ -39,7 +47,7 @@ window.PAGES["C1"].render = function (ctx) {
       </div>
 
       ${src === "local" ? `
-      <div class="drop" data-go="C1.1?src=local" data-label="选择本地视频">
+      <div class="drop" data-go="C1.1?src=local${fq}" data-label="选择本地视频">
         <div class="di">↑</div>
         <b>点这里选视频</b>
         <span>mp4 / mov · 竖屏优先 · 最长 3 分钟</span>
@@ -53,13 +61,13 @@ window.PAGES["C1"].render = function (ctx) {
           <span class="pill on">抖音</span><span class="pill">视频号</span><span class="pill">小红书</span>
           <span class="xs" style="margin-left:auto">小红书仅公开笔记</span>
         </div>
-        <div class="btn" style="margin-top:14px" data-go="C1.1?src=link" data-label="开始抽取文案">开始抽取文案</div>
+        <div class="btn" style="margin-top:14px" data-go="C1.1?src=link${fq}" data-label="开始抽取文案">开始抽取文案</div>
       </div>`}
 
       <div class="card plain" style="margin-top:12px">
-        <div class="xs" style="line-height:1.7">
-          只抽文案：本地视频只在本机识别，不上传原片；抽出来的文字会进脚本库，下次直接引。
-        </div>
+        <div class="xs" style="line-height:1.7">${forRemix
+          ? "二创会保留原片的画面和节奏，所以发之前必须过安全度检查——改的段越多，分越高。原片不建议存下来，我们只留抽取到的文案与片段索引。"
+          : "只抽文案：本地视频只在本机识别，不上传原片；抽出来的文字会进脚本库，下次直接引。"}</div>
       </div>
 
       ${C.sec("最近导入", "全部")}
