@@ -14,7 +14,7 @@ window.PAGES["F3"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "磷虾油 3 段式 · 信任版", sub: "阿玲 · 8.6 万播放", back: "F1", act: "收藏" })}
+    ${C.ab({ title: "磷虾油 3 段式 · 信任版", sub: "阿玲 · 已用 128 次", back: "F1", act: "收藏" })}
 
     <div class="body">
       <div style="width:172px;margin:0 auto;border-radius:18px;overflow:hidden;background:${G("#7C5CFF", "#B08CFF")};position:relative;aspect-ratio:9/16;box-shadow:var(--sh-2)">
@@ -27,9 +27,9 @@ window.PAGES["F3"].render = function () {
       </div>
 
       <div class="lstat" style="margin-top:14px;grid-template-columns:repeat(3,1fr)">
-        <div class="ls" style="padding:11px"><b style="font-size:17px">8.6万</b><span>播放</span></div>
-        <div class="ls" style="padding:11px"><b style="font-size:17px">128</b><span>人用过</span></div>
-        <div class="ls" style="padding:11px"><b style="font-size:17px">3.2%</b><span>转化</span></div>
+        <div class="ls" style="padding:11px"><b style="font-size:17px">128</b><span>使用次数</span></div>
+        <div class="ls" style="padding:11px"><b style="font-size:17px">3.2万</b><span>点赞数</span></div>
+        <div class="ls" style="padding:11px"><b style="font-size:17px">8,600</b><span>收藏数</span></div>
       </div>
 
       ${C.sec("分段时间轴", "AI 拆解")}
