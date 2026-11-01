@@ -6,7 +6,8 @@
 window.PAGES["A1"].prd = "PRD §4 · 首页（老用户）";
 window.PAGES["A1"].sysEntry = "注册满 7 天或已发布过视频 → 登录默认落地这一版";
 
-window.PAGES["A1"].render = function () {
+window.PAGES["A1"].render = function (ctx) {
+  ctx = ctx || {};
   const C = window.C, G = window.G;
   const D = window.DATA, A = window.DERIVE;
   const me = D.me;
@@ -116,6 +117,18 @@ window.PAGES["A1"].render = function () {
 
       <div class="xs" style="text-align:center;margin:16px 0 4px">数据更新于 ${D.now.slice(11, 16)}</div>
     </div>
+
+    ${ctx.pop === "1" ? "" : `<div class="nudge">
+      <span class="nudge-av">剪</span>
+      <div style="flex:1;min-width:0">
+        <div class="nudge-t"><b>小剪</b>：要我先催一下「信任背书口播」吗？还差 6 人，18:00 截止。</div>
+        <div class="nudge-a">
+          <span class="nudge-y" data-go="A2?q=1" data-label="去催办">去催办</span>
+          <span class="nudge-n" data-set="A1.pop=1" data-label="知道了">知道了</span>
+        </div>
+      </div>
+      <span class="nudge-x" data-set="A1.pop=1" data-label="关闭">✕</span>
+    </div>`}
 
     ${C.tab("A1")}
   </div>`;
