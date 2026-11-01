@@ -40,7 +40,7 @@ window.PAGES["D2"].render = function (ctx) {
     const badShot = s.shots.filter((x) => x.miss)[0];
     const hasPip = s.shots.some((x) => x.pip);
     const typed = ctx["vo_" + s.id];
-    const voText = typed != null ? typed : s.vo;
+    const voText = (typed != null && typed !== "") ? typed : s.vo;
     const slot = badShot
       ? { miss: true, label: "缺" + (badShot.label || "画面"), go: pickGo(s.id) }
       : okShot
@@ -53,12 +53,21 @@ window.PAGES["D2"].render = function (ctx) {
     );
 
     const editing = editId === s.id;
-    const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: isFocus && editing };
+    const p = { no: s.no, name: s.name, dur: s.dur + "s", tags, slot, on: editing };
 
     if (editing) {
       p.bindKey = "D2.vo_" + s.id;
       p.editbox = voVer === "ai" && s.voAlt ? s.voAlt : voText;
-      p.editOps = [["hot", "✦ 按这天的主题换个说法", "D2.vo=ai&D2.edit=" + s.id], ["go", "✓ 用这版", "D2.vo=self&D2.edit="]];
+      /* 和 B2 同一套：画面给「修改 / 替换」，文案给 AI 换说法，最后一起「确定」 */
+      p.slotOps = okShot
+        ? [{ tx: "修改", go: "B2.5?seg=" + s.id + "&kind=series&day=" + day },
+           { tx: "替换", go: pickGo(s.id) }]
+        : [{ tx: "选素材", go: pickGo(s.id) }];
+      p.editOps = [[voVer === "ai" ? "cold" : "hot",
+        voVer === "ai" ? "↺ 用原来的" : "✦ 按这天的主题换个说法",
+        voVer === "ai" ? "D2.vo=self&D2.edit=" + s.id + "&D2.vo_" + s.id + "="
+          : "D2.vo=ai&D2.edit=" + s.id]];
+      p.confirm = { tx: "✓ 确定这一段", act: "D2.edit=&D2.vo=self" };
     } else if (voText) {
       p.vo = voText;
       p.voEditAct = s.fixed ? "" : "D2.edit=" + s.id + "&D2.vo=self";
@@ -88,8 +97,10 @@ window.PAGES["D2"].render = function (ctx) {
     ? { t: "✦ 生成这集的话术", go: "B2.4?from=D2&c=" + c.id + "&d=" + day, cls: "ai" }
     : { t: "下一步 · 选模板与声音", go: "B2.4?from=D2&c=" + c.id + "&d=" + day, cls: "ai" };
 
-  const sub = editId
-    ? "正在改第 " + (focus.idx + 1) + " 段" + (focus.fixed ? "（每天固定，改一次全季生效）" : "")
+  const editSeg = editId ? d.segments.filter((x) => x.id === editId)[0] : null;
+  const sub = editSeg
+    ? "正在改第 " + (editSeg.idx + 1) + " 段 · " + editSeg.name
+      + (editSeg.fixed ? "（每天固定，改一次全季生效）" : "")
     : "Day " + day + "/" + d.series.total + " · " + plan.topic;
 
   const pvShot = pvSeg ? (pvSeg.shots.filter((x) => !x.miss)[0] || {}) : {};

@@ -181,6 +181,15 @@
     }
   });
 
+  /* 滑杆旁边的读数：range 一重渲染拖动就断了，所以只改旁边那个数字。
+     用法：<input type="range" data-bind="X.y" data-range-out="#rd-x"> + <span id="rd-x"> */
+  document.addEventListener("input", (e) => {
+    const r = e.target.closest && e.target.closest('input[type="range"][data-range-out]');
+    if (!r) return;
+    const out = document.querySelector(r.dataset.rangeOut);
+    if (out) out.textContent = (+r.value).toFixed(1) + "s";
+  });
+
   document.addEventListener("click", (e) => {
     /* 轮播点：只滚容器，不重渲染（避免整页刷新丢滚动位置） */
     const dot = e.target.closest("[data-slide-to]");

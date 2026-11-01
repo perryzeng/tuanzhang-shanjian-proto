@@ -64,9 +64,10 @@ window.PAGES["B2"].render = function (ctx) {
     const okShot = s.shots.filter((x) => !x.miss)[0];
     const badShot = s.shots.filter((x) => x.miss)[0];
     const hasPip = s.shots.some((x) => x.pip) || ctx.pip === s.id;
-    /* 用户改了哪一段就存在哪一段上；没改过就用草稿里的原文 */
+    /* 用户改了哪一段就存在哪一段上；没改过就用草稿里的原文。
+       空串当"没改过"——「↺ 用原来的」就是靠清空这个键实现的。 */
     const typed = ctx["vo_" + s.id];
-    const voText = typed != null ? typed : s.vo;
+    const voText = (typed != null && typed !== "") ? typed : s.vo;
 
     const slot = badShot
       ? { miss: true, label: "缺" + badShot.label, go: pickGo(s.id) }
@@ -88,18 +89,30 @@ window.PAGES["B2"].render = function (ctx) {
     if (editId === s.id && editable) {
       p.bindKey = "B2.vo_" + s.id;
       p.editbox = ctx.vo === "ai" && s.voAlt ? s.voAlt : voText;
-      p.editOps = [
-        ["hot", "✦ 换个说法", "B2.vo=ai&B2.edit=" + s.id],
-        ["go", "✓ 用这版", "B2.vo=self&B2.edit="]
-      ];
+
+      /* 进了编辑态，这一段的**画面和文案是一起改的**，所以两边各给各的动作：
+         画面——「修改」调这一条（B2.5）、「替换」换一条（B2.1）；
+         文案——「AI 换个说法」出另一版。
+         最后只有一个出口：「确定这一段」，把它当"整段定稿"，不是"确定这段文案"。 */
+      p.slotOps = okShot
+        ? [{ tx: "修改", go: "B2.5?seg=" + s.id + "&kind=" + kind + (src ? "&src=" + src : "") + (ctx.doc ? "&doc=" + ctx.doc : "") },
+           { tx: "替换", go: pickGo(s.id) }]
+        : [{ tx: "选素材", go: pickGo(s.id) }];
+
+      p.editOps = [[ctx.vo === "ai" ? "cold" : "hot",
+        ctx.vo === "ai" ? "↺ 用原来的" : "✦ AI 换个说法",
+        ctx.vo === "ai" ? "B2.vo=self&B2.edit=" + s.id + "&B2.vo_" + s.id + "="
+          : "B2.vo=ai&B2.edit=" + s.id]];
+
+      p.confirm = { tx: "✓ 确定这一段", act: "B2.edit=&B2.vo=self" };
     } else if (voText) {
       p.vo = voText;
       p.voEditAct = editable ? "B2.edit=" + s.id + "&B2.vo=self" : "";
     } else {
       p.pending = true;
     }
-    /* 槽是空的时候不再补一句"还没配画面"——槽上已经写着"＋ 添加素材"了，
-       五段各来一句只会变成噪声。 */
+    /* 槽是空的时候不再补一句"还没配画面"——槽上已经写着"＋ 添加素材"了。
+       编辑态反而要留着这行：素材 3 秒、台词 14 秒，这正是用户该不该点「修改」的依据。 */
     p.meta = (badShot || !okShot) ? "" : D.slotMeta(s);
     if (editId === s.id && !editable) p.note = "品牌方锁定的必播口播，台词不可改，只能调顺序";
     return C.part(p);

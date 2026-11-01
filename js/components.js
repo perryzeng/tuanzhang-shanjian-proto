@@ -141,7 +141,9 @@
     const sl = p.slot || {};
 
     /* 画面槽：有素材时槽上直接给一个大 ▶（预览这一段），角上一个"换"；
-       没素材时整块就是"添加素材"，点开选择器。 */
+       没素材时整块就是"添加素材"，点开选择器。
+       进了编辑态，右上角那个"换"要让位给槽下的「修改 / 替换」——
+       两个入口做同一件事，图上就重复了。 */
     const slot = sl.empty || sl.miss
       ? `<div class="slot ${sl.miss ? "miss" : "empty"}"${sl.go ? ` data-go="${sl.go}" data-label="${sl.label}"` : ""}>
           <span class="ic">＋</span><b>${sl.label}</b>
@@ -151,15 +153,28 @@
           <span class="pvbtn" data-set="${sl.pvAct || ""}" title="预览这一段">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
           </span>
-          ${sl.swGo ? `<span class="swbtn" data-go="${sl.swGo}" data-label="换素材">换</span>` : ""}
+          ${sl.swGo && !p.slotOps ? `<span class="swbtn" data-go="${sl.swGo}" data-label="换素材">换</span>` : ""}
         </div>`;
 
+    /* 画面这一列：槽 + 槽下面的两个动作。
+       「修改」是调这一条（从哪开始、怎么铺满、要不要原声），
+       「替换」是换一条。这是两件事，所以给两个键，不合并成一个"编辑"。 */
+    const slotOps = p.slotOps
+      ? `<div class="slotops">${p.slotOps.map((o) =>
+          `<span data-go="${o.go}" data-label="${o.tx}">${o.tx}</span>`).join("")}</div>`
+      : "";
+
     let vo = "";
+    /* 编辑态把「素材 3s · 台词 14s」放在文案框下面、AI 按钮上面：
+       先看词看完多长，再决定要不要换个说法——顺序和用户的判断顺序一致。
+       非编辑态它仍在整块的最后，当补充说明。 */
+    let metaDone = false;
     if (p.editbox != null) {
       /* 直接就是输入框：点「改」当场就能打字，不用再点一次进某个编辑态。
          用 data-bind 只写状态、不重渲染，否则每敲一个字光标就跳走。 */
       vo = `<div class="editbox"><textarea data-bind="${p.bindKey || ""}" rows="3"
               placeholder="写下这一段要说的第一句话…">${p.editbox}</textarea></div>`;
+      if (p.meta) { vo += `<div class="pmeta" style="margin-top:7px">${p.meta}</div>`; metaDone = true; }
       if (p.editOps) {
         vo += `<div class="editops">${p.editOps.map(([cls, tx, act]) => {
           const attr = !act ? "" : (/=/.test(act) ? ` data-set="${act}"` : ` data-go="${act}" data-label="${tx}"`);
@@ -172,12 +187,18 @@
       vo = `<div class="vo"><span style="color:var(--text-4)">台词待生成</span></div>`;
     }
     const orig = p.orig ? `<div class="orig"><b>原文案</b><span>${p.orig}</span></div>` : "";
-    const meta = p.meta ? `<div class="pmeta">${p.meta}</div>` : "";
+    const meta = (p.meta && !metaDone) ? `<div class="pmeta">${p.meta}</div>` : "";
     const note = p.note ? `<div class="note">${p.note}</div>` : "";
+    /* 编辑态的最后一步：一次确认这一段的词和画都定了。
+       分段确认而不是整条确认——用户改的永远是某一段。 */
+    const confirm = p.confirm
+      ? `<div class="pconfirm" data-set="${p.confirm.act}">${p.confirm.tx}</div>`
+      : "";
 
     return `<div class="part${p.on ? " on" : ""}">
       <div class="part-h"><span class="pn">${p.no}</span><span class="pt">${p.name}</span>${tags}<span class="pd">${p.dur}</span></div>
-      <div class="part-b">${slot}<div class="pvo">${orig}${vo}${note}${meta}</div></div>
+      <div class="part-b"><div class="pcol">${slot}${slotOps}</div><div class="pvo">${orig}${vo}${note}${meta}</div></div>
+      ${confirm}
     </div>`;
   };
 
