@@ -38,6 +38,19 @@ window.PAGES["B1"].render = function (ctx) {
         </div>
       </div>
 
+      ${C.sec("我的东西", "全部 ›", "E2")}
+      <div class="v14-mine">
+        <div class="v14-mine-i" data-go="E2" data-label="我的素材库">
+          <i>▤</i><b>素材库</b><span>脚本 · 素材 · 作品</span>
+        </div>
+        <div class="v14-mine-i" data-go="E2?open=work&tab=latest" data-label="我的作品">
+          <i>▭</i><b>我的作品</b><span>做过的都在这</span>
+        </div>
+        <div class="v14-mine-i" data-go="B1.4" data-label="草稿箱">
+          <i>✎</i><b>草稿 ${drafts.length}</b><span>卡在哪一段</span>
+        </div>
+      </div>
+
       ${C.sec("其他发布器")}
       <div class="pubs">
         <div class="pubrow" data-go="C1?for=remix" data-label="本地视频二创">

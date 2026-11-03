@@ -1,0 +1,473 @@
+/* 素材与经营数据（V16 · Persona Agent 体系）
+
+   这一版的核心变化：**素材是发动机，不是仓库。**
+   所以数据模型里，一条素材不是一个"文件"，而是被 Agent 拆出来的**片段集合**：
+   一条 3 分钟的视频 = 6 个 8~20 秒的片段，每个片段独立打标签、独立评分。
+   团长真正会用的也是片段，不是整条视频。
+
+   三个来源（我的 / 团队的 / 平台的）在数据层就分开存，
+   但在界面层不分 tab —— 它们进同一个池子，按「能不能用」组织。 */
+
+window.LIB = (function () {
+  const stats = {
+    mine: { n: 128, note: "自己传的" },
+    team: { n: 342, note: "成员授权共享" },
+    platform: { n: 8600, note: "行业通用" },
+    clips: 316,
+    pending: 12,
+    issue: 5
+  };
+
+  /* 一条素材 = 一条"原始料"。真正被用的是它拆出来的片段。 */
+  const items = [
+    {
+      id: "a1", type: "video", from: "平台",
+      title: "磷虾油怎么选？营养师讲 3 个指标",
+      source: "抖音 · 营养师老王 · 3.2 万赞",
+      img: "assets/gen/p-brand.jpg", dur: "3:12",
+      clips: 6, usable: 5, score: 86,
+      tags: ["成分解释", "权威背书", "可做口播"],
+      status: "ready"
+    },
+    {
+      id: "a2", type: "video", from: "我的",
+      title: "我妈吃了三个月的体检单",
+      source: "自己拍 · 10 月 28 日",
+      img: "assets/gen/p-chat.jpg", dur: "1:40",
+      clips: 4, usable: 4, score: 92,
+      tags: ["真人见证", "高信任", "只有你有"],
+      status: "ready"
+    },
+    {
+      id: "a3", type: "article", from: "团队",
+      title: "中国居民膳食指南：中老年脂质摄入建议",
+      source: "公众号 · 团队共享 · 小敏上传",
+      img: "assets/gen/t-text.jpg", dur: "长文",
+      clips: 8, usable: 6, score: 78,
+      tags: ["权威来源", "可引用", "数据支撑"],
+      status: "ready"
+    },
+    {
+      id: "a4", type: "video", from: "平台",
+      title: "同类产品对比：磷虾油 vs 鱼油",
+      source: "小红书 · 成分党测评",
+      img: "assets/gen/t-compare.jpg", dur: "2:05",
+      clips: 5, usable: 3, score: 64,
+      tags: ["对比", "易引战", "需改口径"],
+      status: "issue",
+      issue: "含「降血脂」表述，属功效宣称，必须改词"
+    },
+    {
+      id: "a5", type: "image", from: "我的",
+      title: "产品摆台 · 自然光",
+      source: "自己拍 · 9 张连拍",
+      img: "assets/gen/p-still.jpg", dur: "9 张",
+      clips: 9, usable: 7, score: 81,
+      tags: ["产品特写", "可做封面"],
+      status: "ready"
+    },
+    {
+      id: "a6", type: "video", from: "团队",
+      title: "仓库发货现场（可当 B-roll）",
+      source: "团队共享 · 大刘上传",
+      img: "assets/gen/p-warehouse.jpg", dur: "0:48",
+      clips: 3, usable: 0, score: 0,
+      tags: ["空镜", "待转码"],
+      status: "processing"
+    }
+  ];
+
+  /* 片段：素材详情页里真正被挑的东西 */
+  const clips = [
+    { t: "0:12–0:26", txt: "「买磷虾油只看一个数：磷脂含量。低于 40% 的基本是凑数」", use: true, tag: "核心卖点" },
+    { t: "0:31–0:44", txt: "「你看这两瓶，一瓶写 500mg 是磷虾油粉，一瓶写 500mg 是磷脂」", use: true, tag: "对比解释" },
+    { t: "0:52–1:08", txt: "「我自己给我妈买，先看有没有重金属检测报告」", use: true, tag: "信任背书" },
+    { t: "1:15–1:22", txt: "（画面：检测报告特写，无口播）", use: true, tag: "空镜" },
+    { t: "1:40–2:05", txt: "「市面上 300 以下的，基本不用考虑」", use: false, tag: "引战 · 建议删" },
+    { t: "2:30–2:48", txt: "（片尾口播，有第三方水印）", use: true, tag: "需裁水印" }
+  ];
+
+  /* 7 天排期：新用户最缺的不是工具，是"明天发什么" */
+  const plan7 = [
+    { d: "今天", k: "讲清楚", t: "磷虾油到底适合谁", st: "today" },
+    { d: "第 2 天", k: "讲清楚", t: "成分表怎么看，3 个指标", st: "ready" },
+    { d: "第 3 天", k: "讲清楚", t: "为什么中老年更需要磷脂型", st: "ready" },
+    { d: "第 4 天", k: "给证据", t: "我妈吃了三个月的体检单", st: "ready" },
+    { d: "第 5 天", k: "给证据", t: "老客回购实拍", st: "" },
+    { d: "第 6 天", k: "给理由", t: "团购价怎么算的", st: "" },
+    { d: "第 7 天", k: "给理由", t: "最后一批名额", st: "" }
+  ];
+
+  /* 人设 prompt：新人引导的产物，可读可改。
+     它不是一个"字段"，是 AI 每次写台词前读的那段话。 */
+  const persona = {
+    prompt: `你是一位做了 3 年心脑血管科普的前海团长，家里老人也在吃。
+说话像邻居大姐，不端着，不说术语。
+你面对的是 35–60 岁、家里有老人、怕买错怕被忽悠的人。
+你从不先说产品：先说一个具体的人、一件具体的事。
+你不能说「治疗」「根治」「降血脂」，不承诺效果，不用夸张对比图。`,
+    keys: ["心脑血管科普", "邻居大姐", "先说人再说货"],
+    industry: "保健品 / 营养品",
+    role: "团长 · 自己出镜",
+    goal: "让同城的中年人觉得我懂、我不坑人"
+  };
+
+  /* 小组：不是"团队管理"，是一个组每天在发生什么。
+     三样东西撑起这一页：公告（组长说的）、任务（我要交的）、动态（组里刚发生什么）。
+
+     成员视角下，他一天打开这里就为了确认三件事：
+     ① 有没有新通知 / 口径变了没
+     ② 我还有什么没交
+     ③ 组里谁做得好，我能学什么 */
+  const team = {
+    name: "前海团长 · 3 组",
+    members: 12,
+    isLead: false,
+    week: { posts: 34, reach: 5200, leads: 47, deals: 12 },
+    me: { rank: 3, posts: 5, done: 4, total: 5 },
+    notices: [
+      {
+        id: "n1", top: true,
+        t: "本周主推：磷虾油 · 秋冬心脑血管",
+        body: "口径统一：先讲成分，再讲家人，最后给团购信息。不要单独发价格——单独发价格容易被当广告，也容易被比价。",
+        from: "组长 阿珍", at: "11-02 09:00"
+      },
+      {
+        id: "n2", top: false,
+        t: "周四晚 8 点线上碰一次",
+        body: "聊聊这周哪条最有效，每个人带一条自己的数据来。20 分钟结束。",
+        from: "组长 阿珍", at: "11-01 18:30"
+      }
+    ],
+    tasks: [
+      { t: "第 5 集 · 老客回购实拍", due: "今天 18:00", done: 8, total: 12, me: true },
+      { t: "团队口径片 · 成分怎么讲", due: "周四", done: 3, total: 12, me: true },
+      { t: "本周复盘 · 发了什么有效的", due: "周日", done: 0, total: 12, me: false }
+    ],
+    feed: [
+      { who: "小敏", av: "敏", act: "交了「老客回购实拍」", at: "2 小时前", k: "done" },
+      { who: "组长", av: "珍", act: "表扬了小敏：那条带来 3 个潜客、1 单成交", at: "3 小时前", k: "praise" },
+      { who: "大刘", av: "刘", act: "发了新片「299 两瓶，够吃两个月」", at: "5 小时前", k: "post" },
+      { who: "阿北", av: "北", act: "已经 2 天没交了", at: "今天 09:00", k: "warn" },
+      { who: "周姨", av: "周", act: "加入了小组", at: "昨天", k: "join" },
+      { who: "小敏", av: "敏", act: "发了一条 46 秒的科普片", at: "昨天", k: "post" }
+    ],
+    direction: {
+      title: "本周主推：磷虾油 · 秋冬心脑血管",
+      note: "团队统一口径：先讲成分，再讲家人，最后给团购信息。不要单独发价格。",
+      from: "组长 · 阿珍"
+    },
+    rank: [
+      { n: "小敏", av: "敏", v: 8, note: "2 单成交" },
+      { n: "大刘", av: "刘", v: 7, note: "本组最高触达" },
+      { n: "阿珍", av: "珍", v: 5, note: "你" },
+      { n: "阿北", av: "北", v: 3, note: "2 天没发" }
+    ]
+  };
+
+  /* 作品：团长剪出来的东西。这是他的资产，所以进一级 tab。
+     素材（积木）降级到「我的」里的入口 —— 材料不是每天看的东西，作品才是。
+
+     每条作品要能回答四件事：
+     ① 整体数据（点开/看完/问价/成交）
+     ② 动态时间轴（谁几点做了什么）
+     ③ 谁看了、谁是潜客
+     ④ 评论里说了什么（这些是他要回的人） */
+  const works = [
+    {
+      id: "c1", title: "我不劝你买磷虾油，先看这张体检单",
+      img: "assets/gen/p-chat.jpg", dur: "0:46", at: "10 月 30 日", ch: "朋友圈 + 2 个群",
+      status: "sent",
+      reach: 380, open: 128, full: 41, ask: 6, deal: 2, leads: 9, cmt: 7,
+      stay: "38 秒", rate: "1.6%", tag: "本周最好",
+      funnel: [["送到", 380], ["点开", 128], ["看完", 41], ["问价", 6], ["成交", 2]],
+      blocks: ["b6", "b5", "b10"],
+      insight: "先给证据、后提产品。看完率 32%，是平均的 2.1 倍",
+      timeline: [
+        { t: "10:20", who: "阿梅", av: "梅", act: "点开了这条", kind: "view" },
+        { t: "10:22", who: "阿梅", av: "梅", act: "看了 1 分 12 秒，停在第 3 个要点", kind: "view" },
+        { t: "10:25", who: "阿梅", av: "梅", act: "点了「问团长」", kind: "ask", hot: true },
+        { t: "11:05", who: "阿强", av: "强", act: "看完 2 遍，在评论区问价", kind: "cmt", hot: true },
+        { t: "11:40", who: "李姐", av: "李", act: "看了一遍，收藏了", kind: "view" },
+        { t: "14:02", who: "王叔", av: "王", act: "看了 12 秒划走", kind: "out" }
+      ],
+      commentList: [
+        { who: "阿强", av: "强", tx: "多少钱一盒？能寄到梅州吗", at: "11:06", type: "问价" },
+        { who: "陈姐", av: "陈", tx: "我妈也在吃这个，确实比鱼油好吸收", at: "11:20", type: "反馈" },
+        { who: "周姨", av: "周", tx: "这个血压高的能吃吗", at: "12:03", type: "咨询" }
+      ]
+    },
+    {
+      id: "c2", title: "磷虾油怎么选？营养师讲 3 个指标",
+      img: "assets/gen/p-brand.jpg", dur: "1:02", at: "10 月 28 日", ch: "朋友圈",
+      status: "sent",
+      reach: 296, open: 84, full: 19, ask: 3, deal: 1, leads: 4, cmt: 2,
+      stay: "24 秒", rate: "0.9%", tag: "",
+      funnel: [["送到", 296], ["点开", 84], ["看完", 19], ["问价", 3], ["成交", 1]],
+      blocks: ["b3", "b12", "b11"],
+      insight: "专业性强但入口太硬。前 3 秒在讲指标，没给人停留的理由",
+      timeline: [
+        { t: "昨天 09:12", who: "阿华", av: "华", act: "看完了，收藏", kind: "view" },
+        { t: "昨天 09:40", who: "周姨", av: "周", act: "看了一半就退了", kind: "out" }
+      ],
+      commentList: [
+        { who: "阿华", av: "华", tx: "讲得挺清楚，就是有点专业", at: "昨天", type: "反馈" }
+      ]
+    },
+    {
+      id: "c3", title: "299 两瓶，够吃两个月",
+      img: "assets/gen/p-still.jpg", dur: "0:32", at: "10 月 27 日", ch: "私聊 + 1 个群",
+      status: "sent",
+      reach: 96, open: 41, full: 26, ask: 8, deal: 3, leads: 6, cmt: 5,
+      stay: "31 秒", rate: "3.1%", tag: "转化最高",
+      funnel: [["送到", 96], ["点开", 41], ["看完", 26], ["问价", 8], ["成交", 3]],
+      blocks: ["b10", "b9"],
+      insight: "触达最小但转化最高。看的人少，看的人都在买 —— 缺的只是曝光",
+      timeline: [
+        { t: "前天 20:10", who: "阿梅", av: "梅", act: "看完，直接问怎么买", kind: "ask", hot: true },
+        { t: "前天 20:32", who: "陈姐", av: "陈", act: "转发给自己老公", kind: "share", hot: true }
+      ],
+      commentList: [
+        { who: "阿梅", av: "梅", tx: "给我留两瓶，明天来拿", at: "前天", type: "成交" },
+        { who: "陈姐", av: "陈", tx: "能帮我留一份吗", at: "前天", type: "问价" }
+      ]
+    },
+    {
+      id: "c4", title: "仓库今天发了 200 箱",
+      img: "assets/gen/p-warehouse.jpg", dur: "0:21", at: "10 月 26 日", ch: "朋友圈",
+      status: "sent",
+      reach: 312, open: 38, full: 6, ask: 0, deal: 0, leads: 0, cmt: 0,
+      stay: "9 秒", rate: "0%", tag: "效果最差",
+      funnel: [["送到", 312], ["点开", 38], ["看完", 6], ["问价", 0], ["成交", 0]],
+      blocks: ["b9"],
+      insight: "当成正片发了。这类画面只适合盖在别人说话时当背景，单独发没人看",
+      timeline: [
+        { t: "3 天前", who: "王叔", av: "王", act: "看了 6 秒划走", kind: "out" }
+      ],
+      commentList: []
+    },
+    {
+      id: "c5", title: "早上冲一杯，我妈的习惯",
+      img: "assets/gen/p-unbox.jpg", dur: "0:28", at: "10 月 25 日", ch: "朋友圈",
+      status: "sent",
+      reach: 268, open: 62, full: 22, ask: 2, deal: 1, leads: 3, cmt: 1,
+      stay: "21 秒", rate: "1.2%", tag: "",
+      funnel: [["送到", 268], ["点开", 62], ["看完", 22], ["问价", 2], ["成交", 1]],
+      blocks: ["b8", "b1"],
+      insight: "生活感好，但没给下一步动作。结尾加一句「想要的问我」会好很多",
+      timeline: [
+        { t: "4 天前", who: "李姐", av: "李", act: "看完，没说话", kind: "view" }
+      ],
+      commentList: [
+        { who: "李姐", av: "李", tx: "看着挺方便的", at: "4 天前", type: "反馈" }
+      ]
+    },
+    {
+      id: "c6", title: "老客回购实拍（第 5 集）",
+      img: "assets/gen/p-person.jpg", dur: "0:45", at: "今天 09:20 剪好", ch: "还没发",
+      status: "pending",
+      reach: 0, open: 0, full: 0, ask: 0, deal: 0, leads: 0, cmt: 0,
+      stay: "—", rate: "—", tag: "",
+      funnel: [["送到", 0], ["点开", 0], ["看完", 0], ["问价", 0], ["成交", 0]],
+      blocks: ["b7", "b4", "b10"],
+      insight: "剪好了还没发。放了 5 小时",
+      timeline: [],
+      commentList: []
+    },
+    {
+      id: "c7", title: "磷虾油到底适合谁（草稿）",
+      img: "assets/gen/p-brand.jpg", dur: "0:00", at: "昨天 21:40 卡住", ch: "缺 2 段素材",
+      status: "draft",
+      reach: 0, open: 0, full: 0, ask: 0, deal: 0, leads: 0, cmt: 0,
+      stay: "—", rate: "—", tag: "",
+      funnel: [["送到", 0], ["点开", 0], ["看完", 0], ["问价", 0], ["成交", 0]],
+      blocks: ["b3"],
+      insight: "缺 2 段素材，补上就能出",
+      timeline: [],
+      commentList: []
+    }
+  ];
+
+  /* 客户：从「数据」改成「人」。
+     每个客户都要能回答四件事：
+     ① 她是怎么来的（哪条视频、哪个渠道、什么时候）
+     ② 她关心什么、卡在哪（AI 从行为里归纳，不是团长手填）
+     ③ 下一步该干什么（给建议，不只给分数）
+     ④ 第一句怎么说（给话术，可直接复制）
+
+     这是"客户经营"而不是"客户统计"：分数只是排序用的，真正有用的是「怎么聊」。 */
+  const customers = [
+    {
+      id: "u_amei", name: "阿梅", call: "梅姐", av: "梅", score: 86, stage: "hot",
+      tag: "问过价",
+      bg: "linear-gradient(135deg,#FF8A65,#FF6B6B)",
+      from: { c: "我不劝你买磷虾油，先看这张体检单", ch: "朋友圈", at: "11 月 2 日" },
+      profile: "45 岁上下，家里有老人，问过两次价格",
+      cares: ["怕一次买两瓶吃不完", "在意一天花多少钱"],
+      history: [
+        { t: "11-02 10:20", a: "点开「体检单」那条", k: "view" },
+        { t: "11-02 10:22", a: "看了 1 分 12 秒，停在第 3 个要点", k: "view" },
+        { t: "11-02 10:25", a: "点了「问团长」", k: "ask" },
+        { t: "11-02 15:40", a: "私聊问了「多少钱一盒」", k: "cmt" }
+      ],
+      bought: "还没买过",
+      stuck: "在算账。想要，但怕买了吃不完浪费",
+      advice: "别讲成分了。直接给她算一天多少钱，再开个小口子：先拿一瓶试试。",
+      scripts: [
+        "梅姐，按一天算不到 5 块，比你早上那杯豆浆还便宜。要不先拿一瓶试试，吃满一个月再看？",
+        "两瓶装是团价，你真担心吃不完，我帮你跟隔壁拼一单，一人一瓶。",
+        "我妈也是先吃一瓶，后来自己催我补的。你要不先拿一瓶？"
+      ]
+    },
+    {
+      id: "u_qiang", name: "阿强", call: "强哥", av: "强", score: 74, stage: "hot",
+      tag: "问过价",
+      bg: "linear-gradient(135deg,#7C6CFF,#A78BFA)",
+      from: { c: "299 两瓶，够吃两个月", ch: "微信群", at: "10 月 27 日" },
+      profile: "在外地工作，想寄给老家父母",
+      cares: ["能不能寄外地", "老人自己会不会吃"],
+      history: [
+        { t: "10-27 20:12", a: "在群里点开「299 两瓶」", k: "view" },
+        { t: "10-27 20:15", a: "看完 2 遍", k: "view" },
+        { t: "10-27 20:18", a: "群里问「能寄梅州吗」", k: "cmt" },
+        { t: "11-01 09:30", a: "又点开一次，没说话", k: "view" }
+      ],
+      bought: "还没买过",
+      stuck: "想买给父母，但担心老人不会吃、寄过去麻烦",
+      advice: "他不是给自己买，别跟他讲成分。解决「寄到 + 教会老人吃」这两件事，他就下单。",
+      scripts: [
+        "强哥，能寄，我这边发顺丰，明天到。里面有一张吃法卡，字大，叔叔阿姨照着吃就行。",
+        "你要是怕他们忘了吃，我每周三在群里提醒一次，你让他们跟着我就行。",
+        "寄老家的话我建议直接两瓶，够吃两个月，省得你再跑一趟。"
+      ]
+    },
+    {
+      id: "u_hua", name: "阿华", call: "华姐", av: "华", score: 58, stage: "warm",
+      tag: "收藏了",
+      bg: "linear-gradient(135deg,#5AC8FA,#0A86C4)",
+      from: { c: "磷虾油怎么选？营养师讲 3 个指标", ch: "私聊", at: "10 月 28 日" },
+      profile: "自己研究型，收藏了 2 条，没问过价",
+      cares: ["成分靠不靠谱", "和鱼油比好在哪"],
+      history: [
+        { t: "10-28 09:12", a: "看完「3 个指标」那条", k: "view" },
+        { t: "10-28 09:14", a: "收藏了", k: "save" },
+        { t: "10-30 21:05", a: "又看了「体检单」那条，看了一半", k: "view" }
+      ],
+      bought: "还没买过",
+      stuck: "在比较，还没被说服「值这个价」",
+      advice: "她是研究型的，别催。给她一份能自己看的东西（检测报告/对比），让她自己得出结论。",
+      scripts: [
+        "华姐，你上次收藏的那条，我把里面提到的检测报告找出来了，46 项，你慢慢看。",
+        "跟鱼油的区别就一句话：吸收率差 3 倍。你要是想细看，我发你一份对比表。"
+      ]
+    },
+    {
+      id: "u_li", name: "李姐", call: "李姐", av: "李", score: 46, stage: "cold",
+      tag: "只看过",
+      bg: "linear-gradient(135deg,#12B886,#0B8C68)",
+      from: { c: "早上冲一杯，我妈的习惯", ch: "朋友圈", at: "10 月 25 日" },
+      profile: "刷到过 2 条，都没互动",
+      cares: ["还在观望"],
+      history: [
+        { t: "10-25 08:20", a: "点开「早上冲一杯」，停 48 秒", k: "view" },
+        { t: "10-30 11:40", a: "点开「体检单」，看了一遍", k: "view" }
+      ],
+      bought: "还没买过",
+      stuck: "在门口看，还没到聊的阶段",
+      advice: "现在私信她只会被当广告。继续发内容，等她主动点第三次再聊。",
+      scripts: [
+        "（先别私信。等她下次点开或点赞，再发：李姐，看你常看这个，家里也有老人吗？）"
+      ]
+    },
+    {
+      id: "u_chen", name: "陈姐", call: "陈姐", av: "陈", score: 92, stage: "deal",
+      tag: "买过 2 次",
+      bg: "linear-gradient(135deg,#C4A7FF,#7C6CFF)",
+      from: { c: "299 两瓶，够吃两个月", ch: "朋友圈", at: "10 月 27 日" },
+      profile: "老客，买过两次，转发过给老公",
+      cares: ["复购价", "吃完了没"],
+      history: [
+        { t: "10-27 20:30", a: "看完「299 两瓶」直接下单", k: "deal" },
+        { t: "10-27 20:32", a: "转发给自己老公", k: "share" },
+        { t: "11-01 19:10", a: "问「还有吗，想再拿两瓶」", k: "cmt" }
+      ],
+      bought: "买过 2 次 · 最近一次 11 月 1 日",
+      stuck: "不用劝，她已经在复购。要做的是让她带人来",
+      advice: "她要复购，直接给老客价。顺便问一句能不能带一个邻居，给点好处。",
+      scripts: [
+        "陈姐，老客价我给你留着，还是 299。这次要不要多拿一瓶给亲家试试？",
+        "你身边要是有想试的，可以拉一个进来，我给她算首单价，你这边我再送一瓶。"
+      ]
+    }
+  ];
+
+  const board = {
+    me: { visitors: 47, repeat: 9, asked: 2, deals: 3, posts: 5 },
+    team: { visitors: 1204, repeat: 186, asked: 41, deals: 12, posts: 34 },
+    trend: [12, 18, 15, 26, 31, 28, 47],
+    leads: [
+      { id: "u_amei", call: "梅姐", name: "阿梅", av: "梅", score: 86, acts: "看了 3 遍 · 点了「问团长」", bg: "linear-gradient(135deg,#FF8A65,#FF6B6B)", from: "朋友圈" },
+      { id: "u_qiang", call: "强哥", name: "阿强", av: "强", score: 74, acts: "看完 2 遍 · 评论区问价", bg: "linear-gradient(135deg,#7C6CFF,#A78BFA)", from: "微信群" },
+      { id: "u_hua", call: "华姐", name: "阿华", av: "华", score: 58, acts: "看完 1 遍 · 收藏了", bg: "linear-gradient(135deg,#5AC8FA,#0A86C4)", from: "私聊" }
+    ]
+  };
+
+
+  /* 积木：加工完成的成品单元。
+     素材页的主体是这一层 —— 用户平时要的是"一段能直接进片的画面/一句话"，
+     而不是"我三个月前传的那条 3 分钟视频"。
+     原始素材（原始料）在 A8.1.1，是一个更深一层的入口。 */
+
+  /* 积木（切片）。字段照着真实结构化数据来，但**只把用户能懂的露出来**。
+     隐藏：切片 ID / 源 ID / OSS 路径 / 运镜手法 / 画面实体语义 —— 那些是给检索和算法用的。
+     露出：叙事功能（一级分类）/ 内容类型 / 画面摘要 / 景别 / 情绪 / 权威 / 星级 / 使用情况。 */
+  const fnCats = [
+    { k: "开场钩子", n: 18, note: "一句话让人停住" },
+    { k: "展示细节", n: 42, note: "把东西讲清楚" },
+    { k: "证明可信", n: 27, note: "凭什么信你" },
+    { k: "场景氛围", n: 31, note: "过日子那种感觉" },
+    { k: "收尾行动", n: 14, note: "怎么买、还差几个" }
+  ];
+
+  const blocks = [
+    { id: "b1", fn: "开场钩子", cat: "真人出镜", dur: "0:08", img: "assets/gen/p-person.jpg",
+      summary: "本人正对镜头，手里拿着体检单，第一句就说不劝你买",
+      shot: "中景", mood: "真实家常", from: "我的", auth: "自己拍的", star: 5, used: 4, teamUsed: 6 },
+    { id: "b2", fn: "开场钩子", cat: "产品出镜", dur: "0:06", img: "assets/gen/p-brand.jpg",
+      summary: "两瓶并排放在桌上，手推过去，字幕写「差 5 倍」",
+      shot: "特写", mood: "专业严谨", from: "平台", auth: "专业达人", star: 4, used: 2, teamUsed: 9 },
+    { id: "b3", fn: "展示细节", cat: "成分讲解", dur: "0:14", img: "assets/gen/t-text.jpg",
+      summary: "手指点在成分表「磷脂含量」那一行，镜头跟着推进去",
+      shot: "特写", mood: "专业严谨", from: "平台", auth: "专业达人", star: 4, used: 3, teamUsed: 7 },
+    { id: "b4", fn: "展示细节", cat: "产品实拍", dur: "0:09", img: "assets/gen/p-still.jpg",
+      summary: "自然光下转瓶身，能看见瓶底的批次号",
+      shot: "特写", mood: "清爽生活化", from: "我的", auth: "自己拍的", star: 5, used: 6, teamUsed: 8 },
+    { id: "b5", fn: "证明可信", cat: "检测报告", dur: "0:12", img: "assets/gen/p-brand.jpg",
+      summary: "翻到检测报告第 3 页，手指停在「重金属」那一栏",
+      shot: "特写", mood: "专业严谨", from: "我的", auth: "自己拍的", star: 5, used: 3, teamUsed: 4 },
+    { id: "b6", fn: "证明可信", cat: "顾客反馈", dur: "0:18", img: "assets/gen/p-chat.jpg",
+      summary: "我妈吃了三个月，这是她的体检单，你们自己看",
+      shot: "特写", mood: "真实家常", from: "我的", auth: "自己拍的", star: 5, used: 4, teamUsed: 2 },
+    { id: "b7", fn: "证明可信", cat: "真人口述", dur: "0:10", img: "assets/gen/p-person.jpg",
+      summary: "吴阿姨自己说：以前上两层楼要歇，现在能自己去买菜",
+      shot: "中景", mood: "温暖家常", from: "团队", auth: "成员授权", star: 4, used: 2, teamUsed: 5 },
+    { id: "b8", fn: "场景氛围", cat: "日常使用", dur: "0:05", img: "assets/gen/p-unbox.jpg",
+      summary: "早上冲一杯，放在早餐旁边，窗外有光",
+      shot: "中景", mood: "清爽生活化", from: "团队", auth: "成员授权", star: 3, used: 1, teamUsed: 3 },
+    { id: "b9", fn: "场景氛围", cat: "仓库发货", dur: "0:06", img: "assets/gen/p-warehouse.jpg",
+      summary: "仓库里一箱箱码好，适合盖在你说价格的时候",
+      shot: "全景", mood: "忙碌真实", from: "团队", auth: "成员授权", star: 3, used: 0, teamUsed: 2 },
+    { id: "b10", fn: "收尾行动", cat: "价格口播", dur: "0:11", img: "assets/gen/p-still.jpg",
+      summary: "把两瓶摆正，报团购价，右下角打出剩余名额",
+      shot: "中景", mood: "干脆利落", from: "我的", auth: "自己拍的", star: 4, used: 5, teamUsed: 9 },
+    { id: "b11", fn: "收尾行动", cat: "引导私信", dur: "0:07", img: "assets/gen/p-chat.jpg",
+      summary: "对着镜头说「想要的私信我」，手指点向屏幕下方",
+      shot: "中景", mood: "亲切", from: "平台", auth: "专业达人", star: 4, used: 3, teamUsed: 11 },
+    { id: "b12", fn: "展示细节", cat: "对比展示", dur: "0:15", img: "assets/gen/t-compare.jpg",
+      summary: "两瓶摆一起，一瓶标磷虾油粉、一瓶标磷脂，一眼看出差别",
+      shot: "特写", mood: "专业严谨", from: "平台", auth: "专业达人", star: 4, used: 2, teamUsed: 6 }
+  ];
+
+
+  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plan7, persona, team, board };
+})();

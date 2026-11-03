@@ -13,9 +13,9 @@
   const BN_EVERY = 4200, BN_RESUME = 8000;
 
   const cur = () => {
-    const raw = decodeURIComponent(location.hash.replace(/^#\/?/, "") || "A1");
+    const raw = decodeURIComponent(location.hash.replace(/^#\/?/, "") || "A8");
     const id = raw.split("?")[0];
-    return P[id] ? id : "A1";
+    return P[id] ? id : "A8";
   };
   const go = (id) => { location.hash = "#/" + id; };
 
@@ -357,7 +357,7 @@
   }, 4200);
 
   buildIndex();
-  if (!location.hash) location.replace("#/A1");
+  if (!location.hash) location.replace("#/A8");
   renderAll();
   fit();
   requestAnimationFrame(fit);

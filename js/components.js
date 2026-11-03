@@ -74,12 +74,46 @@
     layers: `<svg viewBox="0 0 24 24"><path d="M12 3.4 3.4 8 12 12.6 20.6 8z"/><path d="m3.4 12 8.6 4.6L20.6 12"/><path d="m3.4 16 8.6 4.6L20.6 16"/></svg>`,
     users: `<svg viewBox="0 0 24 24"><circle cx="9.2" cy="8" r="3.2"/><path d="M3.4 20c0-3.2 2.6-5.8 5.8-5.8s5.8 2.6 5.8 5.8"/><circle cx="17.2" cy="9" r="2.2"/><path d="M15.8 14.4c2.5.5 4.3 2.6 4.3 5.2"/></svg>`,
     spark: `<svg viewBox="0 0 24 24"><path d="M12 3.6 13.6 9l5.4 1.6-5.4 1.6L12 17.6 10.4 12.2 5 10.6 10.4 9z"/><path d="M18.6 4.2v3M17.1 5.7h3"/></svg>`,
-    user: `<svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.4c0-4 3.2-7.2 7.2-7.2s7.2 3.2 7.2 7.2"/></svg>`
+    user: `<svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.4c0-4 3.2-7.2 7.2-7.2s7.2 3.2 7.2 7.2"/></svg>`,
+    cut: `<svg viewBox="0 0 24 24"><circle cx="6.2" cy="17.8" r="2.6"/><circle cx="17.8" cy="17.8" r="2.6"/><path d="M7.8 15.8 17.4 4.4M16.2 15.8 6.6 4.4"/></svg>`,
+    flag: `<svg viewBox="0 0 24 24"><path d="M6.4 21V4.2"/><path d="M6.4 4.6h10.8l-2.1 3.6 2.1 3.6H6.4"/></svg>`
   };
+
+  /* 底部一级导航（V14）。
+     改的是结构，不是样式：原来「素材」「剪同款」各占一个位，
+     两个都是生产侧工具；而分发和客户是 0 个位。
+     现在按团长真实动作排：首页（看今天）→ 剪（做）→ 客（跟）→ 团队（协同）→ 我的。
+
+     归一化是为了不重渲染 40 多个老页面：
+     凡是还写着 C.tab("A1") 的老页面，高亮落在首页；
+     素材（E2）和剪同款（F1）归到「剪」，它们本来就是剪的下一步。 */
   C.tab = (active) => {
-    const items = [["A1", "首页", "home"], ["E2", "素材", "layers"], ["E3", "团队", "users"], ["F1", "剪同款", "spark"], ["G1", "我的", "user"]];
+    const HOME = "A1.2";
+    const items = [[HOME, "首页", "home"], ["B1", "剪", "cut"], ["G3.1", "客", "users"], ["E3", "团队", "flag"], ["G1", "我的", "user"]];
+    const norm = (x) => {
+      if (x === "A1" || x === "A1.1" || x === "A1.2" || x === "A1.3" || x === "A2") return HOME;
+      if (x === "E2" || x === "F1" || x === "B2" || x === "B4") return "B1";
+      return x;
+    };
+    const cur = norm(active);
     return `<div class="tb">${items.map(([id, tx, ic]) =>
-      `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${TABICON[ic]}</span>${tx}</b>`).join("")}</div>`;
+      `<b class="${cur === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${TABICON[ic]}</span>${tx}</b>`).join("")}</div>`;
+  };
+
+  /* V16 的四项导航：小剪 / 素材 / 看板 / 团队。
+     和 V14 五项的区别：素材取代了「剪同款」，看板把「客户」并进去了
+     （数据是聚合视图，客户是个体视图，本来就该在一页里上下看）。 */
+  C.tab8 = (active) => {
+    const ic = {
+      chat: `<svg viewBox="0 0 24 24"><path d="M4 6.4h16v9.4H9.6L4 20z"/></svg>`,
+      box: `<svg viewBox="0 0 24 24"><rect x="3.4" y="4.6" width="17.2" height="14.8" rx="2.4"/><path d="M10.2 9.4 15.2 12l-5 2.6z"/></svg>`,
+      chart: `<svg viewBox="0 0 24 24"><path d="M4 20V11M9.3 20V4.6M14.7 20v-5.6M20 20V8"/></svg>`,
+      users: `<svg viewBox="0 0 24 24"><circle cx="9.2" cy="8" r="3.2"/><path d="M3.4 20c0-3.2 2.6-5.8 5.8-5.8s5.8 2.6 5.8 5.8"/><circle cx="17.2" cy="9" r="2.2"/><path d="M15.8 14.4c2.5.5 4.3 2.6 4.3 5.2"/></svg>`,
+      person: `<svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.4c0-4 3.2-7.2 7.2-7.2s7.2 3.2 7.2 7.2"/></svg>`
+    };
+    const items = [["A8", "小剪", "chat"], ["A8.4", "作品", "box"], ["A8.2", "客户", "person"], ["A8.3", "小组", "users"]];
+    return `<div class="tb">${items.map(([id, tx, k]) =>
+      `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${ic[k]}</span>${tx}</b>`).join("")}</div>`;
   };
 
   C.estage = (o) => {

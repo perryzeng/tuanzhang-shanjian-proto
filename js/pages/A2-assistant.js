@@ -9,10 +9,12 @@ window.PAGES["A2"].render = function (ctx) {
   const draft = (ctx.draft || "").replace(/"/g, "&quot;");
 
   const A = {
-    "1": {
-      ask: "今天先做什么？",
-      say: "我按「快到截止 + 影响发布」排了序：<br>① 「信任背书口播」还差 6 人，今天 18:00 截止<br>② 开箱合集今天要发 1 条，团队还差 8 条<br>③ 晚上 8 点开团，封面得在 6 点前定<br>先去催最急的那条？",
-      acts: [["去催办", "E4.1?id=tk_1"], ["看今天安排", "D1"]]
+    /* 首页右上角那个 ✦ 进来的就是这一支：不问"任务完成没"，
+       只回答"今天先动哪一步"。助理的角色从催办员换成参谋。 */
+    biz: {
+      ask: "今天先干什么？",
+      say: "看了你这一波：<br>· 第 5 条「老客回购」还没剪，这一环补的是「别人吃了有没有用」<br>· 2 条剪好了没发，最久的放了 17 小时<br>· 阿梅点了「问团长」，是今天最该跟的人<br>先剪，还是先跟？",
+      acts: [["先剪第 5 条", "B1?w=w_krill&ep=5"], ["先跟阿梅", "G3.1?u=u_amei"], ["看这一波进度", "A1.2"]]
     },
     "2": {
       ask: "这个 App 怎么用？",
@@ -48,7 +50,7 @@ window.PAGES["A2"].render = function (ctx) {
     </div>`;
 
   const chips = [
-    ["1", "今天先做什么"],
+    ["biz", "今天先做什么"],
     ["2", "这个 App 怎么用"],
     ["3", "团队任务进度"],
     ["4", "帮我剪一条磷虾油"]
@@ -57,22 +59,26 @@ window.PAGES["A2"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <span class="back" data-go="A1" data-label="返回首页">‹</span>
+      <span class="back" data-go="A1.2" data-label="返回首页">‹</span>
       <div class="ttl">小剪助理<small>在线 · 今天的事我都记着</small></div>
       <span class="act" data-set="A2.q=" data-label="回到开头">重来</span>
     </div>
 
     <div class="chat">
       <div class="chat-day">今天</div>
-      ${bubble("ai", "我是小剪，你的助理。<br>今天有 <b>3 项</b>要做，最急的是「信任背书口播」，还差 6 人交。<br>要我帮你排一下今天的顺序吗？")}
+      ${bubble("ai", "我是小剪。<br>你这一波讲到第 <b>5</b> 条，还差「给证据」这一环。<br>今天其实就三步：剪 1 条、发 2 条、跟 3 个人。")}
 
-      ${bubble("ai", `<div style="font-weight:700;margin-bottom:7px">今天的 3 件</div>
+      ${bubble("ai", `<div style="font-weight:700;margin-bottom:7px">今天这三步</div>
         <div style="display:flex;flex-direction:column;gap:7px">
-          <div style="display:flex;gap:8px"><b style="color:#D9541F">1</b><span style="flex:1">信任背书口播 · 6/12</span><span style="color:#98A0B8">18:00</span></div>
-          <div style="display:flex;gap:8px"><b style="color:#7C5CFF">2</b><span style="flex:1">开箱合集 · 4/12</span><span style="color:#98A0B8">今天</span></div>
-          <div style="display:flex;gap:8px"><b style="color:#0B7D5E">3</b><span style="flex:1">晚上 8 点开团 · 封面待定</span><span style="color:#98A0B8">18:00</span></div>
+          <div style="display:flex;gap:8px"><b style="color:#D9541F">剪</b><span style="flex:1">第 5 集 · 老客回购实拍</span><span style="color:#98A0B8">1 条</span></div>
+          <div style="display:flex;gap:8px"><b style="color:#7C5CFF">发</b><span style="flex:1">剪好没发 · 最久放了 17 小时</span><span style="color:#98A0B8">2 条</span></div>
+          <div style="display:flex;gap:8px"><b style="color:#0B7D5E">跟</b><span style="flex:1">阿梅点了「问团长」</span><span style="color:#98A0B8">3 人</span></div>
         </div>
-        <div style="margin-top:9px"><span class="mact-btn" data-go="E4.2" data-label="去处理">去处理 ›</span></div>`)}
+        <div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap">
+          <span class="mact-btn" data-go="B1?w=w_krill&ep=5" data-label="去剪">去剪 ›</span>
+          <span class="mact-btn" data-go="S1?v=v_pending_1" data-label="去发">去发 ›</span>
+          <span class="mact-btn" data-go="G3.1" data-label="去跟">去跟 ›</span>
+        </div>`)}
 
       ${cur ? bubble("me", cur.ask) + bubble("ai", cur.say, cur.acts) : ""}
 
