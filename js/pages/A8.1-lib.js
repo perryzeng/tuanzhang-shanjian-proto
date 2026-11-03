@@ -96,7 +96,7 @@ window.PAGES["A8.1"].render = function (ctx) {
           ${one.cat} · 质量 ${star(one.star)} · 组内用过 ${one.teamUsed} 次${one.teamUsed >= 8 ? "，建议换一段，别和其他人撞" : ""}
         </div>
         <div class="v14-dw-act">
-          <div class="v14-dw-b1" data-go="B1?w=w_krill&ep=5&block=${one.id}" data-label="用这条剪">用这条剪一条</div>
+          <div class="v14-dw-b1" data-go="A8?blk=${one.id}" data-label="用这条剪">用这条剪一条</div>
           <div class="v14-dw-b2" data-set="A8.1.b=">先放着</div>
         </div>
       </div>

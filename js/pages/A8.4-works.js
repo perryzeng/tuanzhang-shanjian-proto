@@ -63,7 +63,9 @@ window.PAGES["A8.4"].render = function (ctx) {
 
   const card = (w) => {
     if (w.status !== "sent") {
-      const to = w.status === "pending" ? "S1?v=v_pending_1" : "B1.4";
+      /* 发布器没有了：没发的直接进平台预览（在那儿生成评论、选渠道、发出去）；
+         草稿回对话 —— 改片子也只剩"跟U剪说"这一条路了。 */
+      const to = w.status === "pending" ? `A8.4.2?pf=dy&c=${w.id}` : "A8";
       return `<div class="v19-w v19-w-off" data-go="${to}" data-label="${w.title}">
         <div class="v19-w-th"><img src="${w.img}" alt=""><span>${w.dur}</span></div>
         <div class="v19-w-tx">

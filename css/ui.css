@@ -3437,3 +3437,78 @@
 /* 注意：卡片里的文字规则必须写成 .uai-intro > div > span。
    写成 .uai-intro span 会连带命中里面的 .uai 图标，把它的白色和 inline-flex 一起盖掉 —— 图标会变灰、变左对齐。 */
 .mav .uai-mk{width:60%;height:60%}
+
+/* ==================================================================
+   V17 全自动剪辑的对话器件
+   剪辑器没了，过程必须变成看得见的东西 —— 所以有进度卡。
+   需要用户拿主意的地方必须有选项 —— 所以有三张确认卡。
+   ================================================================== */
+
+/* 剪辑进度卡 */
+.v27-cut{padding:13px 14px 12px}
+.v27-cut-hd{display:flex;align-items:center;gap:8px}
+.v27-cut-hd b{font-size:12.5px;font-weight:600;letter-spacing:-.2px}
+.v27-cut-hd em{margin-left:auto;font-style:normal;font-size:9.5px;color:var(--brand);font-weight:600}
+.v27-steps{display:flex;gap:5px;margin:10px 0 8px}
+.v27-steps i{flex:1;font-style:normal;text-align:center;font-size:9px;color:var(--text-4);
+  padding:4px 0;border-radius:7px;background:var(--bg-2);position:relative}
+.v27-steps i.ok{background:var(--brand-weak);color:var(--brand-ink);font-weight:500}
+.v27-steps i.cur{background:var(--g-brand);color:#fff;font-weight:600;
+  box-shadow:0 3px 10px rgba(124,108,255,.3)}
+.v27-bar{height:5px;border-radius:3px;background:var(--bg-2);overflow:hidden}
+.v27-bar i{display:block;height:100%;border-radius:3px;background:var(--g-brand);
+  transition:width .4s ease}
+.v27-cut-ft{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:9.5px;color:var(--text-3)}
+.v27-cut-ft .v27-src{margin-left:auto;color:var(--text-4)}
+
+/* 三张确认卡共用外壳 */
+.v27-pick{background:var(--surface);border-radius:16px;padding:13px 13px 12px;box-shadow:var(--sh-1)}
+.v27-pick-hd{display:flex;align-items:baseline;gap:7px;font-size:12.5px;font-weight:600;
+  letter-spacing:-.2px;margin-bottom:9px}
+.v27-pick-hd em{margin-left:auto;font-style:normal;font-size:9px;color:var(--text-4);font-weight:400}
+
+/* 风格：三个带解释的选项。只写"要哪种感觉"用户答不上来，必须给理由 */
+.v27-opt{border-radius:12px;padding:9px 11px;margin-bottom:7px;cursor:pointer;
+  background:var(--bg-2);box-shadow:inset 0 0 0 1px transparent}
+.v27-opt:last-child{margin-bottom:0}
+.v27-opt:active{background:var(--brand-weak);box-shadow:inset 0 0 0 1.5px var(--brand)}
+.v27-opt b{display:block;font-size:12.5px;font-weight:600;color:var(--text)}
+.v27-opt span{display:block;font-size:10px;line-height:1.55;color:var(--text-3);margin-top:3px}
+
+/* 封面：三张 9:16 横排 */
+.v27-covers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.v27-cv{cursor:pointer}
+.v27-cv .th{position:relative;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:#000;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.v27-cv .th img{width:100%;height:100%;object-fit:cover}
+.v27-cv .th span{position:absolute;right:4px;bottom:4px;font-size:8px;color:#fff;
+  background:rgba(0,0,0,.5);border-radius:4px;padding:1px 4px}
+.v27-cv:active .th{box-shadow:0 0 0 2px var(--brand)}
+.v27-cv b{display:block;text-align:center;font-size:9.5px;font-weight:500;
+  color:var(--text-2);margin-top:5px;line-height:1.3}
+.v27-tip{margin-top:9px;font-size:9px;line-height:1.6;color:var(--text-4)}
+
+/* 标题：竖排 radio。三条标题长短差很多，横排装不下 */
+.v27-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:11px;
+  background:var(--bg-2);margin-bottom:6px;cursor:pointer}
+.v27-row:last-child{margin-bottom:0}
+.v27-row:active{background:var(--brand-weak)}
+.v27-row i{width:16px;height:16px;border-radius:50%;flex:0 0 16px;font-style:normal;
+  font-size:8.5px;color:var(--text-3);background:var(--surface);
+  display:flex;align-items:center;justify-content:center}
+.v27-row b{font-size:11.5px;font-weight:500;line-height:1.45;color:var(--text)}
+
+/* 成片卡 */
+.v27-done{padding:11px;display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center}
+.v27-done .th{position:relative;width:56px;height:74px;border-radius:9px;overflow:hidden;background:#000}
+.v27-done .th img{width:100%;height:100%;object-fit:cover}
+.v27-done .th span{position:absolute;right:3px;bottom:3px;font-size:8px;color:#fff;
+  background:rgba(0,0,0,.5);border-radius:4px;padding:1px 4px}
+.v27-done .tx b{display:block;font-size:12px;font-weight:600;line-height:1.4;letter-spacing:-.2px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.v27-done .tx span{display:block;font-size:9.5px;color:var(--text-3);margin-top:4px}
+.v27-acts{grid-column:1 / -1;display:flex;gap:8px;margin-top:2px}
+.v27-acts span{flex:1;height:34px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:600;cursor:pointer}
+.v27-acts .ghost{flex:0 0 84px;background:var(--bg-2);color:var(--text-2);font-weight:500}
+.v27-acts .main{background:var(--g-brand);color:#fff;box-shadow:0 4px 12px rgba(124,108,255,.28)}

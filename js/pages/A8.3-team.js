@@ -50,7 +50,7 @@ window.PAGES["A8.3"].render = function () {
       </div>` : ""}
 
       ${C.sec("派给我的活", mine.length + " 条", "E4.2")}
-      ${mine.map((t) => `<div class="v16-task2 ${t.due.indexOf("今天") >= 0 ? "on" : ""}" data-go="B1" data-label="${t.t}">
+      ${mine.map((t) => `<div class="v16-task2 ${t.due.indexOf("今天") >= 0 ? "on" : ""}" data-go="A8" data-label="${t.t}">
         <div class="v16-task2-hd">
           <b>${t.t}</b>
           <span class="${t.due.indexOf("今天") >= 0 ? "hot" : ""}">${t.due}</span>
