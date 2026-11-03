@@ -2970,3 +2970,214 @@
 .v24-lp-dytop div{display:flex;gap:18px}
 .v24-lp-dytop div span.on{color:#fff;font-weight:600}
 .v24-lp-dytop em{flex:1;text-align:right;font-style:normal}
+
+/* ==================================================================
+   V16.8 三平台播放页皮肤（A8.4.2 预览 / L1 落地页 共用，见 js/skins.js）
+   三套都是"点开某一条之后那一屏"，不是 feed 卡片。
+   容器高度由 .v25-scr 给，内部全部绝对定位，所以缩短高度只会裁视频，不动排版。
+   ================================================================== */
+.v25-pf{position:relative;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.v25-pf svg{width:22px;height:22px;display:block;flex:0 0 auto;overflow:visible}
+.v25-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.v25-scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.52) 0%,rgba(0,0,0,.1) 18%,rgba(0,0,0,0) 34%,rgba(0,0,0,.55) 82%,rgba(0,0,0,.86) 100%)}
+.v25-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;
+  border-radius:50%;background:rgba(0,0,0,.42);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center}
+.v25-play b{width:0;height:0;margin-left:3px;border-left:15px solid rgba(255,255,255,.92);
+  border-top:9px solid transparent;border-bottom:9px solid transparent}
+
+/* 皮肤内的状态栏 */
+.v25-sb{position:absolute;top:0;left:0;right:0;height:40px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 16px 0 20px;font-size:13.5px;font-weight:600;letter-spacing:.2px;z-index:6}
+.v25-sb.w{color:#fff}
+.v25-sb.d{color:#1A1A1A}
+.v25-sb .r{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600}
+.v25-sb .r i{font-style:normal;letter-spacing:-1.5px;font-size:11px;opacity:.9}
+.v25-sb .r b{font-size:9px;font-weight:700;border:1px solid currentColor;border-radius:3px;
+  padding:1px 3px;opacity:.85;margin-left:2px}
+
+/* ---------- 抖音 ---------- */
+.v25-dy-nav{position:absolute;top:40px;left:0;right:0;height:40px;display:flex;align-items:center;
+  gap:12px;padding:0 12px;z-index:6}
+.v25-dy-nav .bk svg{width:24px;height:24px}
+.v25-dy-nav .bk2 svg{width:21px;height:21px;opacity:.95}
+.v25-dy-nav .tabs{display:flex;align-items:center;gap:17px;margin:0 auto}
+.v25-dy-nav .tabs>span{font-size:14.5px;color:rgba(255,255,255,.62);position:relative;line-height:1;letter-spacing:-.2px}
+.v25-dy-nav .tabs>span.on{color:#fff;font-weight:600}
+.v25-dy-nav .tabs>span.on::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);
+  width:16px;height:2.5px;border-radius:2px;background:#fff}
+.v25-dy-nav .tabs .rd{position:absolute;top:-3px;right:-9px;width:6px;height:6px;border-radius:50%;background:#FE2C55}
+.v25-dy-nav .me{position:relative;display:flex}
+.v25-dy-nav .me svg{width:23px;height:23px}
+.v25-dy-nav .me i{position:absolute;top:-6px;left:11px;background:#FE2C55;color:#fff;font-style:normal;
+  font-size:8.5px;font-weight:600;line-height:1;padding:2px 3.5px;border-radius:7px 7px 7px 1px}
+
+.v25-dy-bot{position:absolute;left:0;right:0;bottom:0;z-index:5}
+.v25-dy-bot .r1{display:flex;align-items:center;justify-content:space-between;padding:0 14px 9px;
+  font-size:12.5px;color:rgba(255,255,255,.95)}
+.v25-dy-bot .r1 .later{display:flex;align-items:center;gap:4px}
+.v25-dy-bot .r1 .later svg{width:15px;height:15px;opacity:.95}
+.v25-dy-bot .r1 .tm{display:flex;align-items:center;gap:11px;color:rgba(255,255,255,.88)}
+.v25-dy-bot .r1 .tm em{font-style:normal;display:flex;align-items:center;gap:4px}
+.v25-dy-bot .r1 .tm .dm svg{width:16px;height:16px}
+.v25-dy-bot .r2{display:flex;align-items:center;gap:7px;padding:0 14px 8px}
+.v25-dy-bot .r2 .av{width:30px;height:30px;border-radius:50%;flex:0 0 30px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#FF8A65,#FF5A5F);box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.v25-dy-bot .r2 .nm{font-size:13.5px;font-weight:500;letter-spacing:-.2px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;color:#fff}
+.v25-dy-bot .r2 .hb svg{width:14px;height:14px;opacity:.9}
+.v25-dy-bot .r3{padding:0 14px 13px;font-size:13.5px;line-height:1.52;color:#fff;letter-spacing:-.1px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.v25-dy-bot .r4{display:flex;align-items:center;gap:9px;height:56px;padding:0 12px 0 14px;background:#000}
+.v25-dy-bot .r4 .av2{width:34px;height:34px;border-radius:50%;flex:0 0 34px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700;background:linear-gradient(135deg,#5B8CFF,#7C6CFF)}
+.v25-dy-bot .r4 .tt{flex:1;min-width:0}
+.v25-dy-bot .r4 .tt b{display:block;font-size:12.5px;font-weight:500;color:#fff;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.v25-dy-bot .r4 .tt span{display:block;font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.v25-dy-bot .r4 .ops{display:flex;gap:15px;flex:0 0 auto;padding-left:4px}
+.v25-dy-bot .r4 .ops>span{display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10.5px;color:rgba(255,255,255,.95)}
+.v25-dy-bot .r4 .ops svg{width:21px;height:21px}
+.v25-dy-bot .r4 .ops b{font-weight:500;font-size:10.5px}
+
+/* ---------- 视频号 ---------- */
+.v25-nav{position:absolute;top:40px;left:0;right:0;height:40px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 12px;z-index:6}
+.v25-nav .bk svg{width:24px;height:24px}
+.v25-nav .dots{font-size:19px;font-weight:700;letter-spacing:1px;line-height:1;
+  transform:translateY(-3px);display:block}
+.v25-wx-side{position:absolute;right:11px;bottom:74px;display:flex;flex-direction:column;
+  align-items:center;gap:15px;z-index:5}
+.v25-wx-side>div{display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:11px;color:rgba(255,255,255,.96)}
+.v25-wx-side svg{width:26px;height:26px}
+.v25-wx-side b{font-weight:500;font-size:11px}
+.v25-wx-side .av{position:relative;width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#6E8BE8,#4F63C8);font-size:13px;font-weight:700;
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.9)}
+.v25-wx-side .av i{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:16px;height:16px;
+  border-radius:50%;background:#FA5151;color:#fff;font-style:normal;font-size:13px;font-weight:400;
+  display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 0 1.5px rgba(0,0,0,.25)}
+.v25-wx-bot{position:absolute;left:14px;right:74px;bottom:66px;z-index:5}
+.v25-wx-bot .nm{display:block;font-size:13.5px;font-weight:600;letter-spacing:-.15px}
+.v25-wx-bot .tx{margin:6px 0 0;font-size:13px;line-height:1.52;color:rgba(255,255,255,.96);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.v25-wx-bot .tg{display:block;margin-top:5px;font-size:12.5px;color:#7E92BE}
+.v25-wx-bot .tm{display:block;margin-top:6px;font-size:10.5px;color:rgba(255,255,255,.45)}
+.v25-wx-in{position:absolute;left:14px;right:14px;bottom:12px;height:36px;border-radius:18px;
+  background:rgba(255,255,255,.15);display:flex;align-items:center;gap:8px;padding:0 13px;
+  font-size:12.5px;color:rgba(255,255,255,.62);z-index:5}
+.v25-wx-in svg{width:17px;height:17px;margin-left:auto}
+
+/* ---------- 小红书 ---------- */
+.v25-pf.v25-xhs{background:#fff;color:#1A1A1A;display:flex;flex-direction:column}
+.v25-xhs .v25-sb{position:static;flex:0 0 40px}
+.v25-xhs-top{flex:0 0 42px;display:flex;align-items:center;gap:8px;padding:0 13px}
+.v25-xhs-top .bk svg{width:22px;height:22px;color:#333}
+.v25-xhs-top .av{width:28px;height:28px;border-radius:50%;flex:0 0 28px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#FF8A65,#FF5A5F)}
+.v25-xhs-top .nm{font-size:12.5px;font-weight:600;color:#2B2B36}
+.v25-xhs-top em{margin-left:auto;font-style:normal;font-size:11px;font-weight:500;color:#FF2442;
+  border:1px solid #FF2442;border-radius:999px;padding:3px 11px;line-height:1}
+.v25-xhs-img{flex:0 0 auto;height:162px;position:relative;background:#000;overflow:hidden}
+.v25-xhs-img img{width:100%;height:100%;object-fit:cover}
+.v25-xhs-img .v25-play{width:44px;height:44px}
+.v25-xhs-img .v25-play b{border-left-width:13px;border-top-width:8px;border-bottom-width:8px}
+.v25-xhs-img .pg{position:absolute;right:9px;top:9px;font-size:10px;color:#fff;
+  background:rgba(0,0,0,.4);border-radius:9px;padding:1px 7px}
+.v25-xhs-tx{flex:1;min-height:0;overflow:hidden;padding:11px 14px 0}
+.v25-xhs-tx b{display:block;font-size:14.5px;font-weight:600;line-height:1.42;color:#1A1A1A;letter-spacing:-.2px}
+.v25-xhs-tx p{margin:6px 0 0;font-size:12.5px;line-height:1.62;color:#3D3D46;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.v25-xhs-tx .tg{display:block;margin-top:6px;font-size:12px;color:#13386C}
+.v25-xhs-tx .mt{display:block;margin-top:7px;font-size:10.5px;color:#9C9CAC}
+.v25-xhs-bar{flex:0 0 48px;display:flex;align-items:center;gap:13px;padding:0 14px;
+  border-top:1px solid #F0F0F2;background:#fff}
+.v25-xhs-bar .inp{flex:1;height:30px;border-radius:15px;background:#F4F4F6;display:flex;align-items:center;
+  padding:0 12px;font-size:12px;color:#A5A5B0}
+.v25-xhs-bar .xo{display:flex;align-items:center;gap:3px;font-size:11px;color:#5A5A66;
+  flex:0 0 auto;height:auto;background:none;border-radius:0}
+.v25-xhs-bar .xo svg{width:19px;height:19px}
+
+/* 小红书必须带两条评论，否则正文一短就是一大块白 —— 真实的笔记页也从来不空 */
+.v25-xhs-cm{display:block;margin-top:9px;padding-top:8px;border-top:1px solid #F2F2F4}
+.v25-xhs-cm .ch{display:flex;align-items:center;justify-content:space-between;
+  font-size:10.5px;color:#9C9CAC;margin-bottom:7px}
+.v25-xhs-cm .ch em{font-style:normal;font-size:10px;color:#B4B4C0}
+.v25-xhs-cm .cr{display:flex;gap:6px;margin-bottom:6px}
+.v25-xhs-cm .cr i{width:19px;height:19px;border-radius:50%;flex:0 0 19px;font-style:normal;
+  font-size:9px;color:#fff;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#9FB4D6,#7C8FB5)}
+.v25-xhs-cm .cr div{min-width:0}
+.v25-xhs-cm .cr b{display:block;font-size:9.5px;font-weight:500;color:#9C9CAC;line-height:1.3}
+.v25-xhs-cm .cr em{display:block;font-style:normal;font-size:11px;color:#2B2B36;line-height:1.45;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:270px}
+
+/* ---------- 承载容器 ---------- */
+.v25-scr{position:relative;flex:0 0 auto;height:455px;overflow:hidden;background:#000}
+.v25-scr.lp{height:386px}
+.v25-scr.lp .v25-pf{border-radius:0}
+
+/* 外层已经有状态栏时，皮肤那份隐藏，顶部导航顶到 0 */
+.v25-pf.nosb .v25-sb{display:none}
+.v25-pf.nosb .v25-dy-nav,.v25-pf.nosb .v25-nav{top:0}
+
+/* ---------- 原型自己的调节面板（深色沉浸背景上） ---------- */
+.v25-app{background:#14151A}
+.v25-app .sb{color:#fff}
+.v25-bar{flex:0 0 auto;height:38px;display:flex;align-items:center;gap:10px;padding:0 14px;
+  background:#14151A;color:#fff}
+.v25-bar .bk{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 26px}
+.v25-bar .bk svg{width:15px;height:15px}
+.v25-bar .seg{display:flex;gap:4px;margin:0 auto;background:rgba(255,255,255,.08);
+  border-radius:999px;padding:3px}
+.v25-bar .seg span{font-size:11.5px;color:rgba(255,255,255,.6);padding:4px 12px;border-radius:999px;cursor:pointer}
+.v25-bar .seg span.on{background:#fff;color:#14151A;font-weight:600}
+.v25-bar .ghost{font-size:11.5px;color:rgba(255,255,255,.55);flex:0 0 auto}
+
+.v25-panel{background:#14151A;padding:10px 14px 8px}
+.v25-panel .hd{display:flex;align-items:center;font-size:10.5px;font-weight:700;
+  color:rgba(255,255,255,.42);letter-spacing:.4px;margin-bottom:7px}
+.v25-panel .hd em{margin-left:auto;font-style:normal;font-size:9.5px;font-weight:500;color:#8E7DFF}
+.v25-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.v25-grid label{background:rgba(255,255,255,.07);border-radius:9px;padding:6px 6px 5px;text-align:center}
+.v25-grid label span{display:block;font-size:9px;color:rgba(255,255,255,.42);margin-bottom:3px;letter-spacing:.3px}
+.v25-grid input{width:100%;border:0;background:transparent;outline:0;color:#fff;
+  font-size:14px;font-weight:600;font-family:inherit;text-align:center;padding:0;letter-spacing:-.3px}
+
+.v25-link{margin-top:9px;background:rgba(255,255,255,.06);border-radius:11px;padding:9px 10px}
+.v25-link .hd2{display:flex;align-items:center;font-size:10px;font-weight:700;
+  color:rgba(255,255,255,.42);margin-bottom:7px;letter-spacing:.4px}
+.v25-link .hd2 em{margin-left:auto;font-style:normal;font-weight:500;color:rgba(255,255,255,.3)}
+.v25-link .row{display:flex;gap:6px;align-items:center}
+.v25-link .row .inbox{flex:1;min-width:0;height:32px;border-radius:8px;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;padding:0 10px;overflow:hidden}
+.v25-link .row input{flex:1;min-width:0;border:0;background:transparent;outline:0;color:#fff;
+  font-size:11px;font-family:inherit}
+.v25-link .row input::placeholder{color:rgba(255,255,255,.32)}
+.v25-link .ok{flex:0 0 auto;height:32px;border-radius:8px;background:var(--g-brand);color:#fff;
+  font-size:11.5px;font-weight:600;padding:0 15px;display:flex;align-items:center;cursor:pointer}
+.v25-link .done{flex:0 0 auto;height:32px;border-radius:8px;background:rgba(18,184,134,.16);
+  color:#3DDA9E;font-size:11px;font-weight:600;padding:0 12px;display:flex;align-items:center;gap:4px}
+.v25-link .got{margin-top:7px;font-size:9.5px;color:#5FD3A6;line-height:1.5;display:flex;align-items:center;gap:5px}
+.v25-link .tip{margin-top:6px;font-size:9px;color:rgba(255,255,255,.3);line-height:1.55}
+.v25-app .note{padding:7px 14px 10px;font-size:9.5px;color:rgba(255,255,255,.26);line-height:1.6}
+.v25-app .actionbar{background:#1B1C24}
+.v25-app .actionbar .eto{background:rgba(255,255,255,.1);color:#fff}
+.v25-app .actionbar .eto span{color:#fff}
+
+/* 落地页容器矮一些，小红书那块评论预览就别硬塞了，塞进去也是被裁半截 */
+.v25-scr.lp .v25-xhs-cm{display:none}
+/* 视频号的 + 要落在头像外沿下方，压在头像上会糊成一坨 */
+.v25-wx-side .av i{bottom:-8px}
+.v25-wx-side{gap:13px}
+
+/* 落地页底部按钮上方的白色渐隐：不遮住内容，但让人知道下面还有 */
+.v14-lp-fade{position:absolute;left:0;right:0;bottom:0;height:104px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0),#fff 62%)}

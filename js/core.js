@@ -197,6 +197,26 @@
     }
   });
 
+  /* 数字随手改、屏幕随手变。改互动数据的时候，页面上那个数字要立刻跟着跳，
+     但又不能整页重渲染 —— 一重渲染滚动位置就归零，用户正看着的那一屏就跑了。
+     所以只改目标元素的文字。
+     用法：<input data-bind="X.k" data-out=".v25-n-like">（CSS 选择器，可命中多处） */
+  document.addEventListener("input", (e) => {
+    const el = e.target.closest && e.target.closest("[data-out]");
+    if (!el) return;
+    const sel = el.dataset.out;
+    if (!sel) return;
+    const raw = String(el.value).replace(/[^\d.]/g, "");
+    const n = Number(raw);
+    /* 万级缩写：>1 万按平台习惯写成 1.2万，抖音微博都这么显示 */
+    const txt = raw === "" ? "0" : n >= 10000 ? (n / 10000).toFixed(1).replace(/\.0$/, "") + "万" : raw;
+    let hit = 0;
+    try {
+      document.querySelectorAll(sel).forEach((o) => { o.textContent = txt; hit++; });
+    } catch (_) {}
+    if (!hit) return;
+  });
+
   /* 滑杆旁边的读数：range 一重渲染拖动就断了，所以只改旁边那个数字。
      用法：<input type="range" data-bind="X.y" data-range-out="#rd-x"> + <span id="rd-x"> */
   document.addEventListener("input", (e) => {

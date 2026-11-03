@@ -405,10 +405,13 @@ window.LIB = (function () {
   /* 三个平台的模拟互动数据。
      原型里一套数据通用；真实产品按「作品 × 平台」各存一份。
      团长可以手改（模拟），也可以贴真实链接让爬虫回填。 */
+  /* 三平台的默认互动数。stars = 收藏/在看，forwards = 转发到群/好友。
+     抖音底栏是 点赞/分享/收藏/评论，视频号右栏是 赞/评/转/藏，小红书底栏是 赞/藏/评 —— 
+     叫法不一样，底下是同一组数，所以这里四个都给齐。 */
   const plats = {
-    wx:  { k: "wx",  name: "视频号", short: "视", likes: 186,  comments: 23,  shares: 17,  forwards: 9,  link: "" },
-    dy:  { k: "dy",  name: "抖音",   short: "抖", likes: 4210, comments: 168, shares: 320, forwards: 88, link: "" },
-    xhs: { k: "xhs", name: "小红书", short: "红", likes: 96,   comments: 12,  shares: 6,   forwards: 3,  link: "" }
+    wx:  { k: "wx",  name: "视频号", short: "视", likes: 186,  comments: 23,  shares: 17,  forwards: 9,  stars: 42,  link: "" },
+    dy:  { k: "dy",  name: "抖音",   short: "抖", likes: 4210, comments: 168, shares: 320, forwards: 88, stars: 386, link: "" },
+    xhs: { k: "xhs", name: "小红书", short: "红", likes: 96,   comments: 12,  shares: 6,   forwards: 3,  stars: 58,  link: "" }
   };
 
   const board = {
