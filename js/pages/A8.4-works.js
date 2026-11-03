@@ -1,14 +1,15 @@
-/* A8.4 作品（V16.13 · 一条时间轴）
-   团长回忆作品是按"哪天弄的"来的 ——"上礼拜三那条效果特别好"、"今天剪的还没发"。
+/* A8.4 作品（V18 · 一条时间轴）
+   团长回忆作品是按"哪天弄的"来的 ——"上礼拜三那条效果特别好"、"今天出的还没发"。
    所以这一页就是一条轴，**全部作品按真实时间倒序**，最新的在最上面。
 
-   上一版按状态分组（已发 / 没发 / 草稿各一段），结果是"今天剪的"排在
-   "10 月 25 日的"后面 —— 时间轴读起来是断的。现在不管状态，只按时间。
+   V18 起这里只剩两种东西：**出好的片（待发）** 和 **发出去的片**。
+   没有草稿、没有半成品 —— 剪是全自动的，剪不出来 U剪 会在对话里问，
+   不会在作品列表里留一条"卡住"的东西让人惦记。
 
-   筛选用意图强弱分：有潜客 → 有互动 → 有浏览 → 0浏览。
+   筛选用意图强弱分：潜客 → 互动 → 浏览 → 零浏览。
    这四档正好是"这条内容有没有把人带过来"的四层。 */
 
-window.PAGES["A8.4"].prd = "PRD V16 §5 · 作品（时间轴 / 按意图筛）";
+window.PAGES["A8.4"].prd = "PRD V18 §5 · 作品（时间轴 / 按意图筛）";
 window.PAGES["A8.4"].sysEntry = "底部 tab「作品」；对话里说「看我的作品」也跳这里";
 
 window.PAGES["A8.4"].render = function (ctx) {
@@ -19,18 +20,19 @@ window.PAGES["A8.4"].render = function (ctx) {
   /* 只排一次，后面全用它。slice() 是为了不动原数组的顺序 */
   const all = L.works.slice().sort((a, b) => b.ts - a.ts);
   const sent = all.filter((x) => x.status === "sent");
+  const ready = all.filter((x) => x.status !== "sent");   // 出好了还没发
 
-  /* 意图四层：有潜客 ⊂ 有互动 ⊂ 有浏览，0浏览是另一头 */
+  /* 意图四层：潜客 ⊂ 互动 ⊂ 浏览，零浏览是另一头 */
   const hasLead = (w) => w.leads > 0;
   const hasInter = (w) => w.inter > 0;
   const hasView = (w) => w.open > 0;
 
   const FILTERS = [
     ["all", "全部", () => true],
-    ["lead", "有潜客", hasLead],
-    ["inter", "有互动", hasInter],
-    ["view", "有浏览", hasView],
-    ["none", "0浏览", (w) => !hasView(w)]
+    ["lead", "潜客", hasLead],
+    ["inter", "互动", hasInter],
+    ["view", "浏览", hasView],
+    ["none", "零浏览", (w) => !hasView(w)]
   ];
   const pick = (FILTERS.filter((x) => x[0] === f)[0] || FILTERS[0])[2];
   const list = all.filter(pick);
@@ -62,18 +64,17 @@ window.PAGES["A8.4"].render = function (ctx) {
   });
 
   const card = (w) => {
+    /* 出好了还没发的：没有数据，只给「去发」。
+       它不是半成品 —— 片是完整的，只是还没发出去。 */
     if (w.status !== "sent") {
-      /* 发布器没有了：没发的直接进平台预览（在那儿生成评论、选渠道、发出去）；
-         草稿回对话 —— 改片子也只剩"跟U剪说"这一条路了。 */
-      const to = w.status === "pending" ? `A8.4.2?pf=dy&c=${w.id}` : "A8";
-      return `<div class="v19-w v19-w-off" data-go="${to}" data-label="${w.title}">
+      return `<div class="v19-w v19-w-off" data-go="A8.4.2?pf=dy&c=${w.id}" data-label="${w.title}">
         <div class="v19-w-th"><img src="${w.img}" alt=""><span>${w.dur}</span></div>
         <div class="v19-w-tx">
-          <div class="v19-w-b"><b>${w.title}</b></div>
+          <div class="v19-w-b"><b>${w.title}</b><em class="v19-tag">待发</em></div>
           <span>${w.at} · ${w.ch}</span>
-          <div class="v19-w-hint">${w.insight}</div>
+          <div class="v19-w-hint">挑个平台，对一下评论就能发</div>
         </div>
-        <div class="v19-w-act">${w.status === "pending" ? "去发" : "接着剪"}</div>
+        <div class="v19-w-act">去发</div>
       </div>`;
     }
     return `<div class="v19-w" data-go="A8.4.1?c=${w.id}" data-label="${w.title}">
@@ -85,9 +86,10 @@ window.PAGES["A8.4"].render = function (ctx) {
         </div>
         <span>${w.ch}</span>
         <div class="v19-w-num">
-          <i><b>${w.opens}</b> 次打开</i>
-          <i><b>${w.inter}</b> 互动</i>
-          <i><b>${w.leads}</b> 潜客</i>
+          <i><b>${w.opens}</b> 浏览</i>
+          <i><b>${w.cmt}</b> 评论</i>
+          <i><b>${w.likes}</b> 点赞</i>
+          <i><b>${w.leads}</b> 意向</i>
         </div>
       </div>
     </div>`;
@@ -96,23 +98,23 @@ window.PAGES["A8.4"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <div class="ttl">作品<small>${all.length} 条 · ${sent.length} 条已发</small></div>
+      <div class="ttl">作品<small>${all.length} 条 · ${sent.length} 条已发${ready.length ? ` · ${ready.length} 条待发` : ""}</small></div>
       <span class="act" data-go="A8" data-label="问U剪">问U剪</span>
     </div>
 
     <div class="body">
       <div class="v21-sum">
         <div><b>${sent.length}</b><span>已发</span></div>
-        <div><b>${sum.opens}</b><span>次打开</span></div>
+        <div><b>${sum.opens}</b><span>次浏览</span></div>
         <div><b>${sum.inter}</b><span>互动</span></div>
-        <div class="on"><b>${sum.leads}</b><span>潜客</span></div>
+        <div class="on"><b>${sum.leads}</b><span>意向客户</span></div>
       </div>
 
       ${best ? `<div class="v21-best" data-go="A8.4.1?c=${best.id}" data-label="${best.title}">
         <span class="v21-best-k">最带人</span>
         <div>
           <b>${best.title}</b>
-          <span>${best.opens} 次打开 · ${best.inter} 次互动 · 带来 ${best.leads} 个潜客</span>
+          <span>${best.opens} 次浏览 · ${best.inter} 次互动 · 带来 ${best.leads} 个意向客户</span>
         </div>
         <em>›</em>
       </div>` : ""}
@@ -131,8 +133,9 @@ window.PAGES["A8.4"].render = function (ctx) {
       </div>
 
       <div class="xs" style="margin:10px 2px 4px;line-height:1.7">
-        按时间倒序，最新在最上面，没发的也排在它该在的那天。<br>
-        打开 = 落地页被打开；互动 = 点赞 + 评论 + 分享 + 收藏；潜客 = 看了 2 次以上或点过问团长。
+        按时间倒序，最新在最上面。出好了没发的也排在它该在的那天。<br>
+        浏览 = 落地页被打开的次数；互动 = 点赞 + 评论 + 分享 + 收藏；
+        意向客户 = 看过 2 次以上，或点过「问团长」。
       </div>
     </div>
 

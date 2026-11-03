@@ -264,8 +264,8 @@ window.LIB = (function () {
     },
     {
       id: "c6", title: "老客回购实拍（第 5 集）",
-      img: "assets/gen/p-person.jpg", dur: "0:45", at: "今天 09:20 剪好", ch: "还没发",
-      status: "pending",
+      img: "assets/gen/p-person.jpg", dur: "0:45", at: "今天 09:20 出片", ch: "出好了，还没发",
+      status: "ready",
       reach: 0, open: 0, full: 0, ask: 0, deal: 0, leads: 0, cmt: 0,
       stay: "—", rate: "—", tag: "",
       funnel: [["送到", 0], ["点开", 0], ["看完", 0], ["问价", 0], ["成交", 0]],
@@ -274,19 +274,10 @@ window.LIB = (function () {
       timeline: [],
       commentList: []
     },
-    {
-      id: "c7", title: "磷虾油到底适合谁（草稿）",
-      img: "assets/gen/p-brand.jpg", dur: "0:00", at: "昨天 21:40 卡住", ch: "缺 2 段素材",
-      status: "draft",
-      reach: 0, open: 0, full: 0, ask: 0, deal: 0, leads: 0, cmt: 0,
-      stay: "—", rate: "—", tag: "",
-      funnel: [["送到", 0], ["点开", 0], ["看完", 0], ["问价", 0], ["成交", 0]],
-      blocks: ["b3"],
-      insight: "缺 2 段素材，补上就能出",
-      timeline: [],
-      commentList: []
-    }
   ];
+  /* 没有草稿了（V18）：剪片全自动，剪不出来的时候 U剪 会在对话里问你，
+     不会在作品列表里留一条"卡住"的半成品。作品列表里只会有两种东西：
+     出好的片（待发）和发出去的片。 */
 
   /* 作品的数据口径（V16.9）
      「点开 / 看完 / 问价 / 成交」那套是漏斗，是客户页要讲的事。
@@ -302,7 +293,6 @@ window.LIB = (function () {
     c4: { opens: 44, likes: 3, shares: 0, stars: 1 },
     c5: { opens: 97, likes: 18, shares: 4, stars: 6 },
     c6: { opens: 0, likes: 0, shares: 0, stars: 0 },
-    c7: { opens: 0, likes: 0, shares: 0, stars: 0 }
   };
   works.forEach((w) => {
     const m = wm[w.id] || {};
@@ -323,7 +313,7 @@ window.LIB = (function () {
   const today = 20261103;
   const wt = {
     c1: 20261030, c2: 20261028, c3: 20261027, c4: 20261026, c5: 20261025,
-    c6: 20261103, c7: 20261102
+    c6: 20261103,
   };
   works.forEach((w) => { w.ts = wt[w.id] || 0; });
 
