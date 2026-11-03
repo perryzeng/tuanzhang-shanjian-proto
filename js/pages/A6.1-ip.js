@@ -7,9 +7,11 @@ window.PAGES["A6.1"].prd = "PRD V15 §3 · 我是谁（IP 设定）";
 window.PAGES["A6.1"].sysEntry = "对话首页右上角头像；或 ◎ 抽屉第一项";
 
 window.PAGES["A6.1"].render = function (ctx) {
-  const C = window.C, AI = window.AI, B = window.BIZ;
+  const C = window.C, AI = window.AI, B = window.BIZ, L = window.LIB;
   const ip = AI.ip;
   const priv = (ctx && ctx.priv) || "open";
+  const PF = [["wx", "视", "#07C160"], ["dy", "抖", "#161823"], ["xhs", "红", "#FF2442"]];
+  const ipWorks = (k) => L.works.filter((w) => w.status === "sent" && (w.pfs || []).indexOf(k) >= 0).length;
 
   return `<div class="app">
     ${C.sb()}
@@ -30,6 +32,21 @@ window.PAGES["A6.1"].render = function (ctx) {
         <div><b>${window.LIB.stats.mine.n}</b><span>原始素材</span></div>
         <div><b>${window.LIB.works.length}</b><span>作品</span></div>
         <em>›</em>
+      </div>
+
+      ${C.sec("我的 IP", "三个平台三个号")}
+      <div class="v33-ips">
+        ${PF.map(([k, s1, c]) => `<div class="v33-ip" data-go="A6.1.1?pf=${k}" data-label="${L.ips[k].name}">
+          <i style="background:${c}">${s1}</i>
+          <div>
+            <b>${L.ips[k].name}</b>
+            <span>粉丝 ${L.ips[k].fans} · 作品 ${ipWorks(k)} 条</span>
+          </div>
+          <em>›</em>
+        </div>`).join("")}
+      </div>
+      <div class="xs" style="margin:8px 2px 0;line-height:1.6">
+        同一个你，三个号的名字和简介都不一样 —— 发到哪个平台，就自动进哪个号的作品集。
       </div>
 
       ${C.sec("U剪记住的")}

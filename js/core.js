@@ -251,6 +251,9 @@
     if (s) { applySet(s.dataset.set); return; }
     const n = e.target.closest("[data-nav]");
     if (n) { go(n.dataset.nav); return; }
+    /* [data-act] 是页面自己接的动作（点赞/关注/播放暂停），不走路由。
+       不加这条，视频号头像上那个「+」会顺带把父级的 data-go 一起触发了。 */
+    if (e.target.closest("[data-act]")) return;
     const g = e.target.closest("[data-go]");
     if (!g) return;
     const to = g.dataset.go;

@@ -122,7 +122,8 @@ window.LIB = (function () {
   const team = {
     name: "前海团长 · 3 组",
     members: 12,
-    isLead: false,
+    isLead: true,
+    isAdmin: true,          // 我是组长，所以看得到「管理」；组员那边这个入口压根不渲染
     week: { posts: 34, reach: 5200, leads: 47, deals: 12 },
     me: { rank: 3, posts: 5, done: 4, total: 5 },
     notices: [
@@ -383,6 +384,39 @@ window.LIB = (function () {
     c6: 20261103,
   };
   works.forEach((w) => { w.ts = wt[w.id] || 0; });
+
+  /* 每条作品发到了哪几个平台（V23）。
+     IP 主页的作品集就是按这个筛出来的 —— "以哪个平台的方式分享出去，
+     就自动进哪个 IP 的作品集"，靠的就是这一行。
+     c6 还没发，所以是空的。 */
+  const wpfs = {
+    c1: ["wx", "dy", "xhs"],   // 主推那条，三个平台都发了
+    c2: ["wx", "dy"],
+    c3: ["wx"],
+    c4: ["dy", "xhs"],
+    c5: ["wx", "dy", "xhs"],
+    c6: []
+  };
+  works.forEach((w) => { w.pfs = wpfs[w.id] || []; });
+
+  /* 三个平台的 IP 名片。
+     同一个人，在三个平台上是三个"号"：昵称、简介、粉丝数都不一样，
+     因为三个平台的受众和说话方式本来就不一样。
+     作品数不写死，从 works.pfs 现算 —— 两边永远对得上。 */
+  const ips = {
+    wx: { k: "wx", name: "大 P 的健康手记", handle: "视频号 · dp_health",
+      fans: "1,204", likes: "3,860", follows: "86",
+      bio: "梅州人，在深圳前海做团长。每天一条中老年营养，讲人话不背书。",
+      tags: ["心脑血管", "中老年营养", "源头溯源"] },
+    dy: { k: "dy", name: "大P·梅州营养", handle: "抖音号：dp_nutrition",
+      fans: "3,861", likes: "2.1万", follows: "126",
+      bio: "替我妈研究磷虾油第 3 年｜体检单给你看，效果你自己判断",
+      tags: ["心脑血管科普", "磷虾油", "女性创业"] },
+    xhs: { k: "xhs", name: "大P的健康手记", handle: "小红书号：9527001",
+      fans: "862", likes: "5,204", follows: "48",
+      bio: "不劝你买，先把体检单给你看。梅州客家人，在深圳做团长。",
+      tags: ["中老年健康", "磷虾油", "体检报告"] }
+  };
 
   /* U剪按互动数据生成评论用的语料池。
      真接大模型时这里换成一次生成调用，返回结构不变：
@@ -663,5 +697,5 @@ window.LIB = (function () {
   ];
 
 
-  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool, today };
+  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool, today, ips };
 })();

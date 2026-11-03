@@ -106,6 +106,9 @@ window.PAGES["A8.4.2"].mount = function (el, ctx) {
 
     const act = e.target.closest("[data-act]");
     if (act) {
+      /* 这个小按钮可能长在一个可点区域里（视频号头像上的「+」就套在主里头），
+         不拦住的话点「+」会顺带跳去主页。 */
+      e.stopPropagation();
       const k = act.dataset.act;
       if (k === "like" || k === "star") { bump(act, k); return; }
       if (k === "cmt" || k === "share") { openOv(k); return; }
@@ -280,7 +283,7 @@ window.PAGES["A8.4.2"].render = function (ctx) {
   if (ctx.full === "1") {
     return `<div class="app v25-app v25-full">
       <div class="v25-player" data-player data-dur="${secs}">
-        ${S.render(pf, wf, v, { back: ` data-set="A8.4.2.full="` })}
+        ${S.render(pf, wf, v, { back: ` data-set="A8.4.2.full="`, profile: `A6.1.1?pf=${pf}` })}
         <div class="v25-paused">▶</div>
       </div>
       <div class="v25-prog"><i></i></div>
@@ -344,7 +347,7 @@ window.PAGES["A8.4.2"].render = function (ctx) {
       <span class="ghost">分享效果</span>
     </div>
 
-    <div class="v25-scr fill">${S.render(pf, wf, v, { noSb: true })}</div>
+    <div class="v25-scr fill">${S.render(pf, wf, v, { noSb: true, profile: `A6.1.1?pf=${pf}` })}</div>
 
     <div class="v25-panel">
       <div class="hd">模拟互动数据<em>改了上面立刻变</em></div>

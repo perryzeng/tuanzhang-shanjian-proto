@@ -78,7 +78,7 @@
           <span class="tm"><em data-clock>${w.dur}</em><em class="dm">${I.danmu}弹</em></span>
         </div>
         <div class="r2">
-          <b class="av">P</b>
+          <b class="av"${o.profile ? ` data-go="${o.profile}" data-label="我的 IP"` : ""}>P</b>
           <span class="nm">${w.who || "大 P"}</span>
           <span class="hb" data-act="follow">${I.heart}</span>
         </div>
@@ -106,7 +106,7 @@
       ${backRow('<span class="dots">···</span>', "", o.back)}
 
       <div class="v25-wx-side">
-        <div class="av" data-act="follow">P<i>+</i></div>
+        <div class="av"${o.profile ? ` data-go="${o.profile}" data-label="我的 IP"` : ""}>P<i data-act="follow">+</i></div>
         <div data-act="like">${I.heart}${num("like", v.like)}</div>
         <div data-act="cmt">${I.bubble}${num("cmt", v.cmt)}</div>
         <div data-act="share">${I.share}${num("share", v.share)}</div>
@@ -130,7 +130,7 @@
       ${sb(1)}
       <div class="v25-xhs-top">
         <span class="bk"${o.back || ""}>${I.chev}</span>
-        <b class="av">P</b>
+        <b class="av"${o.profile ? ` data-go="${o.profile}" data-label="我的 IP"` : ""}>P</b>
         <span class="nm">${w.who || "大 P"}</span>
         <em data-act="follow">关注</em>
       </div>
