@@ -34,19 +34,20 @@ window.PAGES["A6.1"].render = function (ctx) {
         <em>›</em>
       </div>
 
-      ${C.sec("我的 IP", "三个平台三个号")}
+      ${C.sec("我的 IP", "点进去就能改")}
       <div class="v33-ips">
         ${PF.map(([k, s1, c]) => `<div class="v33-ip" data-go="A6.1.1?pf=${k}" data-label="${L.ips[k].name}">
           <i style="background:${c}">${s1}</i>
           <div>
             <b>${L.ips[k].name}</b>
-            <span>粉丝 ${L.ips[k].fans} · 作品 ${ipWorks(k)} 条</span>
+            <span>${k === "wx" ? "朋友" : "粉丝"} ${L.ips[k].fans} · 作品 ${ipWorks(k)} 条</span>
           </div>
           <em>›</em>
         </div>`).join("")}
       </div>
       <div class="xs" style="margin:8px 2px 0;line-height:1.6">
-        同一个你，三个号的名字和简介都不一样 —— 发到哪个平台，就自动进哪个号的作品集。
+        同一个你，三个号的名字和简介都不一样 —— 发到哪个平台，就自动进哪个号的作品集。<br>
+        名字、简介、关注数、朋友数、作品，进去每一处都有支笔，想改哪就点哪。
       </div>
 
       ${C.sec("U剪记住的")}

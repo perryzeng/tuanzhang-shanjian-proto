@@ -36,6 +36,17 @@ const NP = (s) => {
 };
 
 window.PAGES["A8.4.2"].mount = function (el, ctx) {
+  const pf0 = ctx.pf || "dy";
+
+  /* 发出去这一步要留痕：把平台写回这条作品的 pfs，
+     这样 A6.1.1 那个号的"作品集"里立刻就能看到它。
+     不写回去的话，分享和 IP 主页就是两条互不相干的线。
+     放在最前面 —— 下面那个 return 是给全屏播放器的，分享是在面板里发生的。 */
+  if (ctx.sheet === "sent") {
+    const w0 = window.LIB.works.filter((x) => x.id === ctx.c)[0];
+    if (w0 && (w0.pfs || []).indexOf(pf0) < 0) w0.pfs = (w0.pfs || []).concat(pf0);
+  }
+
   const root = el.querySelector(".v25-full");
   if (!root) return;
 
@@ -262,6 +273,8 @@ window.PAGES["A8.4.2"].render = function (ctx) {
           <b>${chan === "群聊" ? "已发到 3 个群" : chan === "微信好友" ? "已发给微信好友" : "已发到朋友圈"}</b>
           <p>客户点开会看到<em>${p.name}</em>的播放页，往下滑是我们的团购信息和「问团长」。<br>
              谁点开、看了多久、划到第几个要点，都会回到这条作品的动态里。</p>
+          <div class="v26-sh-link" data-go="A6.1.1?pf=${pf}" data-label="看${p.name}号">
+            <span>这条已自动进了你的${p.name}号作品集</span><b>去看看 ›</b></div>
         </div>
       </div>
       <div class="v26-sh-ft">

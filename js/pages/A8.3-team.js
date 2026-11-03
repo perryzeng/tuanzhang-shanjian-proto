@@ -1,36 +1,80 @@
-/* A8.3 小组（V22 · 一页看完，不分 tab）
-   四块还是那四块：公告 / 任务 / 榜单 / 动态。
-   但不再切成 tab —— 成员打开小组，想要的是"一眼扫完全组在发生什么"，
-   切 tab 等于逼他点四次才知道组里有没有事。
+/* A8.3 小组（V26 · 作战阵地）
+   定位改了：这不是"团队朋友圈"，是**小组这一仗的指挥部**。
 
-   所以做法反过来：**每块只放"最少但够判断"的量**，从上一路排下来。
-   - 公告只留置顶那条，正文两行截断
-   - 任务只放我名下的
-   - 榜单只放前 5，我不在前 5 就补我那一行
-   - 动态只放最近 4 条
-   一屏半能看完，比四个 tab 各翻一次快。
+   管理员在这里下发：一个目标（月度 / 本周 / 单场战役）、一个任务、一条公告；
+   组员在这里看到两件事：**这仗打到哪了**、**我这一份还差多少**。
+   排名是第三件事 —— 它能制造紧迫感，但不该是首页的主角。
 
-   右上角「管理」只有管理员看得到 —— 组员那边不是灰色不可点，是压根不出现。 */
+   所以版面按"从集体到我、从目标到流水"排，不按功能模块排：
 
-window.PAGES["A8.3"].prd = "PRD V22 §4 · 小组（一页：公告 / 任务 / 榜单 / 动态）";
+     ① 目标卡    这周在打什么、还差多少、每天要几单（紧迫感从这儿来）
+     ② 目标切换  本周 / 本月 / 单场，同一套模板，换的只是口径
+     ③ 我这一份  我的成交、我离人均差几单、我手上还没交的活
+     ④ 全组战报  谁达标谁没达标，四条数按住一个字排
+     ⑤ 公告      折成一条，要看才展开（广播不该压住目标）
+     ⑥ 动态      最近三条，弱化在最下面
+
+   为什么"我这一份"排在"全组战报"前面：
+   组员真正会焦虑的是"我还差 2 单"，不是"小敏比我多 3 单"。
+   把排名放前面，只会让尾部的人关掉这个页面。
+
+   管理员多一个「＋ 发起」：同一页里既能看，也能下命令。 */
+
+window.PAGES["A8.3"].prd = "PRD V26 §4 · 小组（目标 → 我这一份 → 战报 → 公告 → 动态）";
 window.PAGES["A8.3"].sysEntry = "底部 tab「小组」";
 
 window.PAGES["A8.3"].render = function (ctx) {
-  const C = window.C, T = window.LIB.team;
-  const board = ctx.b || "post";
+  const C = window.C, L = window.LIB, T = L.team, P = L.perf || {};
   const isAdmin = !!T.isAdmin;
+  const G = L.goals || [];
+  const nf = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  const gid = G.some((x) => x.id === ctx.g) ? ctx.g : "g_week";
+  const g = G.filter((x) => x.id === gid)[0] || G[0];
+  const term = g.type === "month" ? "m" : g.type === "battle" ? "b" : "w";
+  const sort = ["deals", "visits", "leads"].indexOf(ctx.sort) >= 0 ? ctx.sort : g.key;
+  const SORT_N = { deals: "成交", visits: "访客", leads: "意向" };
+  const UNIT = { deals: "单", visits: "人", leads: "个" };
+
+  const zero = { td: 0, tt: 0, posts: 0, visits: 0, fans: 0, leads: 0, deals: 0, gmv: 0 };
+  const of = (m) => (P[m.id] && P[m.id][term]) || zero;
+
+  /* 全组已完成 = 名册求和。不另存一份，跟考核页同源 */
+  const now = T.crew.reduce((a, m) => {
+    const p = of(m);
+    a.visits += p.visits; a.leads += p.leads; a.deals += p.deals;
+    return a;
+  }, { visits: 0, leads: 0, deals: 0 });
+
+  const cur = now[g.key], tgt = g.t[g.key];
+  const pct = tgt ? Math.round((cur / tgt) * 100) : 0;
+  const barPct = Math.min(100, pct);
+  const leftN = Math.max(0, tgt - cur);
+  const perDay = g.left > 0 ? leftN / g.left : leftN;
+
+  /* 达标线跟着排序走：按访客排，人均就是"访客 ÷ 人数"。
+     不跟着走的话，右边写着 980 人、旁边却标"-2"，两个数不同单位，一定读错。 */
+  const need = g.t[sort] / T.crew.length;
+  const fNeed = sort === "deals" ? need.toFixed(1) : String(Math.round(need));
+  const gapTxt = (gap) => "差 " + (sort === "deals" && gap < 3 ? gap.toFixed(1) : Math.round(gap));
+
+  const rows = T.crew.map((m) => {
+    const p = of(m);
+    return { m, p, v: p[sort], pass: p[sort] >= need, gap: need - p[sort] };
+  }).sort((a, b) => b.v - a.v || b.p.deals - a.p.deals);
+  const max = Math.max(1, rows[0].v);
+  const passed = rows.filter((r) => r.pass).length;
+
+  const me = rows.filter((r) => r.m.me)[0] || rows[0];
+  const myIdx = rows.indexOf(me);
+  const myGap = need - me.p[sort];
 
   const mine = T.tasks.filter((x) => x.me);
+  const nextTask = mine.filter((x) => x.done < x.total)[0] || mine[0];
+
   const top = T.notices.filter((n) => n.top)[0];
   const restN = T.notices.filter((n) => !n.top).length;
-
-  const key = board === "lead" ? "leads" : "posts";
-  const ranked = T.crew.slice().sort((a, b) => b[key] - a[key]);
-  const max = Math.max(1, ranked[0][key]);
-  const meRow = ranked.filter((m) => m.me)[0];
-  const myIdx = ranked.indexOf(meRow);
-  const showTop = ranked.slice(0, 5);
-  const needMe = myIdx >= 5;
+  const nt = ctx.nt === "1";
 
   const KIND = {
     done: { ic: "交", cls: "" }, praise: { ic: "赞", cls: "praise" },
@@ -38,75 +82,98 @@ window.PAGES["A8.3"].render = function (ctx) {
     join: { ic: "新", cls: "" }
   };
 
-  const totalDone = mine.reduce((a, x) => a + x.done, 0);
-  const totalAll = mine.reduce((a, x) => a + x.total, 0);
-  const pct = totalAll ? Math.round(totalDone / totalAll * 100) : 0;
-
-  const rankRow = (m, i) => `<div class="v32-rk-i${m.me ? " me" : ""}" data-go="A8.3.1?m=${m.id}" data-label="${m.n} 的动态">
-    <b class="no${i < 3 ? " top" : ""}">${i + 1}</b>
-    <i class="av" style="background:${m.bg}">${m.av}${m.open ? "" : `<span class="lock">锁</span>`}</i>
-    <b class="nm">${m.n}${m.me ? `<em>你</em>` : ""}</b>
-    <div class="bar"><i style="width:${Math.round(m[key] / max * 100)}%"></i></div>
-    <span class="v">${m[key]}<i>${board === "lead" ? "个" : "条"}</i></span>
-  </div>`;
-
   return `<div class="app">
     ${C.sb()}
     <div class="ab">
-      <div class="ttl">${T.name}<small>${T.members} 人 · 我是成员</small></div>
+      <div class="ttl">${T.name}<small>${T.crew.length} 人在打 · 还剩 ${g.left} 天</small></div>
       ${isAdmin ? `<span class="act" data-go="A8.3.2" data-label="小组管理">管理</span>` : ""}
     </div>
 
     <div class="body">
-      <div class="v31-hero">
-        <div class="v31-hero-hd">
-          <b>组里 ${mine.length} 个任务在跑</b>
-          <em>${totalDone}<i>/${totalAll}</i></em>
+      <!-- ① 这一仗 -->
+      <div class="v35-goals">
+        ${G.map((x) => `<span class="${x.id === g.id ? "on" : ""}" data-set="A8.3.g=${x.id}"
+          data-label="${x.label}目标">${x.label}<i>${x.left}天</i></span>`).join("")}
+      </div>
+
+      <div class="v35-goal">
+        <div class="v35-goal-tag">${g.label}目标 · 还剩 ${g.left} 天</div>
+        <h3>${g.title}</h3>
+        <div class="v35-goal-num">
+          <b>${cur}</b><span>/ ${tgt} 单</span>
+          <em>${pct}%</em>
         </div>
-        <div class="v31-hero-bar"><i style="width:${pct}%"></i></div>
-        <div class="v31-hero-ft">
-          <span>进度按人次算</span>
-          <span>我 ${T.me.done}/${T.me.total} · 组里第 ${T.me.rank}</span>
+        <div class="v35-goal-bar"><i style="width:${barPct}%"></i></div>
+        <div class="v35-goal-ms">
+          <div><b>${nf(now.visits)}<i> / ${nf(g.t.visits)}</i></b><span>带来访客</span></div>
+          <div><b>${now.leads}<i> / ${g.t.leads}</i></b><span>意向</span></div>
+        </div>
+        <div class="v35-goal-urg">
+          <i class="dot"></i>${leftN > 0
+            ? `还差 ${leftN} 单 · 剩 ${g.left} 天，每天要 ${perDay.toFixed(1)} 单才够`
+            : `已达成，超了 ${cur - tgt} 单 —— 往月度目标上叠`}
         </div>
       </div>
 
-      <div class="v32-sect">公告${restN ? `<em>还有 ${restN} 条 ›</em>` : ""}</div>
-      ${top ? `<div class="v31-nt v32-nt">
-        <div class="v31-nt-hd"><span>置顶</span><em>${top.from} · ${top.at}</em></div>
-        <b>${top.t}</b>
-        <p>${top.body}</p>
-      </div>` : ""}
-
-      <div class="v32-sect">派给我的活<em>${mine.length} 条</em></div>
-      ${mine.map((x) => `<div class="v32-task${x.due.indexOf("今天") >= 0 ? " hot" : ""}" data-go="A8" data-label="${x.t}">
-        <div class="tx">
-          <b>${x.t}</b>
-          <span>${x.done} / ${x.total} 人已交</span>
+      <!-- ② 我这一份：组员最关心的是"我还差多少"，不是"谁第一" -->
+      <div class="v35-me">
+        <div class="v35-me-hd">
+          <b>我这一份</b>
+          <em class="${myGap > 0 ? "gap" : "ok"}">${myGap > 0
+            ? `${gapTxt(myGap)}${UNIT[sort]}到人均`
+            : (Math.abs(myGap) >= 1 ? `已超人均 ${Math.round(Math.abs(myGap))}${UNIT[sort]}` : "已过人均线")}</em>
         </div>
-        <div class="rt">
-          <em>${x.due}</em>
-          <span class="go">去交 ›</span>
+        <div class="v35-me-num">
+          <div><b>${me.p[sort]}</b><span>我的${SORT_N[sort]} / 人均 ${fNeed}</span></div>
+          <div><b>第 ${myIdx + 1}</b><span>组里 ${rows.length} 人</span></div>
         </div>
-      </div>`).join("")}
+        <div class="v35-me-bar"><i style="width:${Math.min(100, (me.p[sort] / need) * 100).toFixed(1)}%"></i></div>
+        ${nextTask ? `<div class="v35-task" data-go="A8" data-label="去交任务">
+          <i>任</i>
+          <div class="tx"><b>${nextTask.t}</b><span>${nextTask.due} 截止 · ${nextTask.done}/${nextTask.total} 人已交</span></div>
+          <em>去交 ›</em>
+        </div>` : ""}
+      </div>
 
-      <div class="v32-sect wide">
-        <span>榜单</span>
+      <!-- ③ 全组战报 -->
+      <div class="v35-sec">
+        <span>全组战报</span>
+        <em>${passed}/${rows.length} 人达标</em>
         <div class="v32-seg">
-          <i class="${board === "post" ? "on" : ""}" data-set="A8.3.b=post">发布</i>
-          <i class="${board === "lead" ? "on" : ""}" data-set="A8.3.b=lead">拓客</i>
+          ${["deals", "visits", "leads"].map((k) =>
+            `<i class="${sort === k ? "on" : ""}" data-set="A8.3.sort=${k}" data-label="按${SORT_N[k]}排">${SORT_N[k]}</i>`).join("")}
         </div>
       </div>
-      <div class="v32-rk">
-        ${showTop.map(rankRow).join("")}
-        ${needMe ? `<div class="v32-rk-more">⋯</div>${rankRow(meRow, myIdx)}` : ""}
+      <div class="v35-rk">
+        ${rows.map((r, i) => `<div class="v35-rk-i${r.m.me ? " me" : ""}" data-go="A8.3.1?m=${r.m.id}"
+          data-label="${r.m.n} 的动态">
+          <b class="no">${i + 1}</b>
+          <i class="av" style="background:${r.m.bg}">${r.m.av}${r.m.open ? "" : `<span class="lock">锁</span>`}</i>
+          <b class="nm">${r.m.n}${r.m.me ? "<em>你</em>" : ""}</b>
+          <div class="bar"><i style="width:${Math.max(3, Math.round((r.v / max) * 100))}%"></i></div>
+          <span class="v">${r.v}<i>${UNIT[sort]}</i></span>
+          <em class="st${r.pass ? " ok" : ""}">${r.pass ? "达标" : gapTxt(r.gap)}</em>
+        </div>`).join("")}
       </div>
       <div class="xs" style="margin:7px 2px 0;line-height:1.6">
-        点头像看这个人这周做了什么。排名是公开的，具体轨迹要他自己开。
+        达标线 = 目标${SORT_N[sort]} ÷ 组内人数（${fNeed} ${UNIT[sort]}/人）。点头像看他这${g.type === "month" ? "月" : "周"}做了什么。
       </div>
 
-      <div class="v32-sect">组里动态<em>最近 ${Math.min(4, T.feed.length)} 条</em></div>
+      <!-- ④ 公告：折成一条，别压住目标 -->
+      ${top ? `<div class="v35-nt${nt ? " open" : ""}" data-set="A8.3.nt=${nt ? 0 : 1}" data-label="看公告">
+        <i class="ic">告</i>
+        <div class="tx">
+          <b>${top.t}</b>
+          ${nt ? `<p>${top.body}</p>` : ""}
+          <span>${top.from} · ${top.at}${restN ? ` · 还有 ${restN} 条` : ""}</span>
+        </div>
+        <em>${nt ? "收起" : "看"}</em>
+      </div>` : ""}
+
+      <!-- ⑤ 动态 -->
+      <div class="v35-sec"><span>组里动态</span><em>最近 ${Math.min(3, T.feed.length)} 条</em></div>
       <div class="v22-fd">
-        ${T.feed.slice(0, 4).map((f) => {
+        ${T.feed.slice(0, 3).map((f) => {
           const k = KIND[f.k] || KIND.post;
           return `<div class="v22-fd-i ${k.cls}">
             <i class="v22-fd-ic">${k.ic}</i>
@@ -116,8 +183,11 @@ window.PAGES["A8.3"].render = function (ctx) {
       </div>
 
       <div class="xs" style="margin:12px 2px 4px;line-height:1.7">
-        动态只显示和你有关的：任务、表扬、组里的新片。不推送成员的私聊和客户。
+        动态只显示任务、表扬和新片。组员的客户和私聊，组长也看不到。
       </div>
+      ${isAdmin ? `<div class="v35-cta" data-go="A8.3.2" data-label="发起目标 / 任务 / 公告">
+        <b>＋ 发起</b><span>定一个目标 · 发一个任务 · 发一条公告</span>
+      </div>` : ""}
     </div>
 
     ${C.tab8("A8.3")}

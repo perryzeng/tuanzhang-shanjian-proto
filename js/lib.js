@@ -418,6 +418,80 @@ window.LIB = (function () {
       tags: ["中老年健康", "磷虾油", "体检报告"] }
   };
 
+  /* 考核（V25）。组长点开「管理」，第一个要回答的问题不是"谁最勤快"，
+     是"这周谁真的把客人带来了"。所以每人每周/每月都要拿得出六个数：
+
+       td/tt       接的任务做到第几个（完成率是算出来的，不是打的分）
+       posts       发了几条片
+       visits      他分享出去的东西被点开了多少次 —— 这是"带来访客"
+       fans        这周新加的好友/新客
+       leads       其中问过价、聊过的意向客户
+       deals/gmv   成交单数和金额
+
+     只存原始计数，不存分数：算法一改，历史数据不会跟着作废。
+     全组的合计也是现算的，不是另写一份 —— 两份数字迟早对不上。 */
+  const perf = {
+    m_min:  { w: { td: 5, tt: 5, posts: 8, visits: 214, fans: 18, leads: 14, deals: 4, gmv: 1196 },
+              m: { td: 19, tt: 20, posts: 31, visits: 812, fans: 64, leads: 47, deals: 14, gmv: 4186 },
+              b: { td: 2, tt: 2, posts: 3, visits: 92, fans: 6, leads: 6, deals: 4, gmv: 1196 } },
+    m_liu:  { w: { td: 4, tt: 5, posts: 7, visits: 260, fans: 22, leads: 9, deals: 2, gmv: 598 },
+              m: { td: 15, tt: 20, posts: 26, visits: 980, fans: 71, leads: 31, deals: 7, gmv: 2093 },
+              b: { td: 1, tt: 2, posts: 2, visits: 88, fans: 4, leads: 3, deals: 1, gmv: 299 } },
+    m_me:   { w: { td: 4, tt: 5, posts: 5, visits: 168, fans: 12, leads: 6, deals: 2, gmv: 598 },
+              m: { td: 17, tt: 20, posts: 21, visits: 620, fans: 44, leads: 22, deals: 8, gmv: 2392 },
+              b: { td: 1, tt: 2, posts: 1, visits: 60, fans: 3, leads: 4, deals: 1, gmv: 299 } },
+    m_fang: { w: { td: 5, tt: 5, posts: 5, visits: 132, fans: 9, leads: 5, deals: 2, gmv: 598 },
+              m: { td: 20, tt: 20, posts: 19, visits: 486, fans: 33, leads: 18, deals: 6, gmv: 1794 },
+              b: { td: 2, tt: 2, posts: 1, visits: 46, fans: 2, leads: 3, deals: 1, gmv: 299 } },
+    m_kai:  { w: { td: 3, tt: 5, posts: 4, visits: 96, fans: 7, leads: 4, deals: 1, gmv: 299 },
+              m: { td: 12, tt: 20, posts: 15, visits: 352, fans: 26, leads: 14, deals: 4, gmv: 1196 },
+              b: { td: 1, tt: 2, posts: 1, visits: 32, fans: 2, leads: 2, deals: 1, gmv: 299 } },
+    m_mei:  { w: { td: 2, tt: 5, posts: 3, visits: 84, fans: 6, leads: 3, deals: 1, gmv: 299 },
+              m: { td: 8, tt: 20, posts: 11, visits: 288, fans: 19, leads: 9, deals: 2, gmv: 598 },
+              b: { td: 1, tt: 2, posts: 1, visits: 18, fans: 1, leads: 2, deals: 1, gmv: 299 } },
+    m_bei:  { w: { td: 0, tt: 5, posts: 1, visits: 18, fans: 1, leads: 0, deals: 0, gmv: 0 },
+              m: { td: 2, tt: 20, posts: 4, visits: 66, fans: 4, leads: 1, deals: 0, gmv: 0 },
+              b: { td: 0, tt: 2, posts: 0, visits: 4, fans: 0, leads: 0, deals: 0, gmv: 0 } },
+    m_zhou: { w: { td: 1, tt: 5, posts: 1, visits: 26, fans: 2, leads: 0, deals: 0, gmv: 0 },
+              m: { td: 5, tt: 20, posts: 5, visits: 102, fans: 8, leads: 2, deals: 1, gmv: 299 },
+              b: { td: 0, tt: 2, posts: 0, visits: 0, fans: 0, leads: 0, deals: 0, gmv: 0 } }
+  };
+
+  /* 上期同口径，只留三个用来比高低的数。没有对比的报表，
+     组长看完只会说一句"哦"，然后不知道这周算好还是算差。 */
+  const perfPrev = {
+    w: { visits: 846, leads: 34, deals: 9 },
+    m: { visits: 3120, leads: 118, deals: 35 },
+    b: { visits: 280, leads: 16, deals: 6 }
+  };
+
+  /* 目标（V26）。小组不是"群聊 + 榜单"，是"这仗打到哪了"。
+     三种目标同时存在，但同一时刻只有一个是"正在打的那一仗"：
+
+       week   本周目标 —— 这周每人要交什么（最常用，紧迫感最强）
+       month  月度目标 —— 这个月要把什么事做成（方向）
+       battle 单场战役 —— 只打一件事（双十一预热、某个小区），有时间点
+
+     每个目标只认三个数：访客 / 意向 / 成交。目标一旦超过三个数，
+     组员就不知道自己该盯哪个 —— 盯三个还能记住，盯七个等于没盯。
+
+     "已完成"不用另存：月度取 perf[x].m、本周取 .w、单场取 .b，求和现算，
+     跟考核页同一份源。两处各写一份，一定会有一天对不上。 */
+  const goals = [
+    { id: "g_week", type: "week", label: "本周", left: 2, span: 7,
+      title: "这周把老客回购跑通", key: "deals",
+      t: { visits: 1200, leads: 50, deals: 15 },
+      note: "先回购，再拉新。手上有老客名单的先动" },
+    { id: "g_mon", type: "month", label: "本月", left: 4, span: 26,
+      title: "11 月 · 把磷虾油打成前海的基本盘", key: "deals",
+      t: { visits: 5000, leads: 220, deals: 60 },
+      note: "月底冲量：老客回购 + 小区群，不铺新素材" },
+    { id: "g_bat", type: "battle", label: "单场", left: 1, span: 3,
+      title: "双十一预热 · 老客回购专场", key: "deals",
+      t: { visits: 500, leads: 30, deals: 20 },
+      note: "只打老客，不再教育新客。三天，一天 7 单" }
+  ];
+
   /* U剪按互动数据生成评论用的语料池。
      真接大模型时这里换成一次生成调用，返回结构不变：
      谁 / 说什么 / 什么时候 / 几个赞 / 什么类型。
@@ -697,5 +771,5 @@ window.LIB = (function () {
   ];
 
 
-  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool, today, ips };
+  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool, today, ips, perf, perfPrev, goals };
 })();
