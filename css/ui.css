@@ -3181,3 +3181,106 @@
 /* 落地页底部按钮上方的白色渐隐：不遮住内容，但让人知道下面还有 */
 .v14-lp-fade{position:absolute;left:0;right:0;bottom:0;height:104px;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,0),#fff 62%)}
+
+/* ==================================================================
+   V16.9 作品详情的「内容侧」数据 + 平台预览页的生成/分享链路
+   ================================================================== */
+
+/* 五个内容侧指标。5 列塞在 343px 里，靠 dividers 分隔而不靠卡片堆叠 */
+.v26-kpi{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);
+  border-radius:16px;padding:13px 4px 11px;margin-top:10px;box-shadow:var(--sh-1)}
+.v26-kpi>div{text-align:center;position:relative}
+.v26-kpi>div+div::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:22px;background:var(--line)}
+.v26-kpi b{display:block;font-size:19px;font-weight:700;letter-spacing:-.6px;line-height:1.1;color:var(--text)}
+.v26-kpi span{display:block;font-size:9px;color:var(--text-3);margin-top:5px;letter-spacing:-.1px}
+
+/* 四个率/人均指标，比上面那排轻一档 */
+.v26-sub{display:grid;grid-template-columns:repeat(4,1fr);background:var(--brand-weak-2);
+  border-radius:14px;padding:11px 4px;margin-top:8px;box-shadow:inset 0 0 0 1px #EEE9FF}
+.v26-sub>div{text-align:center;position:relative}
+.v26-sub>div+div::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:18px;background:#E4DDFB}
+.v26-sub b{display:block;font-size:14px;font-weight:600;color:var(--brand-ink);letter-spacing:-.3px}
+.v26-sub span{display:block;font-size:9px;color:var(--text-3);margin-top:4px}
+
+/* ---------- 平台页底部：确定生成 ---------- */
+.v26-go{height:42px;border-radius:12px;background:var(--g-brand);color:#fff;font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;margin-top:9px;
+  box-shadow:0 6px 16px rgba(124,108,255,.28)}
+.v26-go.ghost{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);box-shadow:none;
+  font-weight:500;height:36px;font-size:12px;margin-top:7px}
+.v26-go.wait{background:rgba(124,108,255,.18);color:#B9AEFF;box-shadow:none}
+.v26-go svg{width:15px;height:15px}
+.v26-hint{font-size:9px;color:rgba(255,255,255,.32);line-height:1.6;margin-top:7px;text-align:center}
+.v26-hint em{font-style:normal;color:#8E7DFF}
+.v26-lp{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:8px;
+  font-size:10.5px;color:rgba(255,255,255,.45);cursor:pointer}
+.v26-lp b{font-weight:500;color:#A79CFF}
+
+/* ---------- 底部弹层（评论 / 分享 / 发表 / 成功） ---------- */
+.v26-mask{position:absolute;inset:0;background:rgba(0,0,0,.58);z-index:40;animation:v26f .16s ease}
+@keyframes v26f{from{opacity:0}to{opacity:1}}
+.v26-sh{position:absolute;left:0;right:0;bottom:0;z-index:41;background:#1C1D26;color:#fff;
+  border-radius:20px 20px 0 0;max-height:80%;display:flex;flex-direction:column;
+  animation:v26u .24s cubic-bezier(.2,.85,.3,1);box-shadow:0 -12px 40px rgba(0,0,0,.45)}
+@keyframes v26u{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.v26-sh-hd{flex:0 0 auto;padding:15px 16px 9px;display:flex;align-items:center;gap:8px}
+.v26-sh-hd b{font-size:13.5px;font-weight:600}
+.v26-sh-hd span{font-size:10px;color:rgba(255,255,255,.38)}
+.v26-sh-hd em{margin-left:auto;font-style:normal;font-size:17px;color:rgba(255,255,255,.45);
+  cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.v26-sh-bd{flex:1;min-height:0;overflow-y:auto;padding:0 16px 4px}
+.v26-sh-ft{flex:0 0 auto;padding:10px 16px 18px;display:flex;gap:9px}
+
+/* 评论列表 */
+.v26-cm{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.v26-cm:last-child{border-bottom:0}
+.v26-cm>.av{width:28px;height:28px;border-radius:50%;flex:0 0 28px;font-size:10px;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:600}
+.v26-cm>.tx{flex:1;min-width:0}
+.v26-cm .nm{display:flex;align-items:center;gap:5px}
+.v26-cm .nm b{font-size:10.5px;font-weight:500;color:rgba(255,255,255,.5)}
+.v26-cm .nm i{font-style:normal;font-size:8.5px;padding:1px 5px;border-radius:4px;
+  background:rgba(255,255,255,.09);color:rgba(255,255,255,.5)}
+.v26-cm .nm i.q{background:rgba(255,122,92,.16);color:#FF9E85}
+.v26-cm .nm i.d{background:rgba(18,184,134,.16);color:#4ED2A4}
+.v26-cm p{margin:3px 0 0;font-size:12.5px;line-height:1.5;color:#fff}
+.v26-cm .mt{display:flex;align-items:center;gap:12px;margin-top:5px;
+  font-size:9.5px;color:rgba(255,255,255,.3)}
+.v26-cm .mt em{font-style:normal}
+
+/* 生成中 */
+.v26-wait{padding:22px 0 8px;text-align:center}
+.v26-wait .bar{height:3px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden;margin:14px 6px 0}
+.v26-wait .bar i{display:block;height:100%;width:40%;border-radius:2px;background:var(--g-brand);
+  animation:v26b 1.1s ease-in-out infinite}
+@keyframes v26b{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
+.v26-wait b{font-size:13px;font-weight:600}
+.v26-wait span{display:block;font-size:10.5px;color:rgba(255,255,255,.42);margin-top:7px;line-height:1.6}
+
+/* 分享四宫格 */
+.v26-shr{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 0 12px}
+.v26-shr>div{text-align:center;cursor:pointer;padding:6px 0;border-radius:12px}
+.v26-shr>div:active{background:rgba(255,255,255,.06)}
+.v26-shr i{display:flex;width:50px;height:50px;margin:0 auto 7px;border-radius:16px;
+  align-items:center;justify-content:center;font-style:normal;font-size:17px;font-weight:600;color:#fff}
+.v26-shr b{display:block;font-size:10.5px;font-weight:400;color:rgba(255,255,255,.75)}
+
+/* 发朋友圈的编辑态 */
+.v26-mo{display:flex;gap:11px;padding:4px 0 12px}
+.v26-mo .th{width:58px;height:58px;border-radius:9px;overflow:hidden;flex:0 0 58px;background:#000}
+.v26-mo .th img{width:100%;height:100%;object-fit:cover}
+.v26-mo .ed{flex:1;min-width:0}
+.v26-mo textarea{width:100%;height:74px;border:0;background:transparent;outline:0;resize:none;
+  color:#fff;font-size:12.5px;line-height:1.55;font-family:inherit}
+.v26-mo .lk{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:10px;
+  color:#8E7DFF;background:rgba(124,108,255,.14);border-radius:6px;padding:3px 7px}
+
+/* 已发送 */
+.v26-done{text-align:center;padding:24px 0 6px}
+.v26-done .ok{width:54px;height:54px;border-radius:50%;margin:0 auto 13px;display:flex;
+  align-items:center;justify-content:center;font-size:26px;color:#3DDA9E;background:rgba(18,184,134,.14)}
+.v26-done b{display:block;font-size:14.5px;font-weight:600}
+.v26-done p{margin:8px 0 0;font-size:10.5px;line-height:1.7;color:rgba(255,255,255,.4)}
+.v26-done p em{font-style:normal;color:#8E7DFF}

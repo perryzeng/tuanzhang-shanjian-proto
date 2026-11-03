@@ -1,12 +1,16 @@
-/* A8.4.1 单条作品的全部数据（V16.3）
+/* A8.4.1 单条作品的全部数据（V16.9）
    用户的话：「点每一个作品应该可以看到这个作品分享带来的所有数据，
    包括动态（时间轴）、谁浏览了谁是潜客、评论内容、以及整体数据。」
 
    所以四个 tab，对应四种问法：
-   ① 总览 —— 这条整体怎么样（漏斗 + 四个率 + 小剪的判断 + 用了哪几段）
+   ① 总览 —— 这条内容本身表现怎么样（打开次数/完播数/点赞数/互动数/分享数
+              + 完播率/平均停留/打开人数/平均访问次数 + 小剪的判断）
    ② 动态 —— 刚刚发生了什么（按时间倒序，一条一幕）
    ③ 人 —— 谁看了、谁问了、谁是潜客（按意向排，可以直接跳去跟进）
-   ④ 评论 —— 他们具体说了什么（这些是要回的人） */
+   ④ 评论 —— 他们具体说了什么（这些是要回的人）
+
+   问价、成交、转化率不在这儿 —— 成交发生在微信里，这条视频只负责把人带过去。
+   摆成交数会让人误以为作品页能回答"卖得怎么样"，那是客户页的事。 */
 
 window.PAGES["A8.4.1"].prd = "PRD V16 §5.1 · 作品详情（总览 / 动态 / 人 / 评论）";
 window.PAGES["A8.4.1"].sysEntry = "作品列表点任意一条已发的";
@@ -17,7 +21,6 @@ window.PAGES["A8.4.1"].render = function (ctx) {
   const t = ctx.t || "all";
 
   const used = w.blocks.map((id) => L.blocks.filter((b) => b.id === id)[0]).filter(Boolean);
-  const pct = (v) => (w.reach ? Math.max(7, Math.round(v / w.reach * 100)) : 7);
 
   /* 人：从时间轴里按人去重，合成"这个人在这条里的全部动作" */
   const people = {};
@@ -48,19 +51,35 @@ window.PAGES["A8.4.1"].render = function (ctx) {
   let body = "";
 
   if (t === "all") {
-    body = `<div class="v18-fn" style="margin-top:10px">
-      ${w.funnel.map(([k, v], i) => `<div class="v18-fn-r">
-        <span>${k}</span>
-        <div class="v18-fn-bar"><i style="width:${pct(v)}%;opacity:${1 - i * 0.16}"></i></div>
-        <b>${v}</b>
-      </div>`).join("")}
+    /* 作品页只讲「这条内容本身的表现」。
+       问价、成交、转化率归客户页 —— 在这儿摆成交数，团长会误以为
+       作品页能回答"卖得怎么样"，其实成交是在微信里发生的，这条视频只负责把人带过去。 */
+    const sent = w.status === "sent";
+    const M = sent
+      ? [
+        ["打开次数", w.opens],
+        ["完播数", w.full],
+        ["点赞数", w.likes],
+        ["互动数", w.inter],
+        ["分享数", w.shares]
+      ]
+      : [["打开次数", "—"], ["完播数", "—"], ["点赞数", "—"], ["互动数", "—"], ["分享数", "—"]];
+
+    const S = sent
+      ? [
+        [w.doneRate + "%", "完播率"],
+        [w.stay, "平均停留时长"],
+        [w.open, "打开人数"],
+        [w.avgVisit, "平均访问次数"]
+      ]
+      : [["—", "完播率"], ["—", "平均停留时长"], ["—", "打开人数"], ["—", "平均访问次数"]];
+
+    body = `<div class="v26-kpi">
+      ${M.map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")}
     </div>
 
-    <div class="v18-kpi">
-      <div><b>${w.rate}</b><span>转化率</span></div>
-      <div><b>${w.reach ? Math.round(w.open / w.reach * 100) + "%" : "—"}</b><span>点开率</span></div>
-      <div><b>${w.open ? Math.round(w.full / w.open * 100) + "%" : "—"}</b><span>完播率</span></div>
-      <div><b>${w.stay}</b><span>平均停留</span></div>
+    <div class="v26-sub">
+      ${S.map(([v, k]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")}
     </div>
 
     <div class="v18-insight">
@@ -122,13 +141,6 @@ window.PAGES["A8.4.1"].render = function (ctx) {
           <b>${w.title}</b>
           <span>${w.dur}${w.tag ? " · " + w.tag : ""}</span>
         </div>
-      </div>
-
-      <div class="v18-total" style="margin-top:10px">
-        <div><b>${w.open}</b><span>点开</span></div>
-        <div><b>${w.full}</b><span>看完</span></div>
-        <div><b>${w.ask}</b><span>问价</span></div>
-        <div><b>${w.deal}</b><span>成交</span></div>
       </div>
 
       ${w.status === "sent" ? `<div class="v24-plats">

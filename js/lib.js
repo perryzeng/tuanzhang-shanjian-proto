@@ -288,6 +288,53 @@ window.LIB = (function () {
     }
   ];
 
+  /* 作品的数据口径（V16.9）
+     「点开 / 看完 / 问价 / 成交」那套是漏斗，是客户页要讲的事。
+     作品页只讲这条内容本身的表现，所以换成内容侧的五个数：
+     打开次数 / 完播数 / 点赞数 / 互动数 / 分享数。
+
+     注意 打开次数 ≠ 打开人数：同一个人可能进来好几次，
+     「平均访问次数」就是 打开次数 ÷ 打开人数。 */
+  const wm = {
+    c1: { opens: 214, likes: 53, shares: 14, stars: 19 },
+    c2: { opens: 139, likes: 26, shares: 6, stars: 9 },
+    c3: { opens: 63, likes: 31, shares: 8, stars: 11 },
+    c4: { opens: 44, likes: 3, shares: 0, stars: 1 },
+    c5: { opens: 97, likes: 18, shares: 4, stars: 6 },
+    c6: { opens: 0, likes: 0, shares: 0, stars: 0 },
+    c7: { opens: 0, likes: 0, shares: 0, stars: 0 }
+  };
+  works.forEach((w) => {
+    const m = wm[w.id] || {};
+    w.opens = m.opens || 0;
+    w.likes = m.likes || 0;
+    w.shares = m.shares || 0;
+    w.stars = m.stars || 0;
+    w.inter = w.likes + w.cmt + w.shares + w.stars;
+    w.doneRate = w.open ? Math.round(w.full / w.open * 100) : 0;
+    w.avgVisit = w.open ? (w.opens / w.open).toFixed(1) : "—";
+  });
+
+  /* 小剪按互动数据生成评论用的语料池。
+     真接大模型时这里换成一次生成调用，返回结构不变：
+     谁 / 说什么 / 什么时候 / 几个赞 / 什么类型。
+     写的时候刻意混了问价、犹豫、反馈、成交四种 —— 生成出来的评论区
+     如果全是好话，一眼假，团长自己也不敢发。 */
+  const genPool = [
+    { who: "阿梅", av: "梅", tx: "多少钱一盒？能寄到梅州吗", at: "刚刚", likes: 12, type: "问价" },
+    { who: "周姨", av: "周", tx: "血压高的能吃吗，我妈 68 了", at: "刚刚", likes: 8, type: "咨询" },
+    { who: "陈姐", av: "陈", tx: "我妈吃了三个月，血脂确实降下来了", at: "1 分钟前", likes: 21, type: "反馈" },
+    { who: "阿强", av: "强", tx: "这个跟鱼油有啥区别，别又是智商税", at: "2 分钟前", likes: 6, type: "质疑" },
+    { who: "李叔", av: "李", tx: "一次买两瓶会不会太多了，能先来一瓶试试吗", at: "3 分钟前", likes: 9, type: "犹豫" },
+    { who: "王姨", av: "王", tx: "刚拍了两瓶，团长说明天就能到", at: "5 分钟前", likes: 15, type: "成交" },
+    { who: "小林", av: "林", tx: "给爸妈买的，他们自己不会弄，能直接寄老家吗", at: "8 分钟前", likes: 4, type: "问价" },
+    { who: "张姐", av: "张", tx: "体检单那段看得我心里一紧，我妈也是这个指标", at: "12 分钟前", likes: 18, type: "反馈" },
+    { who: "阿华", av: "华", tx: "299 两瓶是几个月的量？一天算下来多少钱", at: "15 分钟前", likes: 7, type: "问价" },
+    { who: "刘姨", av: "刘", tx: "之前买过别家的，吃了没感觉，这个真不一样吗", at: "20 分钟前", likes: 5, type: "质疑" },
+    { who: "老陈", av: "陈", tx: "我这种做过支架的能吃不", at: "26 分钟前", likes: 3, type: "咨询" },
+    { who: "黄姐", av: "黄", tx: "已经推荐给我姐了，她也在问", at: "半小时前", likes: 11, type: "反馈" }
+  ];
+
   /* 客户：从「数据」改成「人」。
      每个客户都要能回答四件事：
      ① 她是怎么来的（哪条视频、哪个渠道、什么时候）
@@ -482,5 +529,5 @@ window.LIB = (function () {
   ];
 
 
-  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board };
+  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool };
 })();
