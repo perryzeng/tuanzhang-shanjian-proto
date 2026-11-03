@@ -3512,3 +3512,85 @@
   justify-content:center;font-size:12px;font-weight:600;cursor:pointer}
 .v27-acts .ghost{flex:0 0 84px;background:var(--bg-2);color:var(--text-2);font-weight:500}
 .v27-acts .main{background:var(--g-brand);color:#fff;box-shadow:0 4px 12px rgba(124,108,255,.28)}
+
+/* ==================================================================
+   V18 客户四档：盘子分布 + 分档依据
+   顶部不再是三个总量数字 —— 总量回答不了"我的客户是什么形状"。
+   一条彩条 + 一次行动召唤，才是打开这页该知道的。
+   ================================================================== */
+.v28-top{background:var(--surface);border-radius:16px;padding:12px 13px 11px;box-shadow:var(--sh-1)}
+.v28-top-hd{display:flex;align-items:baseline;gap:7px;font-size:11.5px;font-weight:700;
+  letter-spacing:-.1px}
+.v28-top-hd em{margin-left:auto;font-style:normal;font-size:9px;font-weight:400;color:var(--text-4)}
+
+/* 冷热分布条：灰 → 浅紫 → 中紫 → 深紫，深浅本身就是温度 */
+.v28-bar{display:flex;gap:2px;height:9px;margin:9px 0 10px}
+.v28-bar i{display:block;height:100%;border-radius:2px}
+.v28-bar i.new{background:#D9DAE4}
+.v28-bar i.gen{background:#C3BCF2}
+.v28-bar i.pot{background:#8E7DFF}
+.v28-bar i.key{background:#5B4BE0}
+.v28-bar i:first-child{border-radius:5px 2px 2px 5px}
+.v28-bar i:last-child{border-radius:2px 5px 5px 2px}
+
+.v28-lg{display:flex;gap:5px;flex-wrap:wrap}
+.v28-lg span{font-size:10px;color:var(--text-3);padding:3px 8px;border-radius:999px;
+  background:var(--bg-2);cursor:pointer;line-height:1.4}
+.v28-lg span b{font-weight:700;color:var(--text-2)}
+.v28-lg span.on{background:var(--text);color:#fff}
+.v28-lg span.on b{color:#fff}
+.v28-lg .lg-key b{color:#5B4BE0}
+.v28-lg .lg-pot b{color:#7C6CFF}
+.v28-lg .lg-key.on{background:#5B4BE0}
+.v28-lg .lg-pot.on{background:#8E7DFF}
+
+/* 今天该动谁：一个动作条，比三个数字有用 */
+.v28-todo{display:flex;align-items:center;gap:10px;margin-top:10px;padding:11px 13px;
+  border-radius:14px;background:var(--g-brand);color:#fff;cursor:pointer;
+  box-shadow:0 8px 20px rgba(124,108,255,.26)}
+.v28-todo b{display:block;font-size:12.5px;font-weight:700}
+.v28-todo span{display:block;font-size:9.5px;color:rgba(255,255,255,.78);margin-top:2px}
+.v28-todo em{margin-left:auto;font-style:normal;font-size:16px;opacity:.8}
+
+/* 客户卡 */
+.v28-c{background:var(--surface);border-radius:16px;padding:12px 13px 11px;margin-top:10px;
+  box-shadow:var(--sh-1);cursor:pointer}
+.v28-hd{display:flex;align-items:flex-start;gap:9px}
+.v28-av{width:34px;height:34px;border-radius:50%;flex:0 0 34px;display:flex;align-items:center;
+  justify-content:center;font-style:normal;font-size:12px;font-weight:700;color:#fff}
+.v28-tx{flex:1;min-width:0}
+.v28-tx b{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;letter-spacing:-.2px}
+.v28-tx b em{font-style:normal;font-size:9px;font-weight:700;color:#fff;background:var(--text-3);
+  border-radius:5px;padding:1px 5px}
+.v28-tx b em.r{background:var(--danger)}
+.v28-src{display:block;font-size:9.5px;color:var(--text-3);margin-top:3px;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v28-tier{flex:0 0 auto;font-size:9px;font-weight:600;border-radius:6px;padding:3px 7px;line-height:1}
+.v28-tier.key{background:#5B4BE0;color:#fff}
+.v28-tier.pot{background:#EDE9FF;color:#5B4BE0}
+.v28-tier.gen{background:#F0F0F4;color:#6E6E7E}
+.v28-tier.new{background:#E7F3FF;color:#2E7BC4}
+
+/* 三个数的"证据行"：凭什么是这档，全在这 */
+.v28-ev{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:9px 0 0;
+  background:var(--bg-2);border-radius:10px;padding:7px 0}
+.v28-ev>div{text-align:center;position:relative}
+.v28-ev>div+div::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:16px;background:rgba(0,0,0,.06)}
+.v28-ev b{display:block;font-size:12.5px;font-weight:700;letter-spacing:-.3px;line-height:1.1;
+  font-variant-numeric:tabular-nums}
+.v28-ev span{display:block;font-size:8.5px;color:var(--text-3);margin-top:3px}
+
+.v28-ft{display:flex;align-items:center;gap:8px;margin-top:8px}
+.v28-last{font-size:9.5px;color:var(--text-4)}
+.v28-last.on{color:var(--success)}
+.v28-ft em{margin-left:auto;font-style:normal;font-size:11px;font-weight:600;color:var(--brand)}
+.v28-judge{margin-top:5px;font-size:10.5px;line-height:1.5;color:var(--text-2)}
+
+/* 图例前面点一个色点，跟上面那条彩条对上 —— 否则读者不知道哪截代表哪档 */
+.v28-lg span{display:inline-flex;align-items:center;gap:4px}
+.v28-lg span i.u28d{width:5px;height:5px;border-radius:50%;flex:0 0 5px;display:block;
+  padding:0;align-self:center;font-size:0}
+.v28-lg span.on i.u28d{background:#fff!important}
+/* 来源行：渠道在前、标题在后。标题长，让它被截，别把渠道截掉 */
+.v28-src{max-width:100%}
