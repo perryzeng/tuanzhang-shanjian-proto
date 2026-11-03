@@ -48,12 +48,12 @@ window.PAGES["L1"].render = function (ctx) {
         </div>
 
         <div class="v14-lp-track">
-          <div class="v14-lpt-hd">这些行为正在回到阿珍的首页</div>
+          <div class="v14-lpt-hd">这些行为正在回到大 P的首页</div>
           ${P.tracked.map(([k, val]) => `<div class="v14-lpt-r"><span>${k}</span><b>${val}</b></div>`).join("")}
         </div>
 
         <div class="xs" style="margin:14px 0 20px;line-height:1.7">
-          本页由阿珍分享 · 仅用于本团咨询，不对外公开
+          本页由大 P分享 · 仅用于本团咨询，不对外公开
         </div>
       </div>
     </div>

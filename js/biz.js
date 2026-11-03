@@ -9,8 +9,8 @@
 
 window.BIZ = (function () {
   const me = {
-    name: "阿珍",
-    av: "珍",
+    name: "大 P",
+    av: "P",
     ip: "做心脑血管科普的靠谱团长",
     fans: 1286,
     group: "前海团长 · 3 组"
@@ -145,7 +145,7 @@ window.BIZ = (function () {
       go: "F1"
     },
     {
-      who: "阿珍", av: "珍", img: "assets/gen/p-chat.jpg",
+      who: "大 P", av: "P", img: "assets/gen/p-chat.jpg",
       title: "体检单上这 3 个指标",
       note: "带来 5 位高潜，本组最高",
       hit: "本组第一",
@@ -192,7 +192,7 @@ window.BIZ = (function () {
   /* 落地页：没有交易动作。不放下单按钮、不放购物车，
      因为成交在微信里完成，这一页只负责「讲明白 + 让她来问我」。 */
   const landing = {
-    seller: { name: "阿珍 · 前海团长", av: "珍", note: "做心脑血管科普 3 年 · 1286 位邻居在跟" },
+    seller: { name: "大 P · 前海团长", av: "P", note: "做心脑血管科普 3 年 · 1286 位邻居在跟" },
     title: "磷虾油到底适合谁？这 3 类人别乱买",
     video: { img: "assets/gen/p-still.jpg", dur: "0:42" },
     offer: "团购 299 / 2 瓶 · 想要直接问我",
@@ -201,7 +201,7 @@ window.BIZ = (function () {
       "46 项无重金属检测，老人小孩都能吃",
       "一天不到 5 块钱，比买保健品划算"
     ],
-    cta: "问阿珍要一份吃法",
+    cta: "问大 P要一份吃法",
     tracked: [
       ["谁点开的", "阿梅 · 12 分钟前"],
       ["看了多久", "1 分 12 秒 · 看到第 3 个要点"],

@@ -46,9 +46,9 @@ window.PAGES["A8"].render = function () {
     <i>看</i>
   </div>`);
 
-  ai(`第 5 条还没剪。团队那边今天 <b>18:00</b> 截止，你现在排第 3。`);
+  ai(`第 5 条还没剪。小组那边今天 <b>18:00</b> 截止，你现在排第 3。`);
   card(`<div class="v15-card v16-task">
-    <span class="v16-task-k">团队</span>
+    <span class="v16-task-k">小组</span>
     <div>
       <b>第 5 集 · 老客回购实拍</b>
       <span>今天 18:00 截止 · 8/12 人已交</span>
