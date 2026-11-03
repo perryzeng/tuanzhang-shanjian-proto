@@ -1,6 +1,6 @@
-window.PAGES["A2"].prd = "PRD §4.2 · 小剪助理（对话式 Agent）";
+window.PAGES["A2"].prd = "PRD §4.2 · U剪助理（对话式 Agent）";
 
-/* 小剪助理：首页顶部的入口 → 这里。
+/* U剪助理：首页顶部的入口 → 这里。
    默认不空着：先给一句"今天最该做什么"，再给 4 个能直接点的快捷指令；
    点指令会真的进到对应页面。 */
 window.PAGES["A2"].render = function (ctx) {
@@ -41,7 +41,7 @@ window.PAGES["A2"].render = function (ctx) {
   const cur = A[q] || null;
 
   const bubble = (who, html, acts) => `<div class="msg ${who === "me" ? "me" : ""}">
-      ${who === "me" ? "" : `<span class="mav">剪</span>`}
+      ${who === "me" ? "" : `<span class="mav">${C.uai({ bare: true })}</span>`}
       <div>
         <div class="bub">${html}</div>
         ${acts ? `<div class="macts">${acts.map(([tx, go]) =>
@@ -60,13 +60,13 @@ window.PAGES["A2"].render = function (ctx) {
     ${C.sb()}
     <div class="ab">
       <span class="back" data-go="A1.2" data-label="返回首页">‹</span>
-      <div class="ttl">小剪助理<small>在线 · 今天的事我都记着</small></div>
+      <div class="ttl">U剪助理<small>在线 · 今天的事我都记着</small></div>
       <span class="act" data-set="A2.q=" data-label="回到开头">重来</span>
     </div>
 
     <div class="chat">
       <div class="chat-day">今天</div>
-      ${bubble("ai", "我是小剪。<br>你这一波讲到第 <b>5</b> 条，还差「给证据」这一环。<br>今天其实就三步：剪 1 条、发 2 条、跟 3 个人。")}
+      ${bubble("ai", "我是U剪。<br>你这一波讲到第 <b>5</b> 条，还差「给证据」这一环。<br>今天其实就三步：剪 1 条、发 2 条、跟 3 个人。")}
 
       ${bubble("ai", `<div style="font-weight:700;margin-bottom:7px">今天这三步</div>
         <div style="display:flex;flex-direction:column;gap:7px">
@@ -86,7 +86,7 @@ window.PAGES["A2"].render = function (ctx) {
     </div>
 
     <div class="chatbar">
-      <input data-bind="A2.draft" data-live value="${draft}" placeholder="问小剪：今天先做什么？"
+      <input data-bind="A2.draft" data-live value="${draft}" placeholder="问U剪：今天先做什么？"
         style="flex:1;border:0;outline:0;background:var(--bg-2);border-radius:999px;padding:11px 15px;font-size:12.5px" />
       <span class="send" data-set="A2.q=5&A2.draft=" data-label="发送">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

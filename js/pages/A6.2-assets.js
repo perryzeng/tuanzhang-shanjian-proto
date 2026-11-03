@@ -44,7 +44,7 @@ window.PAGES["A6.2"].render = function () {
         <span class="v15-voice-play">看</span>
       </div>
 
-      ${C.sec("小剪会怎么用")}
+      ${C.sec("U剪会怎么用")}
       <div class="card plain" style="padding:13px">
         <div class="xs" style="line-height:1.85">
           · 讲「谁在吃」→ 取出镜里的吴阿姨<br>

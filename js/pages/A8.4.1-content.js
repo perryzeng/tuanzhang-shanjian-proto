@@ -4,7 +4,7 @@
 
    所以四个 tab，对应四种问法：
    ① 总览 —— 这条内容本身表现怎么样（打开次数/完播数/点赞数/互动数/分享数
-              + 完播率/平均停留/打开人数/平均访问次数 + 小剪的判断）
+              + 完播率/平均停留/打开人数/平均访问次数 + U剪的判断）
    ② 动态 —— 刚刚发生了什么（按时间倒序，一条一幕）
    ③ 人 —— 谁看了、谁问了、谁是潜客（按意向排，可以直接跳去跟进）
    ④ 评论 —— 他们具体说了什么（这些是要回的人）
@@ -84,7 +84,7 @@ window.PAGES["A8.4.1"].render = function (ctx) {
     </div>
 
     <div class="v18-insight">
-      <div class="v18-insight-hd">小剪的判断</div>
+      <div class="v18-insight-hd">U剪的判断</div>
       <p>${w.insight}</p>
     </div>
 `;
@@ -153,10 +153,10 @@ window.PAGES["A8.4.1"].render = function (ctx) {
       ${tabs}
       ${body}
 
-      ${t === "all" ? `<div class="v18-reuse" data-go="A8?w=${w.id}" data-label="跟小剪说按这条再剪一条">
+      ${t === "all" ? `<div class="v18-reuse" data-go="A8?w=${w.id}" data-label="跟U剪说按这条再剪一条">
         <div>
           <b>按这个结构再剪一条</b>
-          <span>回首页跟小剪说一声，它按这条的结构给你排素材</span>
+          <span>回首页跟U剪说一声，它按这条的结构给你排素材</span>
         </div>
         <em>›</em>
       </div>` : ""}

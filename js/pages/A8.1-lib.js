@@ -72,7 +72,7 @@ window.PAGES["A8.1"].render = function (ctx) {
       </div>
 
       <div class="xs" style="margin:12px 2px 4px;line-height:1.7">
-        片段由小剪从原始素材里拆出来，已过合规检查。「组内用过」次数高的，建议换一段，别和其他人撞。
+        片段由U剪从原始素材里拆出来，已过合规检查。「组内用过」次数高的，建议换一段，别和其他人撞。
       </div>
     </div>
 

@@ -21,7 +21,7 @@ window.PAGES["A6"].render = function (ctx) {
   const after = (list) => list.indexOf(s) >= 0;
 
   const M = [];
-  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">剪</span><div>
+  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">${C.uai({ bare: true })}</span><div>
       <div class="bub">${html}</div>
       ${acts && acts.length ? `<div class="macts">${acts.map(([tx, set]) =>
         `<span class="mact-btn" data-set="${set}" data-label="${tx}">${tx} ›</span>`).join("")}</div>` : ""}
@@ -146,8 +146,8 @@ window.PAGES["A6"].render = function (ctx) {
     ${C.sb()}
 
     <div class="v15-hd">
-      <span class="mav">剪</span>
-      <div class="v15-hd-t"><b>小剪</b><span>在线 · 这一波已发 ${W.sent} 条</span></div>
+      <span class="mav">${C.uai({ bare: true })}</span>
+      <div class="v15-hd-t"><b>U剪</b><span>在线 · 这一波已发 ${W.sent} 条</span></div>
       <span class="v15-hd-me" data-go="A6.1" data-label="我是谁">${B.me.av}</span>
     </div>
 
@@ -158,7 +158,7 @@ window.PAGES["A6"].render = function (ctx) {
 
     <div class="chatbar">
       <span class="v15-plus" data-set="A6.menu=1" data-label="我的">◎</span>
-      <input placeholder="跟小剪说：剪一条 / 发朋友圈 / 谁在看" style="flex:1;border:0;outline:0;background:var(--bg-2);border-radius:999px;padding:11px 15px;font-size:12.5px" />
+      <input placeholder="跟U剪说：剪一条 / 发朋友圈 / 谁在看" style="flex:1;border:0;outline:0;background:var(--bg-2);border-radius:999px;padding:11px 15px;font-size:12.5px" />
       <span class="send" data-set="A6.s=cut1" data-label="发送">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 19V5M5 12l7-7 7 7"/></svg>

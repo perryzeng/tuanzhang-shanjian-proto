@@ -5,7 +5,7 @@
    所以对话里同时出现四种卡：数据、素材、任务、客户。
    一条对话把这些串起来，用户不用去四个 tab 分别看一遍。
 
-   底部保留四项导航（小剪/素材/看板/团队）：
+   底部保留四项导航（U剪/素材/看板/团队）：
    对话擅长"今天做什么"，不擅长"翻一遍所有素材"和"比一比这周数据"。
    该给板块的还是要给板块 —— 这是 A6 纯对话版最大的教训。 */
 
@@ -17,7 +17,7 @@ window.PAGES["A8"].render = function () {
   const b = L.board.me;
 
   const M = [];
-  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">剪</span><div>
+  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">${C.uai({ bare: true })}</span><div>
       <div class="bub">${html}</div>
       ${acts && acts.length ? `<div class="macts">${acts.map(([tx, go]) =>
         `<span class="mact-btn" ${/=/.test(go) ? `data-set="${go}"` : `data-go="${go}"`} data-label="${tx}">${tx} ›</span>`).join("")}</div>` : ""}
@@ -70,8 +70,8 @@ window.PAGES["A8"].render = function () {
   return `<div class="app" style="background:var(--bg-2)">
     ${C.sb()}
     <div class="v15-hd">
-      <span class="mav">剪</span>
-      <div class="v15-hd-t"><b>小剪</b><span>在线 · 这一波已发 ${B.wave.sent} 条</span></div>
+      <span class="mav">${C.uai({ bare: true })}</span>
+      <div class="v15-hd-t"><b>U剪</b><span>在线 · 这一波已发 ${B.wave.sent} 条</span></div>
       <span class="v15-hd-me" data-go="A6.1" data-label="我是谁">${B.me.av}</span>
     </div>
 
@@ -82,7 +82,7 @@ window.PAGES["A8"].render = function () {
 
     <div class="chatbar">
       <span class="v15-plus" data-go="A6.1" data-label="我的">◎</span>
-      <input placeholder="跟小剪说：剪第 5 条 / 素材里找点东西" style="flex:1;border:0;outline:0;background:var(--bg-2);border-radius:999px;padding:11px 15px;font-size:12.5px" />
+      <input placeholder="跟U剪说：剪第 5 条 / 素材里找点东西" style="flex:1;border:0;outline:0;background:var(--bg-2);border-radius:999px;padding:11px 15px;font-size:12.5px" />
       <span class="send" data-go="B1" data-label="发送">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 19V5M5 12l7-7 7 7"/></svg>

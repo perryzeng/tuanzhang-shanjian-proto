@@ -23,7 +23,7 @@ window.PAGES["A8.0"].render = function (ctx) {
   };
 
   const M = [];
-  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">剪</span><div>
+  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">${C.uai({ bare: true })}</span><div>
       <div class="bub">${html}</div>
       ${acts && acts.length ? `<div class="macts">${acts.map(([tx, set]) =>
         `<span class="mact-btn" data-set="${set}" data-label="${tx}">${tx} ›</span>`).join("")}</div>` : ""}
@@ -86,12 +86,19 @@ window.PAGES["A8.0"].render = function (ctx) {
   return `<div class="app" style="background:var(--bg-2)">
     ${C.sb()}
     <div class="v15-hd">
-      <span class="mav">剪</span>
-      <div class="v15-hd-t"><b>小剪</b><span>第一次见面 · 三个问题</span></div>
+      <span class="mav">${C.uai({ bare: true })}</span>
+      <div class="v15-hd-t"><b>U剪</b><span>第一次见面 · 三个问题</span></div>
     </div>
 
     <div class="chat v15-chat">
       <div class="chat-day">刚刚</div>
+      <div class="uai-intro">
+        ${C.uai({ s: 54 })}
+        <div>
+          <b>U剪</b>
+          <span>你的内容助理 · 会剪、会写，还会提醒你该跟谁聊</span>
+        </div>
+      </div>
       ${M.join("")}
     </div>
 

@@ -62,10 +62,10 @@ window.PAGES["A1"].render = function (ctx) {
   return `<div class="app">
     ${C.sb()}
     <div class="asstrow">
-      <div class="asst" data-go="A2" data-label="小剪助理">
+      <div class="asst" data-go="A2" data-label="U剪助理">
         <span class="asst-av">剪</span>
         <div style="flex:1;min-width:0">
-          <div class="asst-n">小剪助理<span class="asst-on">在线</span></div>
+          <div class="asst-n">U剪助理<span class="asst-on">在线</span></div>
           <div class="asst-m">${tasksAll.length ? `今天 ${tasksAll.length} 项要做 · 先做「${tasksAll[0].title}」` : "今天没有硬任务，想发点什么？"}</div>
         </div>
         <span class="asst-go">›</span>
@@ -121,7 +121,7 @@ window.PAGES["A1"].render = function (ctx) {
     ${ctx.pop === "1" ? "" : `<div class="nudge">
       <span class="nudge-av">剪</span>
       <div style="flex:1;min-width:0">
-        <div class="nudge-t"><b>小剪</b>：要我先催一下「信任背书口播」吗？还差 6 人，18:00 截止。</div>
+        <div class="nudge-t"><b>U剪</b>：要我先催一下「信任背书口播」吗？还差 6 人，18:00 截止。</div>
         <div class="nudge-a">
           <span class="nudge-y" data-go="A2?q=1" data-label="去催办">去催办</span>
           <span class="nudge-n" data-set="A1.pop=1" data-label="知道了">知道了</span>

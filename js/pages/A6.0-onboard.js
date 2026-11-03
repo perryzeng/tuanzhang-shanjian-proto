@@ -24,14 +24,14 @@ window.PAGES["A6.0"].render = function (ctx) {
   const tone = ctx.tone || "亲切";
 
   const M = [];
-  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">剪</span><div>
+  const ai = (html, acts) => M.push(`<div class="msg"><span class="mav">${C.uai({ bare: true })}</span><div>
       <div class="bub">${html}</div>
       ${acts && acts.length ? `<div class="macts">${acts.map(([tx, set]) =>
         `<span class="mact-btn" data-set="${set}" data-label="${tx}">${tx} ›</span>`).join("")}</div>` : ""}
     </div></div>`);
   const me = (html) => M.push(`<div class="msg me"><div><div class="bub">${html}</div></div></div>`);
 
-  ai("你好。我是小剪。<br>先问你四件事，之后每条片子都按你的路子来 —— 不用你每次重新解释。");
+  ai("你好。我是U剪。<br>先问你四件事，之后每条片子都按你的路子来 —— 不用你每次重新解释。");
 
   /* ① 行业 */
   if (idx === 0) {
@@ -93,8 +93,8 @@ window.PAGES["A6.0"].render = function (ctx) {
   return `<div class="app" style="background:var(--bg-2)">
     ${C.sb()}
     <div class="v15-hd">
-      <span class="mav">剪</span>
-      <div class="v15-hd-t"><b>小剪</b><span>第一次见面 · 第 ${Math.min(idx + 1, 4)} / 4 个问题</span></div>
+      <span class="mav">${C.uai({ bare: true })}</span>
+      <div class="v15-hd-t"><b>U剪</b><span>第一次见面 · 第 ${Math.min(idx + 1, 4)} / 4 个问题</span></div>
       <span class="v15-hd-step">${idx >= 4 ? "✓" : idx + 1 + "/4"}</span>
     </div>
 

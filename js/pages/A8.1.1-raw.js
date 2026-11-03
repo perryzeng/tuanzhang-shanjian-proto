@@ -73,7 +73,7 @@ window.PAGES["A8.1.1"].render = function (ctx) {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "原始素材", sub: "小剪会自动拆成片段，拆完进素材库", back: "A8.1", act: "＋ 添加" })}
+    ${C.ab({ title: "原始素材", sub: "U剪会自动拆成片段，拆完进素材库", back: "A8.1", act: "＋ 添加" })}
 
     <div class="body">
       <div class="v16-libstats">

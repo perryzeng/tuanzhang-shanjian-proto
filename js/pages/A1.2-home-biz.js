@@ -45,7 +45,7 @@ window.PAGES["A1.2"].render = function () {
         <div class="hi">下午好，${B.me.name}</div>
         <div class="hs">${B.me.ip}</div>
       </div>
-      <div class="v14-aibtn" data-go="A2?q=biz" data-label="问小剪">✦</div>
+      <div class="v14-aibtn" data-go="A2?q=biz" data-label="问U剪">✦</div>
       <div class="bell" style="margin-left:8px" data-go="E5" data-label="通知中心">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5F5E5A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 8.6a6 6 0 1 0-12 0c0 6.4-2.4 8.4-2.4 8.4h16.8S18 15 18 8.6"/><path d="M13.7 20.5a2 2 0 0 1-3.4 0"/>

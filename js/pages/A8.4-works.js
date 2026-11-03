@@ -5,7 +5,7 @@
    上一版按状态分组（已发 / 没发 / 草稿各一段），结果是"今天剪的"排在
    "10 月 25 日的"后面 —— 时间轴读起来是断的。现在不管状态，只按时间。
 
-   筛选用意图强弱分：有潜客 → 有互动 → 有浏览 → 没浏览。
+   筛选用意图强弱分：有潜客 → 有互动 → 有浏览 → 0浏览。
    这四档正好是"这条内容有没有把人带过来"的四层。 */
 
 window.PAGES["A8.4"].prd = "PRD V16 §5 · 作品（时间轴 / 按意图筛）";
@@ -20,7 +20,7 @@ window.PAGES["A8.4"].render = function (ctx) {
   const all = L.works.slice().sort((a, b) => b.ts - a.ts);
   const sent = all.filter((x) => x.status === "sent");
 
-  /* 意图四层：有潜客 ⊂ 有互动 ⊂ 有浏览，没浏览是另一头 */
+  /* 意图四层：有潜客 ⊂ 有互动 ⊂ 有浏览，0浏览是另一头 */
   const hasLead = (w) => w.leads > 0;
   const hasInter = (w) => w.inter > 0;
   const hasView = (w) => w.open > 0;
@@ -30,7 +30,7 @@ window.PAGES["A8.4"].render = function (ctx) {
     ["lead", "有潜客", hasLead],
     ["inter", "有互动", hasInter],
     ["view", "有浏览", hasView],
-    ["none", "没浏览", (w) => !hasView(w)]
+    ["none", "0浏览", (w) => !hasView(w)]
   ];
   const pick = (FILTERS.filter((x) => x[0] === f)[0] || FILTERS[0])[2];
   const list = all.filter(pick);
@@ -95,7 +95,7 @@ window.PAGES["A8.4"].render = function (ctx) {
     ${C.sb()}
     <div class="ab">
       <div class="ttl">作品<small>${all.length} 条 · ${sent.length} 条已发</small></div>
-      <span class="act" data-go="A8" data-label="问小剪">问小剪</span>
+      <span class="act" data-go="A8" data-label="问U剪">问U剪</span>
     </div>
 
     <div class="body">

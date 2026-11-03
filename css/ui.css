@@ -2111,7 +2111,7 @@
 .bell i{position:absolute;top:2px;right:1px;min-width:15px;height:15px;border-radius:8px;background:var(--danger);
   color:#fff;font-size:8px;font-style:normal;display:flex;align-items:center;justify-content:center;padding:0 3px}
 
-/* 小剪助理 · 对话 */
+/* U剪助理 · 对话 */
 .chat{flex:1;overflow-y:auto;padding:12px 16px 8px}
 .chat-day{text-align:center;font-size:10px;color:var(--text-4);margin:4px 0 12px}
 .msg{display:flex;gap:8px;margin-bottom:12px;align-items:flex-start}
@@ -2132,7 +2132,7 @@
 .send{width:38px;height:38px;border-radius:50%;background:var(--g-brand);color:#fff;display:flex;
   align-items:center;justify-content:center;flex:0 0 38px;cursor:pointer}
 
-/* 小剪主动提示（进首页 3 秒后浮出） */
+/* U剪主动提示（进首页 3 秒后浮出） */
 .nudge{position:absolute;right:14px;bottom:84px;z-index:30;width:250px;background:#fff;border-radius:16px;
   padding:11px 12px;box-shadow:0 16px 36px rgba(30,20,80,.24);display:flex;gap:9px;
   opacity:0;transform:translateY(10px);animation:nudgeIn .45s cubic-bezier(.2,.8,.3,1) 3s forwards}
@@ -3414,3 +3414,26 @@
 /* 五个筛选项在 375 里放不下一行，横向滚动会把后两个藏起来 —— 换行更好 */
 .chips.wrap{flex-wrap:wrap;overflow:visible;gap:6px}
 .chips.wrap .chip{height:30px;padding:0 11px;font-size:12px}
+
+/* ------------------------------------------------------------------
+   V16.14 U剪 的 IP 形象
+   字母 U 直接当脸：两条竖臂是轮廓，中间两个圆是眼睛。
+   图形只用 currentColor，所以同一个 SVG 放进渐变方块是白的、放白底上是紫的。
+   ------------------------------------------------------------------ */
+.mav .uai-mk{width:60%;height:60%;display:block}
+.uai{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  background:var(--g-brand);color:#fff;box-shadow:0 6px 16px rgba(124,108,255,.3)}
+.uai .uai-mk{width:68%;height:68%;display:block}
+.uai.plain{background:none;color:var(--brand);box-shadow:none}
+.uai.plain .uai-mk{width:100%;height:100%}
+
+/* U剪 第一次露脸的"名片"。放在引导页第一屏，
+   有个能记住的形，用户第二天回来还认得。 */
+.uai-intro{display:flex;align-items:center;gap:12px;padding:13px 14px;margin:0 14px 8px;
+  background:var(--surface);border-radius:16px;box-shadow:var(--sh-1)}
+.uai-intro b{display:block;font-size:15px;font-weight:700;letter-spacing:-.3px}
+.uai-intro > div > span{display:block;margin-top:3px;font-size:10.5px;color:var(--text-3);line-height:1.5}
+
+/* 注意：卡片里的文字规则必须写成 .uai-intro > div > span。
+   写成 .uai-intro span 会连带命中里面的 .uai 图标，把它的白色和 inline-flex 一起盖掉 —— 图标会变灰、变左对齐。 */
+.mav .uai-mk{width:60%;height:60%}

@@ -1,7 +1,7 @@
 /* A6.1 我是谁（V15）
    这不是一个"个人资料页"，是 AI 的长期记忆。
    它改一次，之后每条片子的台词、语气、选题都会跟着变 ——
-   所以每一项都用「小剪记住的」这种说法，而不是「编辑资料」。 */
+   所以每一项都用「U剪记住的」这种说法，而不是「编辑资料」。 */
 
 window.PAGES["A6.1"].prd = "PRD V15 §3 · 我是谁（IP 设定）";
 window.PAGES["A6.1"].sysEntry = "对话首页右上角头像；或 ◎ 抽屉第一项";
@@ -12,7 +12,7 @@ window.PAGES["A6.1"].render = function () {
 
   return `<div class="app">
     ${C.sb()}
-    ${C.ab({ title: "我是谁", sub: "小剪写每一句台词前，先读这里", back: "A6", act: "改" })}
+    ${C.ab({ title: "我是谁", sub: "U剪写每一句台词前，先读这里", back: "A6", act: "改" })}
 
     <div class="body">
       <div class="v15-ipcard">
@@ -31,7 +31,7 @@ window.PAGES["A6.1"].render = function () {
         <em>›</em>
       </div>
 
-      ${C.sec("小剪记住的")}
+      ${C.sec("U剪记住的")}
       <div class="v15-kv"><span>做什么的</span><b>${ip.industry}</b></div>
       <div class="v15-kv"><span>主要拍</span><b>${ip.types.join(" · ")}</b></div>
       <div class="v15-kv"><span>怎么说话</span><b>${ip.tone}</b></div>

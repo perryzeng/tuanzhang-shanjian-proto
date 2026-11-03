@@ -47,7 +47,7 @@ window.PAGES["A8.2.1"].render = function (ctx) {
       </div>
 
       <div class="v20-judge">
-        <div class="v20-judge-hd">小剪的判断</div>
+        <div class="v20-judge-hd">U剪的判断</div>
         <div class="v20-judge-stuck">${u.stuck}</div>
         <p>${u.advice}</p>
       </div>

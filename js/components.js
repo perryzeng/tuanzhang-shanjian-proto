@@ -7,6 +7,34 @@
     `<div class="sb"${light ? ' style="color:#fff"' : ""}><span>9:41</span>` +
     `<span class="r">5G <span style="letter-spacing:-1px">▮▮▮</span> 100%</span></div>`;
 
+  /* U剪 的 IP 形象。
+     ---------------------------------------------------------------
+     不画拟人小人，直接把字母 U 当成脸：两条竖臂是轮廓，中间两个圆是眼睛，
+     U 的底部弧线就是嘴。一个形状同时是字和脸，这是它成立的全部原因。
+
+     为什么不再加身体、手、剪刀：这个形象一天要被看到几十次（每条回复的头像、
+     顶栏、引导页），最小只有 28px。多一笔就糊，而且"U"本身就是个现成的形，
+     再画别的只会跟它打架。
+
+     只用 currentColor —— 放进渐变方块是白的，放白底上是品牌紫，一套吃到底。
+     注意：外面如果有 `.xxx span{color:...}` 这种后代选择器会盖掉 .uai 的白，
+     所以引用它的容器别再对这个 span 写 color。 */
+  C.uai = (o) => {
+    o = o || {};
+    const s = o.s || 28;
+    const mark = `<svg class="uai-mk" viewBox="7 6.5 26 25" fill="none" aria-label="U剪">
+      <path d="M11 10.5v8.5a9 9 0 0 0 18 0v-8.5"
+        stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="17.1" cy="17" r="2.45" fill="currentColor"/>
+      <circle cx="22.9" cy="17" r="2.45" fill="currentColor"/>
+    </svg>`;
+
+    /* bare：塞进已有的方块里（.mav 那种），只要图形，别自带底色 */
+    if (o.bare) return mark;
+
+    return `<span class="uai${o.plain ? " plain" : ""}" style="width:${s}px;height:${s}px;border-radius:${Math.round(s * 0.32)}px">${mark}</span>`;
+  };
+
   C.ab = (o) => {
     o = o || {};
     const back = o.back === false ? ""
@@ -100,7 +128,7 @@
       `<b class="${cur === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${TABICON[ic]}</span>${tx}</b>`).join("")}</div>`;
   };
 
-  /* V16 的四项导航：小剪 / 素材 / 看板 / 团队。
+  /* V16 的四项导航：U剪 / 素材 / 看板 / 团队。
      和 V14 五项的区别：素材取代了「剪同款」，看板把「客户」并进去了
      （数据是聚合视图，客户是个体视图，本来就该在一页里上下看）。 */
   C.tab8 = (active) => {
@@ -111,7 +139,7 @@
       users: `<svg viewBox="0 0 24 24"><circle cx="9.2" cy="8" r="3.2"/><path d="M3.4 20c0-3.2 2.6-5.8 5.8-5.8s5.8 2.6 5.8 5.8"/><circle cx="17.2" cy="9" r="2.2"/><path d="M15.8 14.4c2.5.5 4.3 2.6 4.3 5.2"/></svg>`,
       person: `<svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.4c0-4 3.2-7.2 7.2-7.2s7.2 3.2 7.2 7.2"/></svg>`
     };
-    const items = [["A8", "小剪", "chat"], ["A8.4", "作品", "box"], ["A8.2", "客户", "person"], ["A8.3", "小组", "users"]];
+    const items = [["A8", "U剪", "chat"], ["A8.4", "作品", "box"], ["A8.2", "客户", "person"], ["A8.3", "小组", "users"]];
     return `<div class="tb">${items.map(([id, tx, k]) =>
       `<b class="${active === id ? "on" : ""}" data-go="${id}" data-label="${tx} Tab"><span class="ic">${ic[k]}</span>${tx}</b>`).join("")}</div>`;
   };

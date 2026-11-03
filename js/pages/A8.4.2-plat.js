@@ -5,7 +5,7 @@
    这一页走完的是「发出去」这一整段：
    ① 整屏还原三个平台的播放页
    ② 四个互动数随手改，屏上立刻跟着变（data-out，不整页重渲染）
-   ③ 点「确定生成」→ 小剪按你填的数生成对应的评论（这里模拟一次模型调用）
+   ③ 点「确定生成」→ U剪按你填的数生成对应的评论（这里模拟一次模型调用）
    ④ 点「分享」→ 调起微信选择朋友圈 / 好友 / 群 → 编辑文案 → 发表
    ⑤ 发表完给「客户点开看到的样子」，链路就闭环了
 
@@ -167,7 +167,7 @@ window.PAGES["A8.4.2"].render = function (ctx) {
   if (sheet === "cmt") {
     sheetHTML = `<div class="v26-mask" data-set="A8.4.2.sheet="></div>
     <div class="v26-sh">
-      <div class="v26-sh-hd"><b>评论 ${v.cmt}</b><span>按你填的数由小剪生成</span>
+      <div class="v26-sh-hd"><b>评论 ${v.cmt}</b><span>按你填的数由U剪生成</span>
         <em data-set="A8.4.2.sheet=">✕</em></div>
       <div class="v26-sh-bd">
         ${shown.map((c, i) => `<div class="v26-cm">
@@ -327,7 +327,7 @@ window.PAGES["A8.4.2"].render = function (ctx) {
   /* ---------- 底部按钮：确定生成跟模拟互动数据是一整块，不拆到操作栏 ---------- */
   /* 生成中不给点，避免连点叠出两批评论。 */
   const genBusy = gen === "1";
-  const genTxt = genBusy ? "小剪在写评论…" : gen === "2" ? "↻ 重新生成评论" : "确定生成";
+  const genTxt = genBusy ? "U剪在写评论…" : gen === "2" ? "↻ 重新生成评论" : "确定生成";
   const genCls = genBusy ? "v26-go wait" : "v26-go plain";
   const genAttr = genBusy
     ? ""
