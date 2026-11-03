@@ -3410,3 +3410,7 @@
 .v25-toast.on{transform:translate(-50%,0)}
 /* 分享只有三个渠道，别按四列排，否则右边空一格看着像少了个入口 */
 .v25-ov .v26-shr{grid-template-columns:repeat(3,1fr)}
+
+/* 五个筛选项在 375 里放不下一行，横向滚动会把后两个藏起来 —— 换行更好 */
+.chips.wrap{flex-wrap:wrap;overflow:visible;gap:6px}
+.chips.wrap .chip{height:30px;padding:0 11px;font-size:12px}

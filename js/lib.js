@@ -315,6 +315,18 @@ window.LIB = (function () {
     w.avgVisit = w.open ? (w.opens / w.open).toFixed(1) : "—";
   });
 
+  /* 时间轴排序键（V16.13）
+     数组顺序是"当初录 mock 的顺序"，不是"发生时间"。
+     时间轴必须按真实日期排 —— 否则今天剪好的会掉到 10 月 25 日后面，
+     团长会以为"今天的东西没进作品列表"。
+     ts 用 YYYYMMDD 整数，比解析中文日期靠谱。 */
+  const today = 20261103;
+  const wt = {
+    c1: 20261030, c2: 20261028, c3: 20261027, c4: 20261026, c5: 20261025,
+    c6: 20261103, c7: 20261102
+  };
+  works.forEach((w) => { w.ts = wt[w.id] || 0; });
+
   /* 小剪按互动数据生成评论用的语料池。
      真接大模型时这里换成一次生成调用，返回结构不变：
      谁 / 说什么 / 什么时候 / 几个赞 / 什么类型。
@@ -529,5 +541,5 @@ window.LIB = (function () {
   ];
 
 
-  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool };
+  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board, genPool, today };
 })();
