@@ -60,7 +60,7 @@ window.PAGES["A8.2"].render = function (ctx) {
         <b>${u.name}<em class="${u.score >= 80 ? "r" : ""}">${u.score}</em></b>
         <span class="v28-src">来自 ${u.from.ch} · 「${u.from.c}」</span>
       </div>
-      <span class="v28-tier ${u.tier}">${TIER[u.tier]}</span>
+      <span class="v28-tier t-${u.tier}">${TIER[u.tier]}</span>
     </div>
 
     <div class="v28-ev">
@@ -80,7 +80,7 @@ window.PAGES["A8.2"].render = function (ctx) {
     ${C.sb()}
     <div class="ab">
       <div class="ttl">客户<small>全库 128 位 · 今天要看的 ${all.length} 位</small></div>
-      <span class="act" data-go="G3.1" data-label="客户规则">规则</span>
+      <span class="act" data-go="A8.2.2" data-label="客户规则">规则</span>
     </div>
 
     <div class="body">
