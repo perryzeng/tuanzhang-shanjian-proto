@@ -3313,3 +3313,38 @@
 .btn.soft.dim{background:rgba(255,255,255,.06);color:rgba(255,255,255,.45)}
 .actionbar .btn.soft{flex:0 0 118px}
 .v25-app .actionbar .btn{font-size:14px}
+
+/* ------------------------------------------------------------------
+   V16.11 全屏一览：整屏铺满 + 自动播放
+   这里的"播放"是模拟的：图片缓慢推近 4% + 底部进度条 + 倒计时，
+   三个一起给，眼睛才会认那是视频而不是一张图。
+   帧循环写在页面 mount 里（core.js 渲染完回调），不走 after —— 
+   after 每帧重渲染一次，视频会一直从头开始。
+   ------------------------------------------------------------------ */
+.v25-full{background:#000;overflow:hidden}
+.v25-player{position:absolute;inset:0;overflow:hidden;cursor:pointer}
+.v25-player .v25-pf{position:absolute;inset:0;width:100%;height:100%}
+.v25-player .v25-media{transform-origin:center center;will-change:transform}
+
+.v25-prog{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:12;pointer-events:none;
+  background:rgba(124,108,255,.22)}
+.v25-prog i{display:block;height:100%;width:0;background:#8E7DFF;
+  box-shadow:0 0 8px rgba(124,108,255,.75)}
+
+.v25-paused{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:11;
+  width:62px;height:62px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;
+  display:none;align-items:center;justify-content:center;font-size:19px;padding-left:4px;
+  pointer-events:none;backdrop-filter:blur(2px)}
+.v25-player.paused .v25-paused{display:flex}
+
+.v25-ftip{position:absolute;left:50%;top:42%;transform:translateX(-50%);z-index:11;
+  background:rgba(0,0,0,.5);color:#fff;font-size:10.5px;padding:5px 12px;border-radius:999px;
+  white-space:nowrap;pointer-events:none;animation:v25tip 3.4s ease forwards}
+@keyframes v25tip{0%,58%{opacity:1}100%{opacity:0}}
+
+/* 面板里的「确定生成」跟底部的「分享朋友圈」不能都是实心紫 ——
+   两个一样重的按钮挨着，人会停在那儿想点哪个。
+   确定生成是这一步的"应用"，做成淡紫；真正要走完的动作留给底部。 */
+.v26-go.plain{background:rgba(124,108,255,.20);color:#C6BDFF;box-shadow:none;
+  font-weight:600;height:40px;font-size:12.5px}
+.v26-go.plain:active{background:rgba(124,108,255,.3)}

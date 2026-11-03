@@ -75,6 +75,12 @@
     if (q && !skipHashQuery) new URLSearchParams(q).forEach((v, k) => { STATE[id] = STATE[id] || {}; STATE[id][k] = v; });
     skipHashQuery = false;
     phone.innerHTML = p && p.render ? p.render(STATE[id] || {}) : ghost(id);
+    /* 需要真 DOM 才成立的东西（播放器、逐帧动画）放在 mount 里。
+       跟 after 的分工：after 是"过一会改状态再重渲染"，mount 是"这次渲染完就接上，别重渲染"。
+       播放器如果走 after，每帧重渲染一次，视频会一直从头开始。 */
+    if (p && typeof p.mount === "function") {
+      try { p.mount(phone, STATE[id] || {}); } catch (e) { console.warn("mount failed", id, e); }
+    }
   }
 
   /* ---------- 右侧面板 ---------- */

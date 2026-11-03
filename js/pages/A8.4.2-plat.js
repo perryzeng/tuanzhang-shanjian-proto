@@ -22,6 +22,47 @@ window.PAGES["A8.4.2"].after = function (s) {
   return null;
 };
 
+/* 全屏预览的播放器。
+   为什么放 mount 不放 after：after 是"改状态再重渲染"，每帧都重渲染的话
+   视频会一直从 0 开始。mount 是"这次渲染完就接上，之后别重渲染"，帧循环才算得下去。 */
+window.PAGES["A8.4.2"].mount = function (el) {
+  const box = el.querySelector("[data-player]");
+  if (!box) return;
+  const bar = el.querySelector(".v25-prog i");
+  const clock = el.querySelector("[data-clock]");
+  const media = el.querySelector(".v25-media");
+  const dur = Math.max(6, Number(box.dataset.dur) || 30);
+
+  let t = 0, last = 0, paused = false;
+
+  box.addEventListener("click", (e) => {
+    /* 返回键、切平台这些带 data-set 的，交给路由，别当"点视频"处理 */
+    if (e.target.closest("[data-set]")) return;
+    paused = !paused;
+    box.classList.toggle("paused", paused);
+    last = 0;
+  });
+
+  const fmt = (x) => Math.floor(x / 60) + ":" + String(Math.floor(x % 60)).padStart(2, "0");
+
+  function frame(now) {
+    if (!document.body.contains(box)) return;   // 页面切走了，循环自己停
+    if (!last) last = now;
+    const dt = Math.min(0.12, (now - last) / 1000);
+    last = now;
+    if (!paused) {
+      t += dt;
+      if (t >= dur) t = 0;                     // 播完从头再来，不黑屏
+    }
+    if (bar) bar.style.width = ((t / dur) * 100).toFixed(2) + "%";
+    if (clock) clock.textContent = fmt(Math.max(0, dur - t));
+    /* 图片不会动，但缓慢推近 4% 就够让人相信它在播了 */
+    if (media) media.style.transform = "scale(" + (1 + 0.045 * (t / dur)).toFixed(4) + ")";
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+};
+
 window.PAGES["A8.4.2"].render = function (ctx) {
   const C = window.C, L = window.LIB, S = window.SKIN;
   const w = L.works.filter((x) => x.id === ctx.c)[0] || L.works[0];
@@ -165,11 +206,31 @@ window.PAGES["A8.4.2"].render = function (ctx) {
     </div>`;
   }
 
-  /* ---------- 底部两个按钮 ---------- */
-  /* 确定生成是"闸门"，分享朋友圈才是正经动作，所以主色给后者。
-     生成中不给点，避免连点叠出两批评论。 */
+  /* ---------- 全屏一览 ----------
+     进到的是这条作品在该平台上的"整屏"，跟真机一样满屏、边到边，
+     并且自动播放 —— 团长要判断的是"点开那一瞬间像不像"，不是"缩略图好不好看"。 */
+  const secs = (() => {
+    const m = String(w.dur || "0:30").split(":");
+    const n = (Number(m[0]) || 0) * 60 + (Number(m[1]) || 0);
+    return n > 0 ? n : 30;
+  })();
+
+  if (ctx.full === "1") {
+    return `<div class="app v25-app v25-full">
+      <div class="v25-player" data-player data-dur="${secs}">
+        ${S.render(pf, wf, v, { back: ` data-set="A8.4.2.full="` })}
+        <div class="v25-paused">▶</div>
+      </div>
+      <div class="v25-prog"><i></i></div>
+      <div class="v25-ftip">全屏预览 · 自动播放 · 轻点暂停</div>
+    </div>`;
+  }
+
+  /* ---------- 底部按钮：确定生成跟模拟互动数据是一整块，不拆到操作栏 ---------- */
+  /* 生成中不给点，避免连点叠出两批评论。 */
   const genBusy = gen === "1";
-  const genTxt = genBusy ? "生成中…" : gen === "2" ? "↻ 重新生成" : "确定生成";
+  const genTxt = genBusy ? "小剪在写评论…" : gen === "2" ? "↻ 重新生成评论" : "确定生成";
+  const genCls = genBusy ? "v26-go wait" : "v26-go plain";
   const genAttr = genBusy
     ? ""
     : ` data-set="A8.4.2.gen=1${gen === "2" ? "&A8.4.2.batch=" + (batch + 3) : ""}"`;
@@ -195,11 +256,12 @@ window.PAGES["A8.4.2"].render = function (ctx) {
         <label><span>分享</span><input data-bind="A8.4.2.${pf}_share" data-out=".v25-n-share" value="${v.share}"></label>
         <label><span>收藏</span><input data-bind="A8.4.2.${pf}_star" data-out=".v25-n-star" value="${v.star}"></label>
       </div>
+      <div class="${genCls}"${genAttr} style="margin-top:9px">${genTxt}</div>
       <div class="v26-lp" data-go="L1?pf=${pf}&c=${w.id}" data-label="看客户点开的样子">客户点开的，就是上面这一屏 <b>›</b></div>
     </div>
 
     <div class="actionbar">
-      <div class="${genBusy ? "btn soft dim" : "btn soft"}"${genAttr}>${genTxt}</div>
+      <div class="btn soft" data-set="A8.4.2.full=1">预览</div>
       <div class="btn" data-set="A8.4.2.sheet=share">分享朋友圈</div>
     </div>
 

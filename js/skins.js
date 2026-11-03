@@ -48,8 +48,8 @@
       <span class="r"><i>▮▮▮</i>5G<b>90</b></span></div>`;
 
   /* 平台顶部返回条（抖音/视频号都有，小红书也有但样式不同） */
-  const backRow = (right, cls) =>
-    `<div class="v25-nav ${cls || ""}"><span class="bk">${I.chev}</span><span class="rt">${right || ""}</span></div>`;
+  const backRow = (right, cls, back) =>
+    `<div class="v25-nav ${cls || ""}"><span class="bk"${back || ""}>${I.chev}</span><span class="rt">${right || ""}</span></div>`;
 
   /* 四个数：类名固定，data-out 靠它就地改字 */
   const num = (k, v) => `<b class="v25-n-${k}">${nf(v)}</b>`;
@@ -57,11 +57,11 @@
   /* ============================ 抖音 ============================ */
   function dy(w, v, o) {
     return `<div class="v25-pf v25-dy${o.noSb ? " nosb" : ""}">
-      <img class="v25-bg" src="${w.img}" alt="">
+      <img class="v25-bg v25-media" src="${w.img}" alt="">
       <div class="v25-scrim"></div>
       ${sb(0)}
       <div class="v25-dy-nav">
-        <span class="bk">${I.chev}</span>
+        <span class="bk"${o.back || ""}>${I.chev}</span>
         <span class="bk2">${I.frames}</span>
         <div class="tabs">
           <span>关注</span>
@@ -75,7 +75,7 @@
       <div class="v25-dy-bot">
         <div class="r1">
           <span class="later">${I.clock}稍后看</span>
-          <span class="tm"><em>${w.dur}</em><em class="dm">${I.danmu}弹</em></span>
+          <span class="tm"><em data-clock>${w.dur}</em><em class="dm">${I.danmu}弹</em></span>
         </div>
         <div class="r2">
           <b class="av">P</b>
@@ -100,10 +100,10 @@
   /* ============================ 视频号 ============================ */
   function wx(w, v, o) {
     return `<div class="v25-pf v25-wx${o.noSb ? " nosb" : ""}">
-      <img class="v25-bg" src="${w.img}" alt="">
+      <img class="v25-bg v25-media" src="${w.img}" alt="">
       <div class="v25-scrim"></div>
       ${sb(0)}
-      ${backRow('<span class="dots">···</span>')}
+      ${backRow('<span class="dots">···</span>', "", o.back)}
 
       <div class="v25-wx-side">
         <div class="av">P<i>+</i></div>
@@ -129,13 +129,13 @@
     return `<div class="v25-pf v25-xhs${o.noSb ? " nosb" : ""}">
       ${sb(1)}
       <div class="v25-xhs-top">
-        <span class="bk">${I.chev}</span>
+        <span class="bk"${o.back || ""}>${I.chev}</span>
         <b class="av">P</b>
         <span class="nm">${w.who || "大 P"}</span>
         <em>关注</em>
       </div>
       <div class="v25-xhs-img">
-        <img src="${w.img}" alt="">
+        <img class="v25-media" src="${w.img}" alt="">
         ${I.play}
         <span class="pg">1/1</span>
       </div>
