@@ -22,29 +22,32 @@ window.PAGES["A8.4.2"].after = function (s) {
   return null;
 };
 
-/* 全屏预览的播放器。
+/* 全屏预览的播放器 + 平台操作。
    为什么放 mount 不放 after：after 是"改状态再重渲染"，每帧都重渲染的话
-   视频会一直从 0 开始。mount 是"这次渲染完就接上，之后别重渲染"，帧循环才算得下去。 */
-window.PAGES["A8.4.2"].mount = function (el) {
-  const box = el.querySelector("[data-player]");
-  if (!box) return;
-  const bar = el.querySelector(".v25-prog i");
-  const clock = el.querySelector("[data-clock]");
-  const media = el.querySelector(".v25-media");
-  const dur = Math.max(6, Number(box.dataset.dur) || 30);
+   视频会一直从 0 开始。mount 是"这次渲染完就接上，之后别重渲染"，帧循环才算得下去。
 
+   点赞/收藏/关注 也只能在这儿做：它们要动的是"屏幕上那个数"，
+   走重渲染会把播放进度清零。所以直接改 DOM + 顺手回写 STATE，
+   退回去看面板时数还是对的。 */
+const NP = (s) => {
+  s = String(s).trim();
+  if (/万$/.test(s)) return Math.round(parseFloat(s) * 10000);
+  return Number(s.replace(/[^\d]/g, "")) || 0;
+};
+
+window.PAGES["A8.4.2"].mount = function (el, ctx) {
+  const root = el.querySelector(".v25-full");
+  if (!root) return;
+
+  /* ---------- 播放 ---------- */
+  const box = root.querySelector("[data-player]");
+  const bar = root.querySelector(".v25-prog i");
+  const clock = root.querySelector("[data-clock]");
+  const media = root.querySelector(".v25-media");
+  const dur = Math.max(6, Number(box.dataset.dur) || 30);
   let t = 0, last = 0, paused = false;
 
-  box.addEventListener("click", (e) => {
-    /* 返回键、切平台这些带 data-set 的，交给路由，别当"点视频"处理 */
-    if (e.target.closest("[data-set]")) return;
-    paused = !paused;
-    box.classList.toggle("paused", paused);
-    last = 0;
-  });
-
   const fmt = (x) => Math.floor(x / 60) + ":" + String(Math.floor(x % 60)).padStart(2, "0");
-
   function frame(now) {
     if (!document.body.contains(box)) return;   // 页面切走了，循环自己停
     if (!last) last = now;
@@ -61,6 +64,67 @@ window.PAGES["A8.4.2"].mount = function (el) {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+
+  /* ---------- 平台操作 ---------- */
+  const pf = ctx.pf || "dy";
+  const st = (window.STATE["A8.4.2"] = window.STATE["A8.4.2"] || {});
+
+  const openOv = (k) => {
+    root.querySelectorAll(".v25-ov").forEach((o) => o.classList.toggle("on", o.dataset.ov === k));
+  };
+  const closeOv = () => root.querySelectorAll(".v25-ov").forEach((o) => o.classList.remove("on"));
+  let toastT = null;
+  const toast = (msg) => {
+    const n = root.querySelector(".v25-toast");
+    if (!n) return;
+    n.textContent = msg;
+    n.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(() => n.classList.remove("on"), 1800);
+  };
+
+  /* 点一下 +1，再点一下 -1；数字跟着变，同时写回 STATE，退回面板时还是这个数 */
+  function bump(node, act) {
+    const on = node.classList.toggle("on");
+    const delta = on ? 1 : -1;
+    const cur = NP(st[pf + "_" + act] != null ? st[pf + "_" + act] : (root.querySelector(".v25-n-" + act) || {}).textContent);
+    const next = Math.max(0, cur + delta);
+    st[pf + "_" + act] = String(next);
+    root.querySelectorAll(".v25-n-" + act).forEach((o) => { o.textContent = window.SKIN.nf(next); });
+  }
+
+  root.addEventListener("click", (e) => {
+    const close = e.target.closest("[data-close]");
+    if (close) { closeOv(); return; }
+
+    const chan = e.target.closest("[data-chan]");
+    if (chan) {
+      closeOv();
+      toast("已分享到" + chan.dataset.chan);
+      return;
+    }
+
+    const act = e.target.closest("[data-act]");
+    if (act) {
+      const k = act.dataset.act;
+      if (k === "like" || k === "star") { bump(act, k); return; }
+      if (k === "cmt" || k === "share") { openOv(k); return; }
+      if (k === "follow") {
+        const on = act.classList.toggle("on");
+        if (act.tagName === "EM") act.textContent = on ? "已关注" : "关注";
+        return;
+      }
+      return;
+    }
+
+    /* 面板开着的时候，点面板内部不暂停；点遮罩才关 */
+    if (e.target.closest(".v25-ov")) return;
+    if (e.target.closest("[data-set]")) return;   // 返回键交给路由
+
+    paused = !paused;
+    box.classList.toggle("paused", paused);
+    last = 0;
+  });
 };
 
 window.PAGES["A8.4.2"].render = function (ctx) {
@@ -96,8 +160,6 @@ window.PAGES["A8.4.2"].render = function (ctx) {
     "linear-gradient(135deg,#F2C14E,#D9A02B)", "linear-gradient(135deg,#8FC7D8,#5B9DB0)"];
   const avBg = (i) => AV[i % AV.length];
   const tagCls = (t) => (t === "问价" || t === "咨询" ? "q" : t === "成交" ? "d" : "");
-
-  const GEN_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3Z"/></svg>`;
 
   /* ---------- 底部弹层 ---------- */
   let sheetHTML = "";
@@ -223,6 +285,42 @@ window.PAGES["A8.4.2"].render = function (ctx) {
       </div>
       <div class="v25-prog"><i></i></div>
       <div class="v25-ftip">全屏预览 · 自动播放 · 轻点暂停</div>
+
+      <!-- 评论：跟平台一样从底部升起来 -->
+      <div class="v25-ov" data-ov="cmt">
+        <div class="v25-ov-mask" data-close></div>
+        <div class="v25-ov-sheet${pf === "xhs" ? " light" : ""}">
+          <div class="v25-ov-hd"><b>${v.cmt} 条评论</b><span>按热度</span><em data-close>✕</em></div>
+          <div class="v25-ov-bd">
+            ${shown.map((c, i) => `<div class="v26-cm">
+              <i class="av" style="background:${avBg(i)}">${c.av}</i>
+              <div class="tx">
+                <div class="nm"><b>${c.who}</b><i class="${tagCls(c.type)}">${c.type}</i></div>
+                <p>${c.tx}</p>
+                <div class="mt"><em>${c.at}</em><em>♥ ${c.likes}</em><em>回复</em></div>
+              </div>
+            </div>`).join("")}
+          </div>
+          <div class="v25-ov-ft"><span class="inp">说点什么…</span><i>${S.icon.bubble}</i><b>发送</b></div>
+        </div>
+      </div>
+
+      <!-- 分享：平台自己的分享面板被换成了微信，别的照旧 -->
+      <div class="v25-ov" data-ov="share">
+        <div class="v25-ov-mask" data-close></div>
+        <div class="v25-ov-sheet">
+          <div class="v25-ov-hd"><b>分享到微信</b><span>${p.name} · 这条作品</span><em data-close>✕</em></div>
+          <div class="v25-ov-bd">
+            <div class="v26-shr">
+              <div data-chan="朋友圈"><i style="background:#07C160">圈</i><b>朋友圈</b></div>
+              <div data-chan="微信好友"><i style="background:#2BB673">友</i><b>微信好友</b></div>
+              <div data-chan="群聊"><i style="background:#4C8DFF">群</i><b>群聊</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="v25-toast"></div>
     </div>`;
   }
 

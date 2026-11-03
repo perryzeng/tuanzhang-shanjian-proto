@@ -80,17 +80,17 @@
         <div class="r2">
           <b class="av">P</b>
           <span class="nm">${w.who || "大 P"}</span>
-          <span class="hb">${I.heart}</span>
+          <span class="hb" data-act="follow">${I.heart}</span>
         </div>
         <div class="r3">${w.title} ${w.tags || "#心脑血管科普 #磷虾油"}</div>
         <div class="r4">
           <b class="av2">陈</b>
           <div class="tt"><b>${w.card || "远方好物 · 全国招商总监"}</b><span>19 个朋友关注</span></div>
           <div class="ops">
-            <span>${I.thumb}${num("like", v.like)}</span>
-            <span>${I.share}${num("share", v.share)}</span>
-            <span>${I.heart}${num("star", v.star)}</span>
-            <span>${I.bubble}${num("cmt", v.cmt)}</span>
+            <span data-act="like">${I.thumb}${num("like", v.like)}</span>
+            <span data-act="share">${I.share}${num("share", v.share)}</span>
+            <span data-act="star">${I.heart}${num("star", v.star)}</span>
+            <span data-act="cmt">${I.bubble}${num("cmt", v.cmt)}</span>
           </div>
         </div>
       </div>
@@ -106,11 +106,11 @@
       ${backRow('<span class="dots">···</span>', "", o.back)}
 
       <div class="v25-wx-side">
-        <div class="av">P<i>+</i></div>
-        <div>${I.heart}${num("like", v.like)}</div>
-        <div>${I.bubble}${num("cmt", v.cmt)}</div>
-        <div>${I.share}${num("share", v.share)}</div>
-        <div>${I.star}${num("star", v.star)}</div>
+        <div class="av" data-act="follow">P<i>+</i></div>
+        <div data-act="like">${I.heart}${num("like", v.like)}</div>
+        <div data-act="cmt">${I.bubble}${num("cmt", v.cmt)}</div>
+        <div data-act="share">${I.share}${num("share", v.share)}</div>
+        <div data-act="star">${I.star}${num("star", v.star)}</div>
       </div>
 
       <div class="v25-wx-bot">
@@ -120,7 +120,7 @@
         <span class="tm">昨天 20:14</span>
       </div>
 
-      <div class="v25-wx-in"><span>说点什么…</span><i>${I.bubble}</i></div>
+      <div class="v25-wx-in" data-act="cmt"><span>说点什么…</span><i>${I.bubble}</i></div>
     </div>`;
   }
 
@@ -132,7 +132,7 @@
         <span class="bk"${o.back || ""}>${I.chev}</span>
         <b class="av">P</b>
         <span class="nm">${w.who || "大 P"}</span>
-        <em>关注</em>
+        <em data-act="follow">关注</em>
       </div>
       <div class="v25-xhs-img">
         <img class="v25-media" src="${w.img}" alt="">
@@ -150,10 +150,10 @@
         </div>
       </div>
       <div class="v25-xhs-bar">
-        <span class="inp">说点什么…</span>
-        <span class="xo">${I.heart}${num("like", v.like)}</span>
-        <span class="xo">${I.star}${num("star", v.star)}</span>
-        <span class="xo">${I.bubble}${num("cmt", v.cmt)}</span>
+        <span class="inp" data-act="cmt">说点什么…</span>
+        <span class="xo" data-act="like">${I.heart}${num("like", v.like)}</span>
+        <span class="xo" data-act="star">${I.star}${num("star", v.star)}</span>
+        <span class="xo" data-act="cmt">${I.bubble}${num("cmt", v.cmt)}</span>
       </div>
     </div>`;
   }

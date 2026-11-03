@@ -3348,3 +3348,65 @@
 .v26-go.plain{background:rgba(124,108,255,.20);color:#C6BDFF;box-shadow:none;
   font-weight:600;height:40px;font-size:12.5px}
 .v26-go.plain:active{background:rgba(124,108,255,.3)}
+
+/* ------------------------------------------------------------------
+   V16.12 全屏页里，平台自己的操作都能点
+   点赞/收藏/关注 = 就地改（不重渲染，否则播放进度清零）
+   评论 = 底部升起来的面板；分享 = 换成微信，其余照平台的样子
+   ------------------------------------------------------------------ */
+.v25-pf [data-act]{cursor:pointer}
+.v25-pf [data-act]:active{opacity:.65}
+.v25-dy [data-act="like"].on,
+.v25-dy [data-act="star"].on,
+.v25-dy [data-act="follow"].on{color:#FE2C55}
+.v25-wx [data-act="like"].on,
+.v25-wx [data-act="follow"].on{color:#FA5151}
+.v25-wx [data-act="star"].on{color:#F5B300}
+.v25-xhs [data-act="like"].on{color:#FF2442}
+.v25-xhs [data-act="star"].on{color:#FFB300}
+.v25-pf [data-act].on svg{fill:currentColor;stroke:currentColor}
+.v25-wx .v25-wx-side .av.on i{display:none}
+.v25-xhs-top em.on{color:#A5A5B0;border-color:#E2E2E8}
+
+/* 底部面板 */
+.v25-ov{position:absolute;inset:0;z-index:30;display:none}
+.v25-ov.on{display:block}
+.v25-ov-mask{position:absolute;inset:0;background:rgba(0,0,0,.55);animation:v26f .16s ease}
+.v25-ov-sheet{position:absolute;left:0;right:0;bottom:0;max-height:76%;background:#1C1D26;color:#fff;
+  border-radius:18px 18px 0 0;display:flex;flex-direction:column;
+  animation:v26u .24s cubic-bezier(.2,.85,.3,1);box-shadow:0 -12px 40px rgba(0,0,0,.45)}
+.v25-ov-sheet.light{background:#fff;color:#1A1A1A}
+.v25-ov-hd{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:15px 16px 9px}
+.v25-ov-hd b{font-size:13px;font-weight:600}
+.v25-ov-hd span{font-size:9.5px;color:rgba(255,255,255,.35)}
+.v25-ov-sheet.light .v25-ov-hd span{color:#A5A5B0}
+.v25-ov-hd em{margin-left:auto;font-style:normal;color:rgba(255,255,255,.45);cursor:pointer;
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.v25-ov-sheet.light .v25-ov-hd em{color:#9C9CAC}
+.v25-ov-bd{flex:1;min-height:0;overflow-y:auto;padding:0 16px 6px}
+.v25-ov-ft{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:9px 14px 16px;
+  border-top:1px solid rgba(255,255,255,.07)}
+.v25-ov-ft .inp{flex:1;height:32px;border-radius:16px;background:rgba(255,255,255,.09);
+  display:flex;align-items:center;padding:0 13px;font-size:11.5px;color:rgba(255,255,255,.4)}
+.v25-ov-ft svg{width:19px;height:19px;opacity:.55}
+.v25-ov-ft b{font-size:11.5px;font-weight:600;color:#8E7DFF}
+
+/* 小红书的面板是白底，评论行得翻色，不然白字白底 */
+.v25-ov-sheet.light .v26-cm{border-bottom-color:#F2F2F4}
+.v25-ov-sheet.light .v26-cm .nm b{color:#9C9CAC}
+.v25-ov-sheet.light .v26-cm .nm i{background:#F4F4F6;color:#8A8A96}
+.v25-ov-sheet.light .v26-cm .nm i.q{background:#FFF0EC;color:#E8683F}
+.v25-ov-sheet.light .v26-cm .nm i.d{background:#E8F8F1;color:#12B886}
+.v25-ov-sheet.light .v26-cm p{color:#1A1A1A}
+.v25-ov-sheet.light .v26-cm .mt{color:#B4B4C0}
+
+.v25-toast{position:absolute;left:50%;bottom:96px;transform:translate(-50%,12px);z-index:40;
+  background:rgba(0,0,0,.82);color:#fff;font-size:11.5px;padding:8px 16px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;white-space:nowrap}
+.v25-toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 提示条放中间：底部 96px 正好压在文案上，读不清 */
+.v25-toast{top:48%;bottom:auto;transform:translate(-50%,8px)}
+.v25-toast.on{transform:translate(-50%,0)}
+/* 分享只有三个渠道，别按四列排，否则右边空一格看着像少了个入口 */
+.v25-ov .v26-shr{grid-template-columns:repeat(3,1fr)}
