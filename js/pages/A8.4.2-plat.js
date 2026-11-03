@@ -56,7 +56,7 @@ window.PAGES["A8.4.2"].render = function (ctx) {
   const avBg = (i) => AV[i % AV.length];
   const tagCls = (t) => (t === "问价" || t === "咨询" ? "q" : t === "成交" ? "d" : "");
 
-  const GEN_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3Z"/><path d="M18 15.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9.9-2.1Z"/></svg>`;
+  const GEN_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3Z"/></svg>`;
 
   /* ---------- 底部弹层 ---------- */
   let sheetHTML = "";
@@ -165,12 +165,14 @@ window.PAGES["A8.4.2"].render = function (ctx) {
     </div>`;
   }
 
-  /* ---------- 生成按钮的三种样子 ---------- */
-  const goBtn = gen === "1"
-    ? `<div class="v26-go wait">小剪在写 ${v.cmt} 条评论…</div>`
-    : gen === "2"
-      ? `<div class="v26-go ghost" data-set="A8.4.2.gen=1&A8.4.2.batch=${batch + 3}">↻ 重新生成评论</div>`
-      : `<div class="v26-go" data-set="A8.4.2.gen=1">${GEN_ICON}确定生成</div>`;
+  /* ---------- 底部两个按钮 ---------- */
+  /* 确定生成是"闸门"，分享朋友圈才是正经动作，所以主色给后者。
+     生成中不给点，避免连点叠出两批评论。 */
+  const genBusy = gen === "1";
+  const genTxt = genBusy ? "生成中…" : gen === "2" ? "↻ 重新生成" : "确定生成";
+  const genAttr = genBusy
+    ? ""
+    : ` data-set="A8.4.2.gen=1${gen === "2" ? "&A8.4.2.batch=" + (batch + 3) : ""}"`;
 
   return `<div class="app v25-app">
     ${C.sb(true)}
@@ -183,30 +185,22 @@ window.PAGES["A8.4.2"].render = function (ctx) {
       <span class="ghost">分享效果</span>
     </div>
 
-    <div class="v25-scr">${S.render(pf, wf, v, { noSb: true })}</div>
+    <div class="v25-scr fill">${S.render(pf, wf, v, { noSb: true })}</div>
 
-    <div class="body" style="padding:0">
-      <div class="v25-panel">
-        <div class="hd">模拟互动数据<em>改了上面立刻变</em></div>
-        <div class="v25-grid">
-          <label><span>点赞</span><input data-bind="A8.4.2.${pf}_like" data-out=".v25-n-like" value="${v.like}"></label>
-          <label><span>评论</span><input data-bind="A8.4.2.${pf}_cmt" data-out=".v25-n-cmt" value="${v.cmt}"></label>
-          <label><span>分享</span><input data-bind="A8.4.2.${pf}_share" data-out=".v25-n-share" value="${v.share}"></label>
-          <label><span>收藏</span><input data-bind="A8.4.2.${pf}_star" data-out=".v25-n-star" value="${v.star}"></label>
-        </div>
-
-        ${goBtn}
-        <div class="v26-hint">${gen === "2"
-          ? `已按这组数生成 <em>${v.cmt}</em> 条评论，发出去就是这些`
-          : `点确定后，小剪按上面这组数生成对应的评论，发出去就是这些`}</div>
-
-        <div class="v26-lp" data-go="L1?pf=${pf}&c=${w.id}" data-label="看客户点开的样子">客户点开看到的就是上面这一屏 <b>›</b></div>
+    <div class="v25-panel">
+      <div class="hd">模拟互动数据<em>改了上面立刻变</em></div>
+      <div class="v25-grid">
+        <label><span>点赞</span><input data-bind="A8.4.2.${pf}_like" data-out=".v25-n-like" value="${v.like}"></label>
+        <label><span>评论</span><input data-bind="A8.4.2.${pf}_cmt" data-out=".v25-n-cmt" value="${v.cmt}"></label>
+        <label><span>分享</span><input data-bind="A8.4.2.${pf}_share" data-out=".v25-n-share" value="${v.share}"></label>
+        <label><span>收藏</span><input data-bind="A8.4.2.${pf}_star" data-out=".v25-n-star" value="${v.star}"></label>
       </div>
+      <div class="v26-lp" data-go="L1?pf=${pf}&c=${w.id}" data-label="看客户点开的样子">客户点开的，就是上面这一屏 <b>›</b></div>
     </div>
 
     <div class="actionbar">
-      <div class="eto" data-go="A8.4.1?c=${w.id}" data-label="回作品"><span>‹</span><b>作品</b></div>
-      <div class="btn" data-set="A8.4.2.sheet=share">分享</div>
+      <div class="${genBusy ? "btn soft dim" : "btn soft"}"${genAttr}>${genTxt}</div>
+      <div class="btn" data-set="A8.4.2.sheet=share">分享朋友圈</div>
     </div>
 
     ${sheetHTML}

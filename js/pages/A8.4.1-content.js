@@ -53,17 +53,14 @@ window.PAGES["A8.4.1"].render = function (ctx) {
   if (t === "all") {
     /* 作品页只讲「这条内容本身的表现」。
        问价、成交、转化率归客户页 —— 在这儿摆成交数，团长会误以为
-       作品页能回答"卖得怎么样"，其实成交是在微信里发生的，这条视频只负责把人带过去。 */
+       作品页能回答"卖得怎么样"，其实成交是在微信里发生的，这条视频只负责把人带过去。
+
+       五个数用横条排，不用等宽格子：格子会诱导人横着比大小，
+       横条才能看出 214 打开 → 41 完播 这一跳掉得有多狠。
+       条长按最大值归一，不按上一级归一 —— 点赞可能比完播还大，按上一级算会画出"越往下越长"的怪图。 */
     const sent = w.status === "sent";
-    const M = sent
-      ? [
-        ["打开次数", w.opens],
-        ["完播数", w.full],
-        ["点赞数", w.likes],
-        ["互动数", w.inter],
-        ["分享数", w.shares]
-      ]
-      : [["打开次数", "—"], ["完播数", "—"], ["点赞数", "—"], ["互动数", "—"], ["分享数", "—"]];
+    const M = [["打开次数", w.opens], ["完播数", w.full], ["点赞数", w.likes], ["互动数", w.inter], ["分享数", w.shares]];
+    const max = Math.max(1, ...M.map((x) => x[1]));
 
     const S = sent
       ? [
@@ -74,8 +71,12 @@ window.PAGES["A8.4.1"].render = function (ctx) {
       ]
       : [["—", "完播率"], ["—", "平均停留时长"], ["—", "打开人数"], ["—", "平均访问次数"]];
 
-    body = `<div class="v26-kpi">
-      ${M.map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")}
+    body = `<div class="v26-fn">
+      ${M.map(([k, v], i) => `<div class="v26-fn-r">
+        <span>${k}</span>
+        <div class="v26-fn-bar"><i style="width:${sent ? Math.max(5, Math.round(v / max * 100)) : 0}%;opacity:${1 - i * 0.12}"></i></div>
+        <b>${sent ? v : "—"}</b>
+      </div>`).join("")}
     </div>
 
     <div class="v26-sub">
@@ -152,10 +153,10 @@ window.PAGES["A8.4.1"].render = function (ctx) {
       ${tabs}
       ${body}
 
-      ${t === "all" ? `<div class="v18-reuse" data-go="B1?w=w_krill&ep=6" data-label="按这条再剪一条">
+      ${t === "all" ? `<div class="v18-reuse" data-go="A8?w=${w.id}" data-label="跟小剪说按这条再剪一条">
         <div>
           <b>按这个结构再剪一条</b>
-          <span>开场钩子 + 证据 + 收尾行动，素材已经配好</span>
+          <span>回首页跟小剪说一声，它按这条的结构给你排素材</span>
         </div>
         <em>›</em>
       </div>` : ""}
