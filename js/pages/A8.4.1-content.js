@@ -67,14 +67,7 @@ window.PAGES["A8.4.1"].render = function (ctx) {
       <div class="v18-insight-hd">小剪的判断</div>
       <p>${w.insight}</p>
     </div>
-
-    ${C.sec("这条用了哪几段")}
-    <div class="v18-used">
-      ${used.map((b) => `<div class="v18-used-i">
-        <img src="${b.img}" alt="">
-        <span>${b.fn}</span>
-      </div>`).join("")}
-    </div>`;
+`;
   }
 
   if (t === "log") {
@@ -137,6 +130,12 @@ window.PAGES["A8.4.1"].render = function (ctx) {
         <div><b>${w.ask}</b><span>问价</span></div>
         <div><b>${w.deal}</b><span>成交</span></div>
       </div>
+
+      ${w.status === "sent" ? `<div class="v24-plats">
+        ${["wx", "dy", "xhs"].map((k) => `<div data-go="A8.4.2?pf=${k}&c=${w.id}" data-label="发到${L.plats[k].name}">
+          <i>${L.plats[k].short}</i><b>${L.plats[k].name}</b>
+        </div>`).join("")}
+      </div>` : ""}
 
       ${tabs}
       ${body}

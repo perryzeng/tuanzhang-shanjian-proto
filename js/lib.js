@@ -401,6 +401,16 @@ window.LIB = (function () {
     }
   ];
 
+
+  /* 三个平台的模拟互动数据。
+     原型里一套数据通用；真实产品按「作品 × 平台」各存一份。
+     团长可以手改（模拟），也可以贴真实链接让爬虫回填。 */
+  const plats = {
+    wx:  { k: "wx",  name: "视频号", short: "视", likes: 186,  comments: 23,  shares: 17,  forwards: 9,  link: "" },
+    dy:  { k: "dy",  name: "抖音",   short: "抖", likes: 4210, comments: 168, shares: 320, forwards: 88, link: "" },
+    xhs: { k: "xhs", name: "小红书", short: "红", likes: 96,   comments: 12,  shares: 6,   forwards: 3,  link: "" }
+  };
+
   const board = {
     me: { visitors: 47, repeat: 9, asked: 2, deals: 3, posts: 5 },
     team: { visitors: 1204, repeat: 186, asked: 41, deals: 12, posts: 34 },
@@ -469,5 +479,5 @@ window.LIB = (function () {
   ];
 
 
-  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plan7, persona, team, board };
+  return { stats, items, clips, fnCats, blocks, works, contents: works, customers, plats, plan7, persona, team, board };
 })();

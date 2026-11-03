@@ -2872,3 +2872,101 @@
 .v22-fd-tx span{display:block;font-size:9.5px;color:var(--text-4);margin-top:3px}
 .v22-fd-i.praise{padding:11px 8px;margin:0 -8px;border-radius:9px;background:var(--brand-weak-2)}
 .v22-fd-i.praise+.v22-fd-i{box-shadow:none}
+
+/* ================= V16.7 · 三平台皮肤（视频号 / 抖音 / 小红书） ================= */
+
+.v24-plats{display:flex;gap:8px;margin-top:11px}
+.v24-plats>div{flex:1;background:var(--surface);border-radius:12px;padding:9px 6px;text-align:center;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}
+.v24-plats i{display:flex;width:26px;height:26px;margin:0 auto 5px;border-radius:8px;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700;color:#fff}
+.v24-plats>div:nth-child(1) i{background:#07C160}
+.v24-plats>div:nth-child(2) i{background:#161823}
+.v24-plats>div:nth-child(3) i{background:#FF2442}
+.v24-plats b{font-size:11px;font-weight:600}
+
+.v24-tabs{display:flex;gap:8px;padding:10px 0 12px}
+.v24-tabs span{flex:1;text-align:center;font-size:12px;padding:8px 0;border-radius:10px;background:#fff;color:var(--text-3);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}
+.v24-tabs span.on{background:var(--text);color:#fff;font-weight:600;box-shadow:none}
+
+.v24-ph{border-radius:14px;overflow:hidden;box-shadow:var(--sh-1);padding:12px 14px 14px}
+
+.v24-wx{background:#fff}
+.v24-wx-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.v24-wx-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#FF8A65,#FF6B6B);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 32px}
+.v24-wx-top div b{display:block;font-size:13px;font-weight:600;color:#1A1A1A}
+.v24-wx-top div span{display:block;font-size:9.5px;color:#999;margin-top:1px}
+.v24-wx-top em{margin-left:auto;color:#999;font-style:normal;letter-spacing:1px}
+.v24-wx-vd{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:16/10;background:#000}
+.v24-wx-vd img{width:100%;height:100%;object-fit:cover}
+.v24-wx-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;padding-left:2px}
+.v24-wx-dur{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9.5px;padding:2px 6px;border-radius:3px}
+.v24-wx-t{font-size:14px;font-weight:600;line-height:1.45;margin-top:11px;color:#1A1A1A}
+.v24-wx-tags{font-size:11px;color:#576B95;margin-top:6px}
+.v24-wx-ops{display:flex;gap:18px;margin-top:11px;padding:10px 0 0;border-top:1px solid #F0F0F0}
+.v24-wx-ops span{display:flex;align-items:center;gap:4px;font-size:11.5px;color:#7A7A7A}
+.v24-wx-ops i{font-style:normal;font-size:13px}
+.v24-wx-cm{margin-top:10px;background:#F7F7F7;border-radius:8px;padding:8px 10px;font-size:11px;color:#555}
+.v24-wx-cm b{color:#576B95;font-weight:500}
+.v24-ph .v24-wx-ops{padding-left:0;padding-right:0}
+
+.v24-dy{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:9/14;color:#fff;padding:0}
+.v24-dy-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.v24-dy-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:center;gap:18px;padding:11px 0;font-size:13px;color:rgba(255,255,255,.6);z-index:2}
+.v24-dy-top .on{color:#fff;font-weight:600}
+.v24-dy-top em{margin-left:auto;margin-right:14px;font-style:normal}
+.v24-dy-side{position:absolute;right:10px;bottom:74px;display:flex;flex-direction:column;align-items:center;gap:14px;z-index:2}
+.v24-dy-av{position:relative;width:38px;height:38px;border-radius:50%;background:#FF6B6B;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.v24-dy-av i{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:15px;height:15px;border-radius:50%;background:#FE2C55;color:#fff;font-style:normal;font-size:10px;display:flex;align-items:center;justify-content:center}
+.v24-dy-side div{text-align:center}
+.v24-dy-side div i{display:block;font-style:normal;font-size:20px;line-height:1}
+.v24-dy-side div b{display:block;font-size:10px;font-weight:500;margin-top:3px}
+.v24-dy-tx{position:absolute;left:12px;right:60px;bottom:16px;z-index:2}
+.v24-dy-tx b{font-size:13px;font-weight:600}
+.v24-dy-tx p{margin:5px 0 0;font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.9)}
+.v24-dy-tx span{display:block;margin-top:6px;font-size:10px;color:rgba(255,255,255,.65)}
+.v24-dy-bar{position:absolute;left:12px;right:12px;bottom:6px;height:2px;background:rgba(255,255,255,.25);border-radius:1px;z-index:2}
+.v24-dy-bar i{display:block;width:35%;height:100%;background:rgba(255,255,255,.85);border-radius:1px}
+
+.v24-xhs{background:#fff}
+.v24-xhs-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.v24-xhs-back{font-size:17px;color:#333}
+.v24-xhs-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FF8A65,#FF6B6B);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 28px}
+.v24-xhs-nm{font-size:12.5px;font-weight:600;color:#333}
+.v24-xhs-top em{margin-left:auto;font-style:normal;font-size:11px;color:#FF2442;border:1px solid #FF2442;border-radius:999px;padding:2px 10px}
+.v24-xhs-img{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:3/4;background:#000}
+.v24-xhs-img img{width:100%;height:100%;object-fit:cover}
+.v24-xhs-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;padding-left:2px}
+.v24-xhs-t{font-size:14px;font-weight:600;line-height:1.45;color:#1A1A1A;margin-top:11px}
+.v24-xhs-b{font-size:12px;line-height:1.7;color:#444;margin-top:6px}
+.v24-xhs-tags{font-size:11px;color:#13386C;margin-top:6px}
+.v24-xhs-ops{display:flex;gap:20px;margin-top:11px;padding:10px 0 0;border-top:1px solid #F0F0F0;font-size:11.5px;color:#666}
+.v24-ph .v24-xhs-ops{padding-left:0;padding-right:0}
+
+.v24-edit{background:#fff;border-radius:14px;padding:13px;margin-top:12px;box-shadow:var(--sh-1)}
+.v24-edit-hd{display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:9px}
+.v24-edit-hd em{margin-left:auto;font-style:normal;font-size:9.5px;color:var(--brand);font-weight:500}
+.v24-edit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.v24-edit-grid span{display:block;font-size:9.5px;color:var(--text-3);margin-bottom:4px}
+.v24-edit-grid input{width:100%;border:0;background:var(--bg-2);border-radius:8px;padding:8px 6px;font-size:12px;font-family:var(--font);text-align:center;outline:0;box-sizing:border-box}
+
+.v24-link{background:#fff;border-radius:14px;padding:13px;margin-top:10px;box-shadow:var(--sh-1)}
+.v24-link-hd{font-size:11px;font-weight:700;color:var(--text-3);margin-bottom:9px}
+.v24-link-row{display:flex;gap:8px}
+.v24-link-row input{flex:1;min-width:0;border:0;background:var(--bg-2);border-radius:9px;padding:9px 11px;font-size:11px;font-family:var(--font);outline:0}
+.v24-link-btn{flex:0 0 auto;background:var(--g-brand);color:#fff;font-size:11.5px;font-weight:600;border-radius:9px;padding:0 14px;display:flex;align-items:center;cursor:pointer}
+.v24-link-tip{margin-top:8px;font-size:9.5px;color:var(--text-4);line-height:1.5}
+
+.v24-lp-vd{position:relative;aspect-ratio:16/11;background:#000}
+.v24-lp-vd img{width:100%;height:100%;object-fit:cover}
+.v24-lp-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;padding-left:3px}
+.v24-lp-dur{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:2px 7px;border-radius:4px}
+.v24-lp-tx{padding:12px 16px 0}
+.v24-lp-tx b{display:block;font-size:14.5px;font-weight:600;line-height:1.45}
+.v24-lp-tx p{margin:6px 0 0;font-size:11.5px;color:#576B95}
+.v24-lp-tx span{display:block;font-size:10px;margin-top:5px}
+.v24-lp-gap{height:9px;margin-top:12px}
+
+.v24-lp-dytop{display:flex;align-items:center;padding:10px 16px 8px;background:#000;font-size:13px;color:rgba(255,255,255,.6)}
+.v24-lp-dytop .sp{flex:1}
+.v24-lp-dytop div{display:flex;gap:18px}
+.v24-lp-dytop div span.on{color:#fff;font-weight:600}
+.v24-lp-dytop em{flex:1;text-align:right;font-style:normal}
