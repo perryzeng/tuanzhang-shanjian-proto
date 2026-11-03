@@ -6,9 +6,10 @@
 window.PAGES["A6.1"].prd = "PRD V15 §3 · 我是谁（IP 设定）";
 window.PAGES["A6.1"].sysEntry = "对话首页右上角头像；或 ◎ 抽屉第一项";
 
-window.PAGES["A6.1"].render = function () {
+window.PAGES["A6.1"].render = function (ctx) {
   const C = window.C, AI = window.AI, B = window.BIZ;
   const ip = AI.ip;
+  const priv = (ctx && ctx.priv) || "open";
 
   return `<div class="app">
     ${C.sb()}
@@ -64,6 +65,23 @@ window.PAGES["A6.1"].render = function () {
         <div class="v15-face-add">＋</div>
       </div>
       <div class="xs" style="margin:8px 2px 0;line-height:1.6">这三张是我认你的依据。换脸、换风格都会影响出片。</div>
+
+      ${C.sec("隐私", "组里的人能看多少")}
+      <div class="v31-priv">
+        ${[["open", "全组可见", "组员能在榜单点开你，看到你发了几条、交了任务、被表扬过"],
+           ["lead", "仅组长可见", "组员只看到你的名次和数字，组长能看到你的行为轨迹"],
+           ["off", "不公开", "谁点开都只看到名次。组长也看不到"]]
+          .map(([k, t, d]) => {
+            const on = (priv === k);
+            return `<div class="v31-priv-i ${on ? "on" : ""}" data-set="A6.1.priv=${k}" data-label="${t}">
+              <i class="rw"></i>
+              <div><b>${t}</b><span>${d}</span></div>
+            </div>`;
+          }).join("")}
+      </div>
+      <div class="xs" style="margin:8px 2px 0;line-height:1.6">
+        排名和发布数永远是组里公开的。这设置只管"你具体做了什么"要不要给人看。
+      </div>
     </div>
   </div>`;
 };

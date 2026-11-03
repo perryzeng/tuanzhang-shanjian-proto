@@ -3707,3 +3707,137 @@
    裸写 `.gen` 会让一个 9px 高的分布条分段被撑到 52px 宽、让一行说明文字变成竖排居中。
    这是第三次栽在同一类撞车上（前两次是 .op 和 .hd）。
    ------------------------------------------------------------------ */
+
+/* ==================================================================
+   V21 小组：四块用 tab 分开
+   四块内容形态完全不同（读的公告 / 干的活 / 翻的动态 / 比的榜单），
+   堆一屏会互相打断。tab 是手机端唯一能"每块都给足空间"的做法。
+   ================================================================== */
+.v31-hero{background:var(--surface);border-radius:16px;padding:12px 14px 11px;box-shadow:var(--sh-1)}
+.v31-hero-hd{display:flex;align-items:baseline;gap:8px}
+.v31-hero-hd b{font-size:13px;font-weight:700;letter-spacing:-.3px}
+.v31-hero-hd em{margin-left:auto;font-style:normal;font-size:19px;font-weight:700;
+  color:var(--brand);letter-spacing:-.6px;line-height:1;font-variant-numeric:tabular-nums}
+.v31-hero-hd em i{font-style:normal;font-size:11px;font-weight:500;color:var(--text-4);letter-spacing:0}
+.v31-hero-bar{height:6px;border-radius:3px;background:var(--bg-2);overflow:hidden;margin:9px 0 7px}
+.v31-hero-bar i{display:block;height:100%;border-radius:3px;background:var(--g-brand)}
+.v31-hero-ft{display:flex;gap:14px;font-size:9.5px;color:var(--text-3)}
+.v31-hero-ft span:last-child{margin-left:auto;color:var(--brand-ink);font-weight:500}
+
+/* 四个 tab：图标化没必要，文字够短 */
+.v31-tabs{display:flex;gap:4px;margin:12px 0 2px;background:var(--bg-2);border-radius:12px;padding:3px}
+.v31-tabs span{flex:1;text-align:center;font-size:11.5px;color:var(--text-3);padding:7px 0;
+  border-radius:9px;cursor:pointer;position:relative;line-height:1}
+.v31-tabs span.on{background:var(--surface);color:var(--text);font-weight:600;
+  box-shadow:0 2px 6px rgba(20,26,50,.07)}
+.v31-tabs span i.n{font-style:normal;font-size:8.5px;font-weight:600;color:#fff;background:var(--warm);
+  border-radius:7px;padding:1px 4px;margin-left:3px;vertical-align:1px}
+.v31-tabs span i.dot{position:absolute;top:5px;right:9px;width:5px;height:5px;border-radius:50%;
+  background:var(--danger)}
+
+/* 公告 */
+.v31-nt{margin-top:10px;background:var(--surface);border-radius:16px;padding:13px 14px 14px;
+  box-shadow:var(--sh-1);border-left:3px solid var(--brand)}
+.v31-nt-hd{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.v31-nt-hd span{font-size:8.5px;font-weight:700;color:#fff;background:var(--brand);
+  border-radius:5px;padding:2px 6px;line-height:1.3}
+.v31-nt-hd em{margin-left:auto;font-style:normal;font-size:9px;color:var(--text-4)}
+.v31-nt b{display:block;font-size:13.5px;font-weight:700;letter-spacing:-.2px;line-height:1.4}
+.v31-nt p{margin:7px 0 0;font-size:11.5px;line-height:1.7;color:var(--text-2)}
+.v31-nt2{margin-top:9px;background:var(--surface);border-radius:14px;padding:12px 13px;
+  box-shadow:var(--sh-1)}
+.v31-nt2-hd{display:flex;align-items:baseline;gap:8px}
+.v31-nt2-hd b{font-size:12px;font-weight:600;line-height:1.4}
+.v31-nt2-hd em{margin-left:auto;flex:0 0 auto;font-style:normal;font-size:9px;color:var(--text-4)}
+.v31-nt2 p{margin:6px 0 0;font-size:10.5px;line-height:1.65;color:var(--text-3)}
+.v31-nt2 span{display:block;margin-top:7px;font-size:9px;color:var(--text-4)}
+
+.v31-sect{margin:15px 2px 8px;font-size:10px;font-weight:700;color:var(--text-3);letter-spacing:.3px}
+.v31-task{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:13px;
+  padding:11px 13px;margin-top:8px;box-shadow:var(--sh-1);cursor:pointer}
+.v31-task b{display:block;font-size:12px;font-weight:600}
+.v31-task span{display:block;font-size:9.5px;color:var(--text-3);margin-top:3px}
+.v31-task em{margin-left:auto;font-style:normal;color:var(--text-4);font-size:15px}
+
+/* 榜单：两个榜切换 */
+.v31-seg{display:flex;gap:6px;margin-top:11px}
+.v31-seg span{flex:1;text-align:center;font-size:11.5px;padding:7px 0;border-radius:10px;
+  background:var(--surface);color:var(--text-3);cursor:pointer;box-shadow:inset 0 0 0 1px var(--line)}
+.v31-seg span.on{background:var(--text);color:#fff;font-weight:600;box-shadow:none}
+.v31-rk{margin-top:10px;background:var(--surface);border-radius:16px;overflow:hidden;box-shadow:var(--sh-1)}
+.v31-rk-i{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;
+  border-bottom:1px solid var(--line)}
+.v31-rk-i:last-child{border-bottom:0}
+.v31-rk-i.me{background:var(--brand-weak-2)}
+.v31-rk-i .no{flex:0 0 18px;font-size:11px;font-weight:700;color:var(--text-4);text-align:center;
+  font-variant-numeric:tabular-nums}
+.v31-rk-i .no.top{color:var(--warm);font-size:13px}
+.v31-rk-i .av{position:relative;width:32px;height:32px;border-radius:50%;flex:0 0 32px;
+  font-style:normal;font-size:11.5px;font-weight:700;color:#fff;display:flex;
+  align-items:center;justify-content:center}
+.v31-rk-i .av .lock{position:absolute;right:-3px;bottom:-3px;width:14px;height:14px;border-radius:50%;
+  background:var(--text-4);color:#fff;font-style:normal;font-size:7px;font-weight:400;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1.5px var(--surface)}
+.v31-rk-i .tx{flex:1;min-width:0}
+.v31-rk-i .tx b{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600}
+.v31-rk-i .tx b em{font-style:normal;font-size:8px;font-weight:600;color:var(--brand-ink);
+  background:var(--brand-weak);border-radius:4px;padding:1px 4px}
+.v31-rk-i .tx span{display:block;font-size:9px;color:var(--text-3);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v31-rk-i .bar{height:3px;border-radius:2px;background:var(--bg-2);margin-top:5px;overflow:hidden}
+.v31-rk-i .bar i{display:block;height:100%;border-radius:2px;background:var(--g-brand)}
+.v31-rk-i .v{flex:0 0 auto;text-align:right;font-size:14px;font-weight:700;letter-spacing:-.4px;
+  font-variant-numeric:tabular-nums}
+.v31-rk-i .v span{display:block;font-size:8.5px;font-weight:400;color:var(--text-4);
+  letter-spacing:0;margin-top:1px}
+
+/* 组员动态 */
+.v31-mh{display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:16px;
+  padding:13px 14px;box-shadow:var(--sh-1)}
+.v31-mh .av{width:44px;height:44px;border-radius:50%;flex:0 0 44px;font-style:normal;
+  font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
+.v31-mh .tx b{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;letter-spacing:-.3px}
+.v31-mh .tx b em{font-style:normal;font-size:8.5px;font-weight:600;color:var(--brand-ink);
+  background:var(--brand-weak);border-radius:4px;padding:1px 5px}
+.v31-mh .tx span{display:block;font-size:9.5px;color:var(--text-3);margin-top:3px}
+.v31-mst{display:grid;grid-template-columns:repeat(3,1fr);margin-top:9px;background:var(--surface);
+  border-radius:14px;padding:11px 0;box-shadow:var(--sh-1)}
+.v31-mst>div{text-align:center;position:relative}
+.v31-mst>div+div::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:18px;background:var(--line)}
+.v31-mst b{display:block;font-size:14px;font-weight:700;letter-spacing:-.3px}
+.v31-mst span{display:block;font-size:8.5px;color:var(--text-3);margin-top:3px}
+
+/* 隐私关闭态：不做成"空"，要说清楚为什么 */
+.v31-lock{margin-top:10px;background:var(--surface);border-radius:16px;padding:26px 20px 22px;
+  text-align:center;box-shadow:var(--sh-1)}
+.v31-lock-ic{width:46px;height:46px;border-radius:50%;margin:0 auto 12px;background:var(--bg-2);
+  color:var(--text-4);font-size:15px;display:flex;align-items:center;justify-content:center}
+.v31-lock b{display:block;font-size:13px;font-weight:600}
+.v31-lock p{margin:9px 0 0;font-size:10.5px;line-height:1.75;color:var(--text-3)}
+.v31-lock-go{margin-top:14px;display:inline-block;font-size:10.5px;font-weight:600;
+  color:var(--brand-ink);background:var(--brand-weak);border-radius:999px;padding:6px 14px;cursor:pointer}
+.v31-lock-tip{margin-top:14px;font-size:9.5px;color:var(--text-4);line-height:1.6}
+
+/* 动态时间轴着色 */
+.v19-tl-i.lead .v19-tl-d{background:#E6F8F2;color:#0B8C68}
+.v19-tl-i.ask .v19-tl-d{background:#EEF1F7;color:#6E6E7E}
+
+/* 榜单行压一压：8 行撑到 800px 太长了，条形和说明各让一点 */
+.v31-rk-i{padding:9px 13px}
+.v31-rk-i .bar{margin-top:4px;height:2.5px}
+.v31-rk-i .av .lock{width:15px;height:15px;font-size:8px;line-height:1}
+.v31-lock-ic svg{width:22px;height:22px;display:block}
+
+/* 隐私三选一。复用规则页的圆点样式，但独立命名，别跟 .v30-opt 绑死 */
+.v31-priv{background:var(--surface);border-radius:16px;padding:5px 12px;box-shadow:var(--sh-1)}
+.v31-priv-i{display:flex;align-items:flex-start;gap:9px;padding:10px 0;cursor:pointer;
+  border-bottom:1px solid var(--line)}
+.v31-priv-i:last-child{border-bottom:0}
+.v31-priv-i .rw{width:15px;height:15px;border-radius:50%;flex:0 0 15px;margin-top:1px;
+  background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--text-4);position:relative}
+.v31-priv-i.on .rw{background:var(--brand);box-shadow:none}
+.v31-priv-i.on .rw::after{content:"";position:absolute;left:5px;top:3px;width:5px;height:8px;
+  border:1.6px solid #fff;border-top:0;border-left:0;transform:rotate(42deg)}
+.v31-priv-i b{display:block;font-size:11.5px;font-weight:600}
+.v31-priv-i span{display:block;font-size:9.5px;line-height:1.55;color:var(--text-3);margin-top:2px}

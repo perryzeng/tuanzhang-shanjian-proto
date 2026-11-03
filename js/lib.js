@@ -149,7 +149,7 @@ window.LIB = (function () {
       { who: "组长", av: "P", act: "表扬了小敏：那条带来 3 个潜客、1 单成交", at: "3 小时前", k: "praise" },
       { who: "大刘", av: "刘", act: "发了新片「299 两瓶，够吃两个月」", at: "5 小时前", k: "post" },
       { who: "阿北", av: "北", act: "已经 2 天没交了", at: "今天 09:00", k: "warn" },
-      { who: "周姨", av: "周", act: "加入了小组", at: "昨天", k: "join" },
+      { who: "小美", av: "美", act: "加入了小组", at: "昨天", k: "join" },
       { who: "小敏", av: "敏", act: "发了一条 46 秒的科普片", at: "昨天", k: "post" }
     ],
     direction: {
@@ -162,6 +162,73 @@ window.LIB = (function () {
       { n: "大刘", av: "刘", v: 7, note: "本组最高触达" },
       { n: "大 P", av: "P", v: 5, note: "你" },
       { n: "阿北", av: "北", v: 3, note: "2 天没发" }
+    ],
+
+    /* 组员名册（V21）。榜单和"点开他的动态"都从这一份算，不再两处各写一套。
+       open = 隐私设置里「公开我的动态」开没开。关掉的人，榜单上照样有名次和数字，
+       但点进去看不到他做了什么 —— 排名是组里的公共信息，行为轨迹是私人的。 */
+    crew: [
+      { id: "m_min", n: "小敏", av: "敏", bg: "linear-gradient(135deg,#FF8A65,#FF6B6B)",
+        role: "3 组 · 入组 8 个月", open: true, posts: 8, leads: 14,
+        note: "本周第一，组长夸了两次",
+        acts: [
+          { t: "今天 10:12", a: "交了「老客回购实拍」", k: "done" },
+          { t: "今天 09:40", a: "被组长表扬：那条带来 3 个意向、1 单成交", k: "praise" },
+          { t: "昨天 21:05", a: "发了新片「我妈吃了三个月」", k: "post" },
+          { t: "昨天 20:50", a: "跟进了 4 个客户，其中 2 个当天回话", k: "lead" },
+          { t: "前天 19:20", a: "领了「第 5 集 · 老客回购实拍」", k: "task" },
+          { t: "11-01", a: "在组里问：体检单那段能不能重复用", k: "ask" }
+        ] },
+      { id: "m_liu", n: "大刘", av: "刘", bg: "linear-gradient(135deg,#7C6CFF,#A78BFA)",
+        role: "3 组 · 入组 1 年", open: true, posts: 7, leads: 9,
+        note: "触达最高，但转化一般",
+        acts: [
+          { t: "今天 08:30", a: "发了新片「299 两瓶，够吃两个月」", k: "post" },
+          { t: "昨天 18:00", a: "交了「团队口径片 · 成分怎么讲」", k: "done" },
+          { t: "昨天 12:10", a: "跟进了 2 个客户", k: "lead" },
+          { t: "前天 20:00", a: "发了一条 46 秒的科普片", k: "post" }
+        ] },
+      { id: "m_me", n: "大 P", av: "P", bg: "linear-gradient(135deg,#5B8CFF,#7C6CFF)",
+        role: "3 组 · 组长", open: true, posts: 5, leads: 6, me: true,
+        note: "你",
+        acts: [
+          { t: "今天 09:20", a: "出了「老客回购实拍（第 5 集）」", k: "post" },
+          { t: "今天 08:10", a: "发了本周口径公告", k: "notice" },
+          { t: "昨天 20:14", a: "发到朋友圈 + 2 个群", k: "post" }
+        ] },
+      { id: "m_fang", n: "芳姐", av: "芳", bg: "linear-gradient(135deg,#12B886,#0B8C68)",
+        role: "3 组 · 入组 6 个月", open: true, posts: 5, leads: 5,
+        note: "稳定输出",
+        acts: [
+          { t: "今天 11:00", a: "交了「老客回购实拍」", k: "done" },
+          { t: "昨天 19:30", a: "发了新片「早上冲一杯」", k: "post" },
+          { t: "前天 10:00", a: "跟进了 1 个客户", k: "lead" }
+        ] },
+      { id: "m_kai", n: "阿凯", av: "凯", bg: "linear-gradient(135deg,#F2C14E,#D9A02B)",
+        role: "3 组 · 入组 4 个月", open: true, posts: 4, leads: 4,
+        note: "新人里跑得最快",
+        acts: [
+          { t: "今天 09:05", a: "交了「老客回购实拍」", k: "done" },
+          { t: "昨天 21:40", a: "发了新片「磷虾油到底适合谁」", k: "post" },
+          { t: "前天 16:20", a: "在组里问：封面用哪张好", k: "ask" }
+        ] },
+      { id: "m_mei", n: "小美", av: "美", bg: "linear-gradient(135deg,#C39BEA,#9B72D6)",
+        role: "3 组 · 入组 2 个月", open: true, posts: 3, leads: 3,
+        note: "刚起量",
+        acts: [
+          { t: "昨天 20:10", a: "发了新片「仓库今天发了 200 箱」", k: "post" },
+          { t: "昨天 09:00", a: "加入了小组", k: "join" }
+        ] },
+      { id: "m_bei", n: "阿北", av: "北", bg: "linear-gradient(135deg,#8FC7D8,#5B9DB0)",
+        role: "3 组 · 入组 5 个月", open: false, posts: 1, leads: 0,
+        note: "已经 2 天没交",
+        acts: [] },
+      { id: "m_zhou", n: "老周", av: "周", bg: "linear-gradient(135deg,#9FB4D6,#7C8FB5)",
+        role: "3 组 · 入组 3 个月", open: true, posts: 1, leads: 0,
+        note: "不太说话",
+        acts: [
+          { t: "昨天 15:00", a: "发了新片「磷虾油怎么选」", k: "post" }
+        ] }
     ]
   };
 
